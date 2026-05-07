@@ -3,51 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <title>AI 추천 일정 결과</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #ffffff;
+            padding: 24px 20px 40px;
+        }
+
+        .top {
+            margin-bottom: 22px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin: 0 0 8px;
+            line-height: 1.3;
+        }
+
+        .summary {
+            background: #f3f8f3;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .pattern-box {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .pattern-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pattern-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pattern-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 7px 12px;
+            font-size: 13px;
+        }
+
+        .schedule-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .time {
+            font-size: 14px;
+            color: #4caf50;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .place-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .reason {
+            margin-top: 12px;
+            background: #f7f7f7;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px 10px;
+            color: #666;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            padding: 16px;
+            border-radius: 18px;
+            background: #4caf50;
+            color: white;
+            font-weight: bold;
+            margin-top: 24px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>AI 추천 및 동선 생성 결과</h1>
+    <div class="app">
+        <div class="top">
+            <div class="badge">추천 완료</div>
+            <h1>AI가 만든<br>반려견 여행 일정</h1>
+        </div>
 
-    <h3>1. 사용자 입력</h3>
-    <p>여행 기간: {{ travel_period }}</p>
-    <p>일정 스타일: {{ style }}</p>
-    <p>반려견 크기: {{ dog_size }}</p>
-    <p>반려견 성향: {{ dog_personality }}</p>
+        <div class="summary">
+            <div><strong>여행 기간:</strong> {{ travel_period }}</div>
+            <div><strong>일정 스타일:</strong> {{ style }}</div>
+            <div><strong>반려견 크기:</strong> {{ dog_size }}</div>
+            <div><strong>반려견 성향:</strong> {{ dog_personality }}</div>
+        </div>
 
-    <hr>
-
-    <h3>2. 여행 패턴 생성</h3>
-    <p>일정 스타일을 활동 비율로 변환했습니다.</p>
-
-    <ul>
-        {% for category, count in pattern.items() %}
-            <li>{{ category }}: {{ count }}개</li>
-        {% endfor %}
-    </ul>
-
-    <hr>
-
-    <h3>3~7. 장소 추천, 거리 기반 필터링, 동선 생성, 일정 생성</h3>
-
-    {% if schedule %}
-        {% for item in schedule %}
-            <div style="border:1px solid #65a844; padding:15px; margin-bottom:15px;">
-                <h3>{{ item.start_time }} ~ {{ item.end_time }}</h3>
-
-                <p><strong>장소명:</strong> {{ item.place.name }}</p>
-                <p><strong>카테고리:</strong> {{ item.place.category }}</p>
-                <p><strong>주소:</strong> {{ item.place.address }}</p>
-                <p><strong>실내/야외:</strong> {{ item.place.indoor_outdoor }}</p>
-                <p><strong>영업시간:</strong> {{ item.place.open_time }} ~ {{ item.place.close_time }}</p>
-                <p><strong>평균 체류시간:</strong> {{ item.place.avg_stay_minutes }}분</p>
-                <p><strong>평점:</strong> {{ item.place.rating }}</p>
-                <p><strong>추천 이유:</strong> {{ item.reason }}</p>
+        <div class="pattern-box">
+            <div class="pattern-title">AI 여행 패턴</div>
+            <div class="pattern-list">
+                {% for category, count in pattern.items() %}
+                    <div class="pattern-item">{{ category }} {{ count }}개</div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    {% else %}
-        <p>조건에 맞는 일정이 없습니다.</p>
-    {% endif %}
+        </div>
 
-    <br>
-    <a href="/ai-schedule">다시 생성하기</a>
+        {% if schedule %}
+            {% for item in schedule %}
+                <div class="schedule-card">
+                    <div class="time">{{ item.start_time }} ~ {{ item.end_time }}</div>
+
+                    <div class="place-name">{{ item.place.name }}</div>
+
+                    <div class="info">
+                        <div>📍 {{ item.place.address }}</div>
+                        <div>🏷️ {{ item.place.category }}</div>
+                        <div>🐶 반려견 동반 가능</div>
+                        <div>⏱️ 평균 체류시간 {{ item.place.avg_stay_minutes }}분</div>
+                        <div>⭐ 추천 점수 {{ item.place.rating }}</div>
+                    </div>
+
+                    <div class="reason">
+                        {{ item.reason }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                조건에 맞는 추천 일정이 없습니다.<br>
+                다른 조건으로 다시 생성해보세요.
+            </div>
+        {% endif %}
+
+        <a href="/ai-schedule" class="back-btn">다시 생성하기</a>
+    </div>
 </body>
 </html>
