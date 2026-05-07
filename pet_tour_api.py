@@ -54,3 +54,5 @@ if __name__ == "__main__":
 
     for place in places[:3]:
         print(place["title"], place.get("addr1"))
+
+        
