@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 추천 및 동선 생성</title>
+</head>
+<body>
+    <h1>AI 추천 및 동선 생성</h1>
+
+    <form action="/ai-schedule/result" method="post">
+        <h3>1. 사용자 입력</h3>
+
+        <label>여행 기간</label><br>
+        <input type="text" name="travel_period" placeholder="예: 1박 2일, 당일치기" required>
+        <br><br>
+
+        <label>일정 스타일</label><br>
+        <select name="style" required>
+            <option value="널널">널널</option>
+            <option value="보통">보통</option>
+            <option value="빡빡">빡빡</option>
+        </select>
+        <br><br>
+
+        <label>반려견 크기</label><br>
+        <select name="dog_size" required>
+            <option value="소형">소형</option>
+            <option value="중형">중형</option>
+            <option value="대형">대형</option>
+        </select>
+        <br><br>
+
+        <label>반려견 성향</label><br>
+        <select name="dog_personality" required>
+            <option value="활발함">활발함</option>
+            <option value="조용함">조용함</option>
+            <option value="겁많음">겁많음</option>
+        </select>
+        <br><br>
+
+        <button type="submit">AI 일정 생성하기</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 추천 일정 결과</title>
+</head>
+<body>
+    <h1>AI 추천 및 동선 생성 결과</h1>
+
+    <h3>1. 사용자 입력</h3>
+    <p>여행 기간: {{ travel_period }}</p>
+    <p>일정 스타일: {{ style }}</p>
+    <p>반려견 크기: {{ dog_size }}</p>
+    <p>반려견 성향: {{ dog_personality }}</p>
+
+    <hr>
+
+    <h3>2. 여행 패턴 생성</h3>
+    <p>일정 스타일을 활동 비율로 변환했습니다.</p>
+
+    <ul>
+        {% for category, count in pattern.items() %}
+            <li>{{ category }}: {{ count }}개</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h3>3~7. 장소 추천, 거리 기반 필터링, 동선 생성, 일정 생성</h3>
+
+    {% if schedule %}
+        {% for item in schedule %}
+            <div style="border:1px solid #65a844; padding:15px; margin-bottom:15px;">
+                <h3>{{ item.start_time }} ~ {{ item.end_time }}</h3>
+
+                <p><strong>장소명:</strong> {{ item.place.name }}</p>
+                <p><strong>카테고리:</strong> {{ item.place.category }}</p>
+                <p><strong>주소:</strong> {{ item.place.address }}</p>
+                <p><strong>실내/야외:</strong> {{ item.place.indoor_outdoor }}</p>
+                <p><strong>영업시간:</strong> {{ item.place.open_time }} ~ {{ item.place.close_time }}</p>
+                <p><strong>평균 체류시간:</strong> {{ item.place.avg_stay_minutes }}분</p>
+                <p><strong>평점:</strong> {{ item.place.rating }}</p>
+                <p><strong>추천 이유:</strong> {{ item.reason }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>조건에 맞는 일정이 없습니다.</p>
+    {% endif %}
+
+    <br>
+    <a href="/ai-schedule">다시 생성하기</a>
+</body>
+</html>
