@@ -2,43 +2,219 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AI 추천 및 동선 생성</title>
+    <title>PinkSole AI 일정 생성</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #ffffff;
+            padding: 24px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 28px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 26px;
+            line-height: 1.3;
+            margin: 0 0 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .section {
+            margin-bottom: 26px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .option-card {
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 16px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        .option-card input {
+            display: none;
+        }
+
+        .option-card:has(input:checked) {
+            border: 2px solid #4caf50;
+            background: #f0fff3;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            background: white;
+        }
+
+        .notice {
+            background: #f3f8f3;
+            border-radius: 16px;
+            padding: 14px;
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 18px;
+            background: #4caf50;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #43a047;
+        }
+
+        .bottom-space {
+            height: 20px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>AI 추천 및 동선 생성</h1>
+    <div class="app">
+        <div class="header">
+            <div class="badge">AI 여행 플래너</div>
+            <h1>반려견과 함께하는<br>맞춤 여행 일정</h1>
+            <p class="subtitle">
+                여행 기간과 반려견 정보를 선택하면 AI가 장소 추천과 동선을 자동으로 구성합니다.
+            </p>
+        </div>
 
-    <form action="/ai-schedule/result" method="post">
-        <h3>1. 사용자 입력</h3>
+        <form action="/ai-schedule/result" method="post">
 
-        <label>여행 기간</label><br>
-        <input type="text" name="travel_period" placeholder="예: 1박 2일, 당일치기" required>
-        <br><br>
+            <div class="section">
+                <div class="section-title">여행 기간</div>
 
-        <label>일정 스타일</label><br>
-        <select name="style" required>
-            <option value="널널">널널</option>
-            <option value="보통">보통</option>
-            <option value="빡빡">빡빡</option>
-        </select>
-        <br><br>
+                <div class="option-grid">
+                    <label class="option-card">
+                        <input type="radio" name="travel_period" value="당일치기" required>
+                        당일치기
+                    </label>
 
-        <label>반려견 크기</label><br>
-        <select name="dog_size" required>
-            <option value="소형">소형</option>
-            <option value="중형">중형</option>
-            <option value="대형">대형</option>
-        </select>
-        <br><br>
+                    <label class="option-card">
+                        <input type="radio" name="travel_period" value="1박2일">
+                        1박 2일
+                    </label>
 
-        <label>반려견 성향</label><br>
-        <select name="dog_personality" required>
-            <option value="활발함">활발함</option>
-            <option value="조용함">조용함</option>
-            <option value="겁많음">겁많음</option>
-        </select>
-        <br><br>
+                    <label class="option-card">
+                        <input type="radio" name="travel_period" value="2박3일">
+                        2박 3일
+                    </label>
+                </div>
+            </div>
 
-        <button type="submit">AI 일정 생성하기</button>
-    </form>
+            <div class="section">
+                <div class="section-title">일정 스타일</div>
+
+                <div class="option-grid">
+                    <label class="option-card">
+                        <input type="radio" name="style" value="널널" required>
+                        널널
+                    </label>
+
+                    <label class="option-card">
+                        <input type="radio" name="style" value="보통">
+                        보통
+                    </label>
+
+                    <label class="option-card">
+                        <input type="radio" name="style" value="빡빡">
+                        빡빡
+                    </label>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">반려견 크기</div>
+
+                <select name="dog_size" required>
+                    <option value="">선택하세요</option>
+                    <option value="소형">소형견</option>
+                    <option value="중형">중형견</option>
+                    <option value="대형">대형견</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div class="section-title">반려견 성향</div>
+
+                <select name="dog_personality" required>
+                    <option value="">선택하세요</option>
+                    <option value="활발함">활발함</option>
+                    <option value="조용함">조용함</option>
+                    <option value="겁많음">겁많음</option>
+                </select>
+            </div>
+
+            <div class="notice">
+                입력 정보는 여행 패턴 생성, 반려견 조건 필터링, 거리 기반 동선 생성, 체류시간 계산에 활용됩니다.
+            </div>
+
+            <button type="submit" class="submit-btn">AI 일정 생성하기</button>
+
+            <div class="bottom-space"></div>
+        </form>
+    </div>
 </body>
 </html>
