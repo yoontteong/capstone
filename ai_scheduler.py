@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from db import get_connection
 
 
+
 def calculate_distance(lat1, lon1, lat2, lon2):
     """
     두 장소 사이의 거리 계산
