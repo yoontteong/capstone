@@ -18,19 +18,23 @@ def ai_schedule_form():
 def ai_schedule_result():
     travel_period = request.form.get("travel_period")
     style = request.form.get("style")
+    transport_type = request.form.get("transport_type")
     dog_size = request.form.get("dog_size")
     dog_personality = request.form.get("dog_personality")
 
     schedule, pattern = generate_ai_schedule(
         dog_size=dog_size,
         dog_personality=dog_personality,
-        style=style
+        style=style,
+        travel_period=travel_period,
+        transport_type=transport_type
     )
 
     return render_template(
         "ai_schedule_result.html",
         travel_period=travel_period,
         style=style,
+        transport_type=transport_type,
         dog_size=dog_size,
         dog_personality=dog_personality,
         schedule=schedule,
