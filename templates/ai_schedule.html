@@ -124,10 +124,6 @@
         .submit-btn:hover {
             background: #43a047;
         }
-
-        .bottom-space {
-            height: 20px;
-        }
     </style>
 </head>
 
@@ -137,7 +133,7 @@
             <div class="badge">AI 여행 플래너</div>
             <h1>반려견과 함께하는<br>맞춤 여행 일정</h1>
             <p class="subtitle">
-                여행 기간과 반려견 정보를 선택하면 AI가 장소 추천과 동선을 자동으로 구성합니다.
+                여행 기간, 이동수단, 반려견 정보를 선택하면 AI가 장소 추천과 동선을 자동으로 구성합니다.
             </p>
         </div>
 
@@ -186,6 +182,27 @@
             </div>
 
             <div class="section">
+                <div class="section-title">이동수단</div>
+
+                <div class="option-grid">
+                    <label class="option-card">
+                        <input type="radio" name="transport_type" value="뚜벅이" required>
+                        뚜벅이
+                    </label>
+
+                    <label class="option-card">
+                        <input type="radio" name="transport_type" value="대중교통">
+                        대중교통
+                    </label>
+
+                    <label class="option-card">
+                        <input type="radio" name="transport_type" value="자가용">
+                        자가용
+                    </label>
+                </div>
+            </div>
+
+            <div class="section">
                 <div class="section-title">반려견 크기</div>
 
                 <select name="dog_size" required>
@@ -208,12 +225,10 @@
             </div>
 
             <div class="notice">
-                입력 정보는 여행 패턴 생성, 반려견 조건 필터링, 거리 기반 동선 생성, 체류시간 계산에 활용됩니다.
+                입력 정보는 여행 패턴 생성, 반려견 조건 필터링, 이동수단별 거리 제한, 체류시간 계산에 활용됩니다.
             </div>
 
             <button type="submit" class="submit-btn">AI 일정 생성하기</button>
-
-            <div class="bottom-space"></div>
         </form>
     </div>
 </body>
