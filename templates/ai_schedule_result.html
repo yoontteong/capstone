@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -23,10 +21,6 @@
             min-height: 100vh;
             background: #ffffff;
             padding: 24px 20px 40px;
-        }
-
-        .top {
-            margin-bottom: 22px;
         }
 
         .badge {
@@ -90,6 +84,36 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
 
+        .day-label {
+            display: inline-block;
+            background: #eef7ff;
+            color: #1976d2;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .verified {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .friendly {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
         .time {
             font-size: 14px;
             color: #4caf50;
@@ -141,7 +165,7 @@
 
 <body>
     <div class="app">
-        <div class="top">
+        <div>
             <div class="badge">추천 완료</div>
             <h1>AI가 만든<br>반려견 여행 일정</h1>
         </div>
@@ -165,9 +189,28 @@
         {% if schedule %}
             {% for item in schedule %}
                 <div class="schedule-card">
-                    <div class="time">{{ item.start_time }} ~ {{ item.end_time }}</div>
 
-                    <div class="place-name">{{ item.place.name }}</div>
+                    <div class="day-label">
+                        Day {{ item.day }}
+                    </div>
+
+                    {% if item.place.recommendation_type == 'verified' %}
+                        <div class="type-badge verified">
+                            🐶 검증된 반려견 가능 장소
+                        </div>
+                    {% else %}
+                        <div class="type-badge friendly">
+                            🌿 반려견 친화 추천 장소
+                        </div>
+                    {% endif %}
+
+                    <div class="time">
+                        {{ item.start_time }} ~ {{ item.end_time }}
+                    </div>
+
+                    <div class="place-name">
+                        {{ item.place.name }}
+                    </div>
 
                     <div class="info">
                         <div>📍 {{ item.place.address }}</div>
