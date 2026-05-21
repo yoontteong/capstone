@@ -31,24 +31,74 @@ def get_days_by_period(travel_period):
 def get_pattern_by_style(style):
     if style == "널널":
         return {
-            "관광지": 2,
             "맛집": 2,
+            "관광지": 2,
             "문화시설": 1
         }
 
     if style == "빡빡":
         return {
+            "맛집": 3,
             "관광지": 4,
-            "맛집": 2,
             "문화시설": 1,
             "레포츠": 1
         }
 
     return {
+        "맛집": 3,
         "관광지": 3,
-        "맛집": 2,
         "문화시설": 1
     }
+
+
+def adjust_pattern_by_dog_size(pattern, dog_size):
+    pattern = pattern.copy()
+
+    if dog_size == "소형":
+        pattern["문화시설"] = pattern.get("문화시설", 0) + 1
+        pattern["맛집"] = pattern.get("맛집", 0) + 1
+
+        if pattern.get("레포츠", 0) > 0:
+            pattern["레포츠"] -= 1
+
+    elif dog_size == "중형":
+        pattern["관광지"] = pattern.get("관광지", 0) + 1
+
+    elif dog_size == "대형":
+        pattern["관광지"] = pattern.get("관광지", 0) + 1
+        pattern["레포츠"] = pattern.get("레포츠", 0) + 1
+
+        if pattern.get("문화시설", 0) > 0:
+            pattern["문화시설"] -= 1
+
+    return {k: v for k, v in pattern.items() if v > 0}
+
+
+def adjust_pattern_by_dog_personality(pattern, dog_personality):
+    pattern = pattern.copy()
+
+    if dog_personality == "활발함":
+        pattern["관광지"] = pattern.get("관광지", 0) + 1
+        pattern["레포츠"] = pattern.get("레포츠", 0) + 1
+
+    elif dog_personality == "조용함":
+        pattern["문화시설"] = pattern.get("문화시설", 0) + 1
+        pattern["맛집"] = pattern.get("맛집", 0) + 1
+
+        if pattern.get("레포츠", 0) > 0:
+            pattern["레포츠"] -= 1
+
+    elif dog_personality == "겁많음":
+        pattern["문화시설"] = pattern.get("문화시설", 0) + 1
+        pattern["맛집"] = pattern.get("맛집", 0) + 1
+
+        if pattern.get("레포츠", 0) > 0:
+            pattern["레포츠"] -= 1
+
+        if pattern.get("관광지", 0) > 1:
+            pattern["관광지"] -= 1
+
+    return {k: v for k, v in pattern.items() if v > 0}
 
 
 def fetch_places(dog_size):
@@ -159,7 +209,7 @@ def get_move_minutes_by_transport(transport_type):
     return 30
 
 
-def create_day_schedule(route, day, transport_type):
+def create_day_schedule(route, day, transport_type, dog_size, dog_personality):
     schedule = []
 
     current_time = datetime.strptime("10:00", "%H:%M")
@@ -190,7 +240,7 @@ def create_day_schedule(route, day, transport_type):
             "start_time": start_time.strftime("%H:%M"),
             "end_time": finish_time.strftime("%H:%M"),
             "place": place,
-            "reason": make_reason(place)
+            "reason": make_reason(place, dog_size, dog_personality)
         })
 
         current_time = finish_time + timedelta(minutes=move_minutes)
@@ -198,24 +248,47 @@ def create_day_schedule(route, day, transport_type):
     return schedule
 
 
-def make_reason(place):
+def make_reason(place, dog_size=None, dog_personality=None):
     recommendation_type = place.get("recommendation_type", "verified")
+
+    size_reason = ""
+    personality_reason = ""
+
+    if dog_size == "소형":
+        size_reason = "소형견과 함께 이동하기 부담이 적은 장소로 추천되었습니다. "
+    elif dog_size == "중형":
+        size_reason = "중형견의 활동량과 이동 부담을 고려하여 추천되었습니다. "
+    elif dog_size == "대형":
+        size_reason = "대형견이 비교적 넓게 활동할 수 있는 야외 중심 장소로 추천되었습니다. "
+
+    if dog_personality == "활발함":
+        personality_reason = "활동량이 많은 성향을 고려해 움직임이 있는 장소를 우선 반영했습니다. "
+    elif dog_personality == "조용함":
+        personality_reason = "조용한 성향을 고려해 부담이 적은 일정으로 구성했습니다. "
+    elif dog_personality == "겁많음":
+        personality_reason = "낯선 환경에 예민할 수 있어 비교적 안정적인 장소를 우선 반영했습니다. "
 
     if recommendation_type == "verified":
         return (
-            "공공 반려동물 동반여행 데이터에 등록된 검증 장소입니다. "
-            "반려견과 함께 방문하기 적합한 장소로 우선 추천되었습니다."
+            size_reason +
+            personality_reason +
+            "공공 반려동물 동반여행 데이터에 등록된 검증 장소입니다."
         )
 
     return (
+        size_reason +
+        personality_reason +
         "일반 관광 데이터를 기반으로 선택된 반려견 친화 추천 장소입니다. "
-        "야외 활동이나 산책 중심 일정에 적합하며, 방문 전 동반 가능 여부 확인을 권장합니다."
+        "방문 전 동반 가능 여부 확인을 권장합니다."
     )
 
 
 def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transport_type):
     days = get_days_by_period(travel_period)
+
     pattern = get_pattern_by_style(style)
+    pattern = adjust_pattern_by_dog_size(pattern, dog_size)
+    pattern = adjust_pattern_by_dog_personality(pattern, dog_personality)
 
     places = fetch_places(dog_size)
 
@@ -240,7 +313,9 @@ def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transp
         day_schedule = create_day_schedule(
             route,
             day,
-            transport_type
+            transport_type,
+            dog_size,
+            dog_personality
         )
 
         full_schedule.extend(day_schedule)
