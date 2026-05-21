@@ -1,12 +1,43 @@
 from flask import Flask, render_template, request
 from ai_scheduler import generate_ai_schedule
+from checklist import  get_jeju_weather, recommend_checklist
+
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def home():
-    return render_template("ai_schedule.html")
+    return render_template("index.html")
+
+
+@app.route("/checklist")
+def checklist_page():
+    return render_template("checklist.html")
+
+
+@app.route("/checklist-result", methods=["POST"])
+def checklist_result():
+    travel_date = request.form.get("travel_date")
+    stay = request.form.get("stay")
+    outdoor = request.form.get("outdoor")
+
+    weather = get_jeju_weather(travel_date)
+
+    items = recommend_checklist(
+        weather=weather,
+        stay=stay,
+        outdoor=outdoor
+    )
+
+    return render_template(
+        "checklist_result.html",
+        travel_date=travel_date,
+        weather=weather,
+        items=items
+    )
+
+
 
 
 @app.route("/ai-schedule", methods=["GET"])
