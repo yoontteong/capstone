@@ -44,7 +44,7 @@
             background: #f3f8f3;
             border-radius: 18px;
             padding: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-size: 14px;
             line-height: 1.7;
         }
@@ -54,7 +54,7 @@
             border: 1px solid #eee;
             border-radius: 18px;
             padding: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .pattern-title {
@@ -76,23 +76,55 @@
             font-size: 13px;
         }
 
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 8px 0;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 18px;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .tab-btn.active {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .day-content {
+            display: none;
+        }
+
+        .day-content.active {
+            display: block;
+        }
+
+        .day-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 8px 0 14px;
+        }
+
         .schedule-card {
             border: 1px solid #e5e5e5;
             border-radius: 20px;
             padding: 18px;
             margin-bottom: 16px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .day-label {
-            display: inline-block;
-            background: #eef7ff;
-            color: #1976d2;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
         }
 
         .type-badge {
@@ -173,6 +205,7 @@
         <div class="summary">
             <div><strong>여행 기간:</strong> {{ travel_period }}</div>
             <div><strong>일정 스타일:</strong> {{ style }}</div>
+            <div><strong>이동수단:</strong> {{ transport_type }}</div>
             <div><strong>반려견 크기:</strong> {{ dog_size }}</div>
             <div><strong>반려견 성향:</strong> {{ dog_personality }}</div>
         </div>
@@ -187,44 +220,110 @@
         </div>
 
         {% if schedule %}
-            {% for item in schedule %}
-                <div class="schedule-card">
 
-                    <div class="day-label">
-                        Day {{ item.day }}
-                    </div>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showDay(1, this)">Day 1</button>
 
-                    {% if item.place.recommendation_type == 'verified' %}
-                        <div class="type-badge verified">
-                            🐶 검증된 반려견 가능 장소
-                        </div>
-                    {% else %}
-                        <div class="type-badge friendly">
-                            🌿 반려견 친화 추천 장소
+                {% if travel_period == '1박2일' or travel_period == '2박3일' %}
+                    <button class="tab-btn" onclick="showDay(2, this)">Day 2</button>
+                {% endif %}
+
+                {% if travel_period == '2박3일' %}
+                    <button class="tab-btn" onclick="showDay(3, this)">Day 3</button>
+                {% endif %}
+            </div>
+
+            <div id="day-1" class="day-content active">
+                <div class="day-title">Day 1 일정</div>
+
+                {% for item in schedule %}
+                    {% if item.day == 1 %}
+                        <div class="schedule-card">
+                            {% if item.place.recommendation_type == 'verified' %}
+                                <div class="type-badge verified">🐶 검증된 반려견 가능 장소</div>
+                            {% else %}
+                                <div class="type-badge friendly">🌿 반려견 친화 추천 장소</div>
+                            {% endif %}
+
+                            <div class="time">{{ item.start_time }} ~ {{ item.end_time }}</div>
+                            <div class="place-name">{{ item.place.name }}</div>
+
+                            <div class="info">
+                                <div>📍 {{ item.place.address }}</div>
+                                <div>🏷️ {{ item.place.category }}</div>
+                                <div>🐶 반려견 동반 가능</div>
+                                <div>⏱️ 평균 체류시간 {{ item.place.avg_stay_minutes }}분</div>
+                                <div>⭐ 추천 점수 {{ item.place.rating }}</div>
+                            </div>
+
+                            <div class="reason">{{ item.reason }}</div>
                         </div>
                     {% endif %}
+                {% endfor %}
+            </div>
 
-                    <div class="time">
-                        {{ item.start_time }} ~ {{ item.end_time }}
-                    </div>
+            {% if travel_period == '1박2일' or travel_period == '2박3일' %}
+                <div id="day-2" class="day-content">
+                    <div class="day-title">Day 2 일정</div>
 
-                    <div class="place-name">
-                        {{ item.place.name }}
-                    </div>
+                    {% for item in schedule %}
+                        {% if item.day == 2 %}
+                            <div class="schedule-card">
+                                {% if item.place.recommendation_type == 'verified' %}
+                                    <div class="type-badge verified">🐶 검증된 반려견 가능 장소</div>
+                                {% else %}
+                                    <div class="type-badge friendly">🌿 반려견 친화 추천 장소</div>
+                                {% endif %}
 
-                    <div class="info">
-                        <div>📍 {{ item.place.address }}</div>
-                        <div>🏷️ {{ item.place.category }}</div>
-                        <div>🐶 반려견 동반 가능</div>
-                        <div>⏱️ 평균 체류시간 {{ item.place.avg_stay_minutes }}분</div>
-                        <div>⭐ 추천 점수 {{ item.place.rating }}</div>
-                    </div>
+                                <div class="time">{{ item.start_time }} ~ {{ item.end_time }}</div>
+                                <div class="place-name">{{ item.place.name }}</div>
 
-                    <div class="reason">
-                        {{ item.reason }}
-                    </div>
+                                <div class="info">
+                                    <div>📍 {{ item.place.address }}</div>
+                                    <div>🏷️ {{ item.place.category }}</div>
+                                    <div>🐶 반려견 동반 가능</div>
+                                    <div>⏱️ 평균 체류시간 {{ item.place.avg_stay_minutes }}분</div>
+                                    <div>⭐ 추천 점수 {{ item.place.rating }}</div>
+                                </div>
+
+                                <div class="reason">{{ item.reason }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            {% endif %}
+
+            {% if travel_period == '2박3일' %}
+                <div id="day-3" class="day-content">
+                    <div class="day-title">Day 3 일정</div>
+
+                    {% for item in schedule %}
+                        {% if item.day == 3 %}
+                            <div class="schedule-card">
+                                {% if item.place.recommendation_type == 'verified' %}
+                                    <div class="type-badge verified">🐶 검증된 반려견 가능 장소</div>
+                                {% else %}
+                                    <div class="type-badge friendly">🌿 반려견 친화 추천 장소</div>
+                                {% endif %}
+
+                                <div class="time">{{ item.start_time }} ~ {{ item.end_time }}</div>
+                                <div class="place-name">{{ item.place.name }}</div>
+
+                                <div class="info">
+                                    <div>📍 {{ item.place.address }}</div>
+                                    <div>🏷️ {{ item.place.category }}</div>
+                                    <div>🐶 반려견 동반 가능</div>
+                                    <div>⏱️ 평균 체류시간 {{ item.place.avg_stay_minutes }}분</div>
+                                    <div>⭐ 추천 점수 {{ item.place.rating }}</div>
+                                </div>
+
+                                <div class="reason">{{ item.reason }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
         {% else %}
             <div class="empty">
                 조건에 맞는 추천 일정이 없습니다.<br>
@@ -234,5 +333,31 @@
 
         <a href="/ai-schedule" class="back-btn">다시 생성하기</a>
     </div>
+
+    <script>
+        function showDay(day, button) {
+            const contents = document.querySelectorAll(".day-content");
+            contents.forEach(content => {
+                content.classList.remove("active");
+            });
+
+            const buttons = document.querySelectorAll(".tab-btn");
+            buttons.forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            const target = document.getElementById("day-" + day);
+            if (target) {
+                target.classList.add("active");
+            }
+
+            button.classList.add("active");
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    </script>
 </body>
 </html>
