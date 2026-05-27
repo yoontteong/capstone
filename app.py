@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 from ai_scheduler import generate_ai_schedule
-from checklist import  get_jeju_weather, recommend_checklist
-
+from checklist import get_jeju_weather, recommend_checklist
+from schedule_editor import schedule_editor, normalize_schedule
 
 app = Flask(__name__)
+app.secret_key = "pinksole_secret_key"
+
+app.register_blueprint(schedule_editor)
 
 
 @app.route("/")
@@ -38,8 +41,6 @@ def checklist_result():
     )
 
 
-
-
 @app.route("/ai-schedule", methods=["GET"])
 def ai_schedule_form():
     return render_template("ai_schedule.html")
@@ -60,6 +61,18 @@ def ai_schedule_result():
         travel_period=travel_period,
         transport_type=transport_type
     )
+
+    schedule = normalize_schedule(schedule)
+
+    session["schedule"] = schedule
+    session["pattern"] = pattern
+    session["travel_info"] = {
+        "travel_period": travel_period,
+        "style": style,
+        "transport_type": transport_type,
+        "dog_size": dog_size,
+        "dog_personality": dog_personality
+    }
 
     return render_template(
         "ai_schedule_result.html",
