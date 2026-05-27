@@ -162,6 +162,52 @@ def select_places_by_pattern(places, pattern, used_place_ids):
     return selected
 
 
+def get_region(place):
+    address = place.get("address") or ""
+
+    if "애월" in address:
+        return "애월"
+    elif "한림" in address or "협재" in address:
+        return "한림/협재"
+    elif "구좌" in address or "세화" in address or "월정" in address:
+        return "구좌/월정"
+    elif "성산" in address or "표선" in address:
+        return "성산/표선"
+    elif "조천" in address or "함덕" in address:
+        return "조천/함덕"
+    elif "서귀포시" in address:
+        return "서귀포"
+    elif "제주시" in address:
+        return "제주시"
+
+    return "기타"
+
+
+def filter_by_region_cluster(places, transport_type):
+    if not places:
+        return []
+
+    if transport_type != "뚜벅이":
+        return places
+
+    regions = {}
+
+    for place in places:
+        region = get_region(place)
+
+        if region not in regions:
+            regions[region] = []
+
+        regions[region].append(place)
+
+    best_region_places = max(
+        regions.values(),
+        key=len
+    )
+
+    return best_region_places
+
+
 def sort_by_distance(places):
     if not places:
         return []
@@ -300,6 +346,14 @@ def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transp
             places,
             pattern,
             used_place_ids
+        )
+
+        if not selected_places:
+            continue
+
+        selected_places = filter_by_region_cluster(
+            selected_places,
+            transport_type
         )
 
         if not selected_places:
