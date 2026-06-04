@@ -116,13 +116,8 @@
             border-color: #4caf50;
         }
 
-        .day-content {
-            display: none;
-        }
-
-        .day-content.active {
-            display: block;
-        }
+        .day-content { display: none; }
+        .day-content.active { display: block; }
 
         .day-title {
             font-size: 18px;
@@ -380,9 +375,6 @@
         <input id="add-address" placeholder="주소">
         <input id="add-category" placeholder="카테고리 예: 맛집">
         <input id="add-stay" placeholder="체류시간 예: 60">
-        <input id="add-rating" placeholder="추천 점수 예: 4.0">
-        <input id="add-latitude" placeholder="위도 예: 33.3617">
-        <input id="add-longitude" placeholder="경도 예: 126.5292">
         <textarea id="add-reason" placeholder="추천 이유"></textarea>
 
         <button class="add-btn" onclick="addSchedule()">일정 추가</button>
@@ -537,7 +529,6 @@
         const address = infoList[0].innerText.replace("📍 ", "");
         const category = infoList[1].innerText.replace("🏷️ ", "");
         const stay = infoList[3].innerText.replace("⏱️ 평균 체류시간 ", "").replace("분", "");
-        const rating = infoList[4].innerText.replace("⭐ 추천 점수 ", "");
         const reason = card.querySelector(".reason").innerText;
 
         card.querySelector(".time").innerHTML = `
@@ -555,7 +546,6 @@
             <div>🏷️ <input class="edit-category" value="${category}"></div>
             <div>🐶 반려견 동반 가능</div>
             <div>⏱️ 평균 체류시간 <input class="edit-stay inline-input" value="${stay}">분</div>
-            <div>⭐ 추천 점수 <input class="edit-rating inline-input" value="${rating}"></div>
         `;
 
         card.querySelector(".reason").innerHTML = `
@@ -587,7 +577,6 @@
                 address: card.querySelector(".edit-address").value,
                 category: card.querySelector(".edit-category").value,
                 avg_stay_minutes: card.querySelector(".edit-stay").value,
-                rating: card.querySelector(".edit-rating").value,
                 reason: card.querySelector(".edit-reason").value
             })
         })
@@ -649,10 +638,7 @@
                 address: document.getElementById("add-address").value,
                 category: document.getElementById("add-category").value,
                 avg_stay_minutes: document.getElementById("add-stay").value,
-                rating: document.getElementById("add-rating").value,
-                reason: document.getElementById("add-reason").value,
-                latitude: document.getElementById("add-latitude").value,
-                longitude: document.getElementById("add-longitude").value
+                reason: document.getElementById("add-reason").value
             })
         })
         .then(response => response.json())
