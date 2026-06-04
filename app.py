@@ -86,5 +86,11 @@ def ai_schedule_result():
     )
 
 
+#기록측정추가
+@app.route("/activity")
+def activity():
+    return render_template("activity.html")
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')
