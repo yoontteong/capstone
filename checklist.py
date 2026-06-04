@@ -4,6 +4,11 @@ import requests
 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
+# 환경변수에 API 키를 안 넣었을 때 임시로 사용할 키
+# 나중에는 보안을 위해 환경변수 방식으로 바꾸는 것이 좋음
+if not OPENWEATHER_API_KEY:
+    OPENWEATHER_API_KEY = "0119dea3d3052675c2499ca3e9d47db7"
+
 
 def get_jeju_weather(travel_date):
     if not OPENWEATHER_API_KEY:
@@ -12,15 +17,18 @@ def get_jeju_weather(travel_date):
     url = "https://api.openweathermap.org/data/2.5/forecast"
 
     params = {
-    "q": "Jeju,KR",
-    "appid": "0119dea3d3052675c2499ca3e9d47db7",
-    "units": "metric",
-    "lang": "kr"
+        "q": "Jeju,KR",
+        "appid": OPENWEATHER_API_KEY,
+        "units": "metric",
+        "lang": "kr"
     }
 
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=5)
         data = response.json()
+
+        print("날씨 API 상태코드:", response.status_code)
+        print("날씨 API 메시지:", data.get("message"))
 
         if response.status_code != 200:
             return "날씨 정보 없음"
@@ -28,8 +36,9 @@ def get_jeju_weather(travel_date):
         selected_weather = None
         selected_temp = None
 
-        for item in data["list"]:
-            forecast_date = item["dt_txt"].split(" ")[0]
+        # OpenWeather forecast는 보통 3시간 단위 예보를 list에 담아서 줌
+        for item in data.get("list", []):
+            forecast_date = item.get("dt_txt", "").split(" ")[0]
 
             if forecast_date == travel_date:
                 selected_weather = item["weather"][0]["main"]
@@ -53,7 +62,8 @@ def get_jeju_weather(travel_date):
 
         return "보통"
 
-    except Exception:
+    except Exception as e:
+        print("날씨 API 오류:", e)
         return "날씨 정보 없음"
 
 
@@ -104,4 +114,11 @@ def recommend_checklist(weather, stay, outdoor):
             "보온용품"
         ]
 
+    elif weather == "날씨 정보 없음":
+        items += [
+            "출발 전 날씨 확인",
+            "우산 또는 방수용품"
+        ]
+
+    # 중복 제거
     return list(dict.fromkeys(items))
