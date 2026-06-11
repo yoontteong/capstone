@@ -109,7 +109,10 @@ def fetch_places(dog_size):
         SELECT *
         FROM places
         WHERE dog_allowed = 1
+          AND category <> '숙소'
           AND (dog_size_allowed = %s OR dog_size_allowed = '전체')
+          AND latitude IS NOT NULL
+          AND longitude IS NOT NULL
         ORDER BY 
             CASE 
                 WHEN recommendation_type = 'verified' THEN 0
@@ -125,6 +128,30 @@ def fetch_places(dog_size):
     conn.close()
 
     return places
+
+
+def fetch_accommodations(dog_size):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    sql = """
+        SELECT *
+        FROM places
+        WHERE category = '숙소'
+          AND dog_allowed = 1
+          AND (dog_size_allowed = %s OR dog_size_allowed = '전체')
+          AND latitude IS NOT NULL
+          AND longitude IS NOT NULL
+        ORDER BY rating DESC
+    """
+
+    cursor.execute(sql, (dog_size,))
+    accommodations = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return accommodations
 
 
 def select_places_by_pattern(places, pattern, used_place_ids):
@@ -234,6 +261,32 @@ def sort_by_distance(places):
     return route
 
 
+def find_nearest_accommodation(last_place, accommodations):
+    if not last_place or not accommodations:
+        return None
+
+    if last_place.get("latitude") is None or last_place.get("longitude") is None:
+        return None
+
+    valid_accommodations = [
+        acc for acc in accommodations
+        if acc.get("latitude") is not None and acc.get("longitude") is not None
+    ]
+
+    if not valid_accommodations:
+        return None
+
+    return min(
+        valid_accommodations,
+        key=lambda acc: calculate_distance(
+            last_place["latitude"],
+            last_place["longitude"],
+            acc["latitude"],
+            acc["longitude"]
+        )
+    )
+
+
 def is_place_open(place, current_time):
     try:
         open_time = datetime.strptime(str(place["open_time"]), "%H:%M:%S").time()
@@ -296,6 +349,10 @@ def create_day_schedule(route, day, transport_type, dog_size, dog_personality):
 
 def make_reason(place, dog_size=None, dog_personality=None):
     recommendation_type = place.get("recommendation_type", "verified")
+    category = place.get("category", "")
+
+    if category == "숙소":
+        return "반려견 동반 가능 숙소이며, 여행 동선과 가까운 위치를 기준으로 추천되었습니다."
 
     size_reason = ""
     personality_reason = ""
@@ -329,6 +386,64 @@ def make_reason(place, dog_size=None, dog_personality=None):
     )
 
 
+def add_accommodation_to_schedule(full_schedule, accommodations, days, transport_type):
+    if days <= 1:
+        return full_schedule
+
+    if not full_schedule or not accommodations:
+        return full_schedule
+
+    first_day_items = [
+        item for item in full_schedule
+        if item["day"] == 1 and item["place"]["category"] != "숙소"
+    ]
+
+    if not first_day_items:
+        return full_schedule
+
+    first_day_last_place = first_day_items[-1]["place"]
+
+    accommodation = find_nearest_accommodation(
+        first_day_last_place,
+        accommodations
+    )
+
+    if not accommodation:
+        return full_schedule
+
+    move_minutes = get_move_minutes_by_transport(transport_type)
+
+    for day in range(1, days):
+        day_items = [
+            item for item in full_schedule
+            if item["day"] == day and item["place"]["category"] != "숙소"
+        ]
+
+        if not day_items:
+            continue
+
+        last_item = day_items[-1]
+
+        try:
+            start_time = datetime.strptime(last_item["end_time"], "%H:%M")
+            start_time = start_time + timedelta(minutes=move_minutes)
+            start_time_text = start_time.strftime("%H:%M")
+        except Exception:
+            start_time_text = ""
+
+        full_schedule.append({
+            "day": day,
+            "start_time": start_time_text,
+            "end_time": "",
+            "place": accommodation,
+            "reason": "여행 전체 동선을 고려해 선택된 반려견 동반 가능 숙소입니다."
+        })
+
+    full_schedule.sort(key=lambda x: (x["day"], x["start_time"] or "99:99"))
+
+    return full_schedule
+
+
 def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transport_type):
     days = get_days_by_period(travel_period)
 
@@ -337,6 +452,7 @@ def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transp
     pattern = adjust_pattern_by_dog_personality(pattern, dog_personality)
 
     places = fetch_places(dog_size)
+    accommodations = fetch_accommodations(dog_size)
 
     full_schedule = []
     used_place_ids = set()
@@ -373,5 +489,12 @@ def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transp
         )
 
         full_schedule.extend(day_schedule)
+
+    full_schedule = add_accommodation_to_schedule(
+        full_schedule,
+        accommodations,
+        days,
+        transport_type
+    )
 
     return full_schedule, pattern
