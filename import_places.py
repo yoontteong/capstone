@@ -136,7 +136,7 @@ def insert_places():
     # 14 문화시설
     # 28 레포츠
 
-    content_types = [12, 14, 28, 39]
+    content_types = [12, 14, 28, 32, 39]
 
     for content_type in content_types:
 

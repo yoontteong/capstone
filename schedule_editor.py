@@ -1,5 +1,8 @@
 from flask import Blueprint, session, request, jsonify, render_template
 from datetime import date, datetime, time, timedelta
+from db import get_connection
+from config import KAKAO_REST_API_KEY
+import requests
 import uuid
 
 schedule_editor = Blueprint("schedule_editor", __name__)
@@ -37,13 +40,83 @@ def normalize_schedule(schedule):
     return normalized
 
 
-# 주소 기반 좌표 변환 자리
-# 지금은 시간이 없으니 제주 중심 기본 좌표 사용
-def get_coordinates_by_address(address):
-    default_latitude = 33.3617
-    default_longitude = 126.5292
+# 장소명으로 장소 정보 조회
+# 1) DB에 같은 장소가 있으면 DB 정보 사용
+# 2) DB에 없으면 카카오 로컬 API로 제주 장소 검색
+def get_place_info(name):
+    if not name:
+        return None
 
-    return default_latitude, default_longitude
+    # 1. DB에서 먼저 검색
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute(
+        """
+        SELECT name, address, latitude, longitude
+        FROM places
+        WHERE name = %s
+          AND latitude IS NOT NULL
+          AND longitude IS NOT NULL
+        LIMIT 1
+        """,
+        (name,)
+    )
+
+    place = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if place:
+        return {
+            "name": place["name"],
+            "address": place.get("address") or "",
+            "latitude": float(place["latitude"]),
+            "longitude": float(place["longitude"])
+        }
+
+    # 2. DB에 없으면 카카오 장소 검색 API 사용
+    if not KAKAO_REST_API_KEY:
+        return None
+
+    try:
+        response = requests.get(
+            "https://dapi.kakao.com/v2/local/search/keyword.json",
+            headers={
+                "Authorization": f"KakaoAK {KAKAO_REST_API_KEY}"
+            },
+            params={
+                "query": f"제주 {name}"
+            },
+            timeout=5
+        )
+
+        print("카카오 상태코드:", response.status_code)
+        print("카카오 응답:", response.text)
+
+        response.raise_for_status()
+        documents = response.json().get("documents", [])
+
+        if not documents:
+            return None
+
+        # 제주 주소가 포함된 결과를 우선 사용
+        selected = next(
+            (doc for doc in documents
+             if "제주" in (doc.get("road_address_name") or doc.get("address_name") or "")),
+            documents[0]
+        )
+
+        return {
+            "name": selected.get("place_name") or name,
+            "address": selected.get("road_address_name") or selected.get("address_name") or "",
+            "latitude": float(selected["y"]),
+            "longitude": float(selected["x"])
+        }
+
+    except Exception as e:
+        print("카카오 장소 검색 오류:", e)
+        return None
 
 
 # 일정 수정
@@ -60,18 +133,24 @@ def update_schedule():
             item["start_time"] = data.get("start_time")
             item["end_time"] = data.get("end_time")
 
-            item["place"]["name"] = data.get("name")
-            item["place"]["address"] = data.get("address")
+            name = data.get("name")
+            place_info = get_place_info(name)
+
+            if not place_info:
+                return jsonify({
+                    "success": False,
+                    "message": "장소를 찾지 못했습니다. 장소명을 조금 더 정확하게 입력해주세요."
+                }), 400
+
+            item["place"]["name"] = place_info["name"]
+            item["place"]["address"] = place_info["address"]
             item["place"]["category"] = data.get("category")
             item["place"]["avg_stay_minutes"] = data.get("avg_stay_minutes")
 
             # 사용자가 추천점수 입력 안 하게 할 것이므로 기본값 유지
             item["place"]["rating"] = item["place"].get("rating", 4.0)
-
-            # 주소가 바뀌었을 수 있으니 기본 좌표 재설정
-            latitude, longitude = get_coordinates_by_address(data.get("address"))
-            item["place"]["latitude"] = latitude
-            item["place"]["longitude"] = longitude
+            item["place"]["latitude"] = place_info["latitude"]
+            item["place"]["longitude"] = place_info["longitude"]
 
             item["reason"] = data.get("reason")
             break
@@ -102,8 +181,14 @@ def add_schedule():
 
     schedule = session.get("schedule", [])
 
-    address = data.get("address")
-    latitude, longitude = get_coordinates_by_address(address)
+    name = data.get("name")
+    place_info = get_place_info(name)
+
+    if not place_info:
+        return jsonify({
+            "success": False,
+            "message": "장소를 찾지 못했습니다. 장소명을 조금 더 정확하게 입력해주세요."
+        }), 400
 
     new_item = {
         "uid": str(uuid.uuid4()),
@@ -112,11 +197,11 @@ def add_schedule():
         "end_time": data.get("end_time"),
         "place": {
             "id": 0,
-            "name": data.get("name"),
-            "address": address,
+            "name": place_info["name"],
+            "address": place_info["address"],
             "category": data.get("category"),
-            "latitude": latitude,
-            "longitude": longitude,
+            "latitude": place_info["latitude"],
+            "longitude": place_info["longitude"],
             "dog_allowed": 1,
             "dog_size_allowed": "전체",
             "indoor_outdoor": "정보없음",
