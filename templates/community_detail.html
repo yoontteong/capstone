@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ post.title }}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 24px 20px 40px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .meta {
+            color: #777;
+            font-size: 13px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content {
+            padding: 24px 0;
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            min-height: 200px;
+        }
+
+        .button-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .list-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #fff3cd;
+            color: #8a6d00;
+        }
+
+        .delete-btn {
+            background: #f8d7da;
+            color: #b00020;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="title">
+        {{ post.title }}
+    </div>
+
+    <div class="meta">
+        {{ post.author }}
+        ·
+        {{ post.created_at }}
+    </div>
+
+    <div class="content">
+        {{ post.content }}
+    </div>
+
+    <div class="button-box">
+
+        <button
+            class="btn list-btn"
+            onclick="location.href='/community'">
+            목록
+        </button>
+
+        <button
+            class="btn edit-btn"
+            onclick="location.href='/community/{{ post.id }}/edit'">
+            수정
+        </button>
+
+        <button
+            class="btn delete-btn"
+            onclick="deletePost()">
+            삭제
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+    function deletePost() {
+
+        if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch(
+            "/community/{{ post.id }}/delete",
+            {
+                method: "POST"
+            }
+        )
+        .then(response => {
+
+            if (response.ok) {
+                window.location.href = "/community";
+            } else {
+                alert("게시글 삭제에 실패했습니다.");
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+            alert("게시글 삭제 중 오류가 발생했습니다.");
+        });
+    }
+</script>
+
+</body>
+</html>

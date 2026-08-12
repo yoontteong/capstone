@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>반려견 여행 커뮤니티</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 24px 20px 40px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .write-btn {
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 14px;
+            background: #4caf50;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .post-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .post-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .post-info {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px 10px;
+            color: #777;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 24px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>🐶 여행 커뮤니티</h1>
+
+    <div class="subtitle">
+        반려견과 함께한 여행 정보와 이야기를 공유해보세요.
+    </div>
+
+    <button
+        class="write-btn"
+        onclick="location.href='/community/write'">
+        글쓰기
+    </button>
+
+    {% if posts %}
+
+        {% for post in posts %}
+
+            <div
+                class="post-card"
+                onclick="location.href='/community/{{ post.id }}'">
+
+                <div class="post-title">
+                    {{ post.title }}
+                </div>
+
+                <div class="post-info">
+                    {{ post.author }}
+                    ·
+                    {{ post.created_at }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            아직 작성된 게시글이 없습니다.<br>
+            첫 번째 글을 작성해보세요!
+        </div>
+
+    {% endif %}
+
+    <a href="/" class="back-btn">
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>
