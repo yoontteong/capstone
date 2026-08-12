@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, session
 from ai_scheduler import generate_ai_schedule
 from checklist import get_jeju_weather, recommend_checklist
 from schedule_editor import schedule_editor, normalize_schedule
+from community import community
 
 app = Flask(__name__)
 app.secret_key = "pinksole_secret_key"
 
 app.register_blueprint(schedule_editor)
+app.register_blueprint(community)
 
 
 @app.route("/")
