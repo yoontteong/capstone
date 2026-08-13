@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>장소 후기 작성</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 25px 20px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 160px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+
+            border: none;
+            border-radius: 14px;
+
+            background: #4caf50;
+            color: white;
+
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            text-decoration: none;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>📍 장소 후기 작성</h1>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        <label>장소</label>
+
+        <select name="place_id" required>
+
+            <option value="">
+                장소를 선택해주세요
+            </option>
+
+            {% for place in places %}
+
+                <option value="{{ place.id }}">
+                    {{ place.name }} ({{ place.category }})
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>작성자</label>
+
+        <input
+            type="text"
+            name="author"
+            placeholder="닉네임"
+            required
+        >
+
+
+        <label>별점</label>
+
+        <select name="rating" required>
+
+            <option value="">
+                별점을 선택해주세요
+            </option>
+
+            <option value="5">⭐⭐⭐⭐⭐ 5점</option>
+            <option value="4">⭐⭐⭐⭐ 4점</option>
+            <option value="3">⭐⭐⭐ 3점</option>
+            <option value="2">⭐⭐ 2점</option>
+            <option value="1">⭐ 1점</option>
+
+        </select>
+
+
+        <label>후기</label>
+
+        <textarea
+            name="content"
+            placeholder="반려견과 방문한 경험을 알려주세요."
+            required
+        ></textarea>
+
+
+        <label>사진</label>
+
+        <input
+            type="file"
+            name="image"
+            accept="image/*"
+        >
+
+
+        <button
+            type="submit"
+            class="submit-btn"
+        >
+            후기 등록
+        </button>
+
+    </form>
+
+    <a href="/reviews" class="back">
+        취소
+    </a>
+
+</div>
+
+</body>
+</html>

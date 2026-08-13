@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>추천 준비물</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f8fa;
+            padding: 60px;
+        }
+
+        .box {
+            width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        li {
+            margin: 12px 0;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin-left: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .delete {
+            background: #ffdddd;
+        }
+
+        .add-btn {
+            background: #333;
+            color: white;
+        }
+
+        .nav-btn {
+            margin-top: 20px;
+            background: #777;
+            color: white;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 70%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h1>추천 준비물</h1>
+
+    <p><strong>여행지:</strong> 제주도</p>
+    <p><strong>날짜:</strong> {{ travel_date }}</p>
+    <p><strong>예상 날씨:</strong> {{ weather }}</p>
+
+    <hr>
+
+    <ul id="checklist">
+        {% for item in items %}
+        <li>
+            <label>
+                <input type="checkbox">
+                <span>{{ item }}</span>
+            </label>
+            <button class="delete" onclick="deleteItem(this)">삭제</button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <input type="text" id="newItem" placeholder="준비물 추가">
+    <button class="add-btn" onclick="addItem()">추가</button>
+
+    <br>
+
+    <button class="nav-btn" onclick="location.href='/checklist'">다시 추천받기</button>
+    <button class="nav-btn" onclick="location.href='/'">메인으로</button>
+</div>
+
+<script>
+    function addItem() {
+        const input = document.getElementById("newItem");
+        const value = input.value.trim();
+
+        if (value === "") {
+            return;
+        }
+
+        const ul = document.getElementById("checklist");
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <label>
+                <input type="checkbox">
+                <span>${value}</span>
+            </label>
+            <button class="delete" onclick="deleteItem(this)">삭제</button>
+        `;
+
+        ul.appendChild(li);
+        input.value = "";
+    }
+
+    function deleteItem(button) {
+        button.parentElement.remove();
+    }
+</script>
+
+</body>
+</html>

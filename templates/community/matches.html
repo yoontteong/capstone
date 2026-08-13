@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>여행 메이트</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+        }
+
+        .app {
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 25px 20px 40px;
+        }
+
+        .write-btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+
+            background: #4caf50;
+            color: white;
+
+            padding: 14px;
+            border-radius: 14px;
+            margin: 20px 0;
+
+            font-weight: bold;
+        }
+
+        .match-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+
+            background: #e8f5e9;
+            color: #2e7d32;
+
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 19px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .info {
+            margin: 6px 0;
+            font-size: 14px;
+        }
+
+        .content {
+            margin-top: 15px;
+            padding: 13px;
+
+            background: #f7f7f7;
+            border-radius: 12px;
+
+            line-height: 1.6;
+        }
+
+        .author {
+            margin-top: 12px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+            padding: 50px 0;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: #666;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>🐾 여행 메이트</h1>
+
+    <a href="/matches/write" class="write-btn">
+        메이트 모집하기
+    </a>
+
+
+    {% if matches %}
+
+        {% for match in matches %}
+
+            <div
+                class="match-card"
+                onclick="location.href='/matches/{{ match.id }}'"
+                style="cursor: pointer;"
+            >
+
+                <span class="status">
+                    {{ match.status }}
+                </span>
+
+                <div class="title">
+                    {{ match.title }}
+                </div>
+
+                <div class="info">
+                    📅 {{ match.travel_date }}
+                </div>
+
+                <div class="info">
+                    📍 {{ match.region }}
+                </div>
+
+                <div class="info">
+                    🐶 {{ match.dog_name }}
+                    · {{ match.dog_size }}
+                    · {{ match.dog_personality }}
+                </div>
+
+                <div class="info">
+                    👥 총 모집 {{ match.max_people }}명
+                </div>
+
+                <div class="content">
+                    {{ match.content }}
+                </div>
+
+                <div class="author">
+                    작성자 {{ match.author }}
+                    · {{ match.created_at }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            아직 여행 메이트 모집글이 없습니다.
+        </div>
+
+    {% endif %}
+
+
+    <a href="/community" class="back">
+        커뮤니티로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>

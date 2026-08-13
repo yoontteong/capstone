@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>장소 후기</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+        }
+
+        .app {
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 25px 20px;
+        }
+
+        .write-btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+
+            padding: 14px;
+            margin: 20px 0;
+
+            background: #4caf50;
+            color: white;
+
+            border-radius: 14px;
+            font-weight: bold;
+        }
+
+        .review {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .place {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .rating {
+            margin: 7px 0;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .content {
+            margin-top: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .review-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+
+            border-radius: 14px;
+            margin-top: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+            padding: 50px 0;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            text-decoration: none;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>🐾 반려견 동반 장소 후기</h1>
+
+    <a href="/reviews/write" class="write-btn">
+        후기 작성하기
+    </a>
+
+
+    {% if reviews %}
+
+        {% for review in reviews %}
+
+            <div class="review">
+
+                <div class="place">
+                    📍 {{ review.place_name }}
+                </div>
+
+                <div class="rating">
+                    ⭐ {{ review.rating }} / 5
+                </div>
+
+                <div class="info">
+                    {{ review.author }}
+                    ·
+                    {{ review.created_at }}
+                </div>
+
+                <div class="content">
+                    {{ review.content }}
+                </div>
+
+                {% if review.image_path %}
+
+                    <img
+                        class="review-image"
+                        src="{{ url_for(
+                            'static',
+                            filename=review.image_path
+                        ) }}"
+                        alt="후기 사진"
+                    >
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            아직 등록된 후기가 없습니다.
+        </div>
+
+    {% endif %}
+
+
+    <a href="/community" class="back">
+        커뮤니티로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>

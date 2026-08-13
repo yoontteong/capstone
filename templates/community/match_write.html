@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>여행 메이트 모집</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 25px 20px 40px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 25px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 130px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+
+            border: none;
+            border-radius: 14px;
+
+            background: #4caf50;
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #666;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>🐾 여행 메이트 모집</h1>
+
+    <div class="description">
+        제주에서 반려견과 함께할 여행 메이트를 찾아보세요.
+    </div>
+
+    <form method="POST">
+
+        <label>작성자</label>
+        <input
+            type="text"
+            name="author"
+            placeholder="닉네임"
+            required
+        >
+
+
+        <label>제목</label>
+        <input
+            type="text"
+            name="title"
+            placeholder="예: 애월 같이 산책하실 분!"
+            required
+        >
+
+
+        <label>여행 날짜</label>
+        <input
+            type="date"
+            name="travel_date"
+            required
+        >
+
+
+        <label>지역</label>
+        <select name="region" required>
+
+            <option value="">
+                지역을 선택해주세요
+            </option>
+
+            <option value="제주시">제주시</option>
+            <option value="애월">애월</option>
+            <option value="한림">한림</option>
+            <option value="조천">조천</option>
+            <option value="구좌">구좌</option>
+            <option value="성산">성산</option>
+            <option value="서귀포">서귀포</option>
+            <option value="중문">중문</option>
+
+        </select>
+
+
+        <label>반려견 이름</label>
+        <input
+            type="text"
+            name="dog_name"
+            placeholder="예: 보리"
+            required
+        >
+
+
+        <label>반려견 크기</label>
+        <select name="dog_size" required>
+
+            <option value="">
+                크기를 선택해주세요
+            </option>
+
+            <option value="소형견">소형견</option>
+            <option value="중형견">중형견</option>
+            <option value="대형견">대형견</option>
+
+        </select>
+
+
+        <label>반려견 성향</label>
+        <select name="dog_personality" required>
+
+            <option value="">
+                성향을 선택해주세요
+            </option>
+
+            <option value="활발함">활발함</option>
+            <option value="온순함">온순함</option>
+            <option value="낯가림">낯가림</option>
+            <option value="사교적">사교적</option>
+
+        </select>
+
+
+        <label>총 모집 인원</label>
+        <input
+            type="number"
+            name="max_people"
+            value="2"
+            min="2"
+            max="10"
+            required
+        >
+
+
+        <label>내용</label>
+        <textarea
+            name="content"
+            placeholder="어떤 여행을 함께하고 싶은지 적어주세요."
+            required
+        ></textarea>
+
+
+        <button
+            type="submit"
+            class="submit-btn">
+            모집글 등록
+        </button>
+
+    </form>
+
+    <a href="/matches" class="back">
+        취소
+    </a>
+
+</div>
+
+</body>
+</html>

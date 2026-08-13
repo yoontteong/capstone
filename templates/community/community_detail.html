@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ post.title }}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 24px 20px 40px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .meta {
+            color: #777;
+            font-size: 13px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content {
+            padding: 24px 0;
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            min-height: 200px;
+        }
+
+        .button-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .list-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #fff3cd;
+            color: #8a6d00;
+        }
+
+        .delete-btn {
+            background: #f8d7da;
+            color: #b00020;
+        }
+
+        .post-image-box {
+            margin-top: 20px;
+        }
+
+        .post-image {
+            display: block;
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+
+        .comment-section {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .comment-title {
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .comment-form textarea {
+            height: 90px;
+            resize: vertical;
+        }
+
+        .comment-form button {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+
+            background: #4caf50;
+            color: white;
+
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .comment-list {
+            margin-top: 22px;
+        }
+
+        .comment-card {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .comment-header span {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .comment-content {
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .no-comments {
+            padding: 25px 0;
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .comment-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .comment-buttons form {
+            margin: 0;
+        }
+
+        .comment-edit-btn,
+        .comment-delete-btn,
+        .comment-save-btn,
+        .comment-cancel-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .comment-edit-btn {
+            background: #f1f1f1;
+            color: #555;
+        }
+
+        .comment-delete-btn {
+            background: #f8d7da;
+            color: #b00020;
+        }
+
+        .comment-edit-form {
+            margin-top: 8px;
+        }
+
+        .comment-edit-form textarea {
+            width: 100%;
+            min-height: 80px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .comment-edit-buttons {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .comment-save-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .comment-cancel-btn {
+            background: #eee;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="title">
+        {{ post.title }}
+    </div>
+
+    <div class="meta">
+        {{ post.author }}
+        ·
+        {{ post.created_at }}
+    </div>
+
+    {% if post.image_path %}
+
+        <div class="post-image-box">
+            <img
+                src="{{ url_for('static', filename=post.image_path) }}"
+                alt="게시글 첨부 이미지"
+                class="post-image"
+            >
+        </div>
+
+    {% endif %}
+
+    <div class="content">
+        {{ post.content }}
+    </div>
+
+    <div class="button-box">
+
+        <button
+            class="btn list-btn"
+            onclick="location.href='/community'">
+            목록
+        </button>
+
+        <button
+            class="btn edit-btn"
+            onclick="location.href='/community/{{ post.id }}/edit'">
+            수정
+        </button>
+
+        <button
+            class="btn delete-btn"
+            onclick="deletePost()">
+            삭제
+        </button>
+
+    </div>
+
+    <div class="comment-section">
+
+    <h2 class="comment-title">
+        💬 댓글 {{ comments|length }}
+    </h2>
+
+    <!-- 댓글 작성 -->
+    <form
+        method="POST"
+        action="/community/{{ post.id }}/comments"
+        class="comment-form"
+    >
+
+        <input
+            type="text"
+            name="author"
+            placeholder="닉네임"
+            maxlength="50"
+            required
+        >
+
+        <textarea
+            name="content"
+            placeholder="댓글을 입력해주세요."
+            required
+        ></textarea>
+
+        <button type="submit">
+            댓글 등록
+        </button>
+
+    </form>
+
+
+    <!-- 댓글 목록 -->
+    <div class="comment-list">
+
+            {% if comments %}
+
+                {% for comment in comments %}
+
+                    <div class="comment-card">
+
+                        <div class="comment-header">
+
+                            <strong>
+                                {{ comment.author }}
+                            </strong>
+
+                            <span>
+                                {{ comment.created_at }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- 평소에 보이는 댓글 -->
+                        <div
+                            id="comment-view-{{ comment.id }}"
+                            class="comment-content"
+                        >
+                            {{ comment.content }}
+                        </div>
+
+
+                        <!-- 수정할 때 나타나는 입력창 -->
+                        <form
+                            id="comment-edit-{{ comment.id }}"
+                            action="/community/{{ post.id }}/comments/{{ comment.id }}/edit"
+                            method="POST"
+                            class="comment-edit-form"
+                            style="display: none;"
+                        >
+
+                            <textarea
+                                name="content"
+                                required
+                            >{{ comment.content }}</textarea>
+
+                            <div class="comment-edit-buttons">
+
+                                <button
+                                    type="submit"
+                                    class="comment-save-btn"
+                                >
+                                    저장
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="comment-cancel-btn"
+                                    onclick="cancelCommentEdit({{ comment.id }})"
+                                >
+                                    취소
+                                </button>
+
+                            </div>
+
+                        </form>
+
+
+                        <div
+                            id="comment-buttons-{{ comment.id }}"
+                            class="comment-buttons"
+                        >
+
+                            <button
+                                type="button"
+                                class="comment-edit-btn"
+                                onclick="showCommentEdit({{ comment.id }})"
+                            >
+                                수정
+                            </button>
+
+
+                            <form
+                                action="/community/{{ post.id }}/comments/{{ comment.id }}/delete"
+                                method="POST"
+                                onsubmit="return confirm('이 댓글을 삭제하시겠습니까?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="comment-delete-btn"
+                                >
+                                    삭제
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="no-comments">
+                    아직 댓글이 없습니다.<br>
+                    첫 댓글을 남겨보세요!
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    function deletePost() {
+
+        if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch(
+            "/community/{{ post.id }}/delete",
+            {
+                method: "POST"
+            }
+        )
+        .then(response => {
+
+            if (response.ok) {
+                window.location.href = "/community";
+            } else {
+                alert("게시글 삭제에 실패했습니다.");
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+            alert("게시글 삭제 중 오류가 발생했습니다.");
+        });
+    }
+</script>
+
+<script>
+    function showCommentEdit(commentId) {
+
+        document.getElementById(
+            "comment-view-" + commentId
+        ).style.display = "none";
+
+        document.getElementById(
+            "comment-buttons-" + commentId
+        ).style.display = "none";
+
+        document.getElementById(
+            "comment-edit-" + commentId
+        ).style.display = "block";
+    }
+
+
+    function cancelCommentEdit(commentId) {
+
+        document.getElementById(
+            "comment-view-" + commentId
+        ).style.display = "block";
+
+        document.getElementById(
+            "comment-buttons-" + commentId
+        ).style.display = "flex";
+
+        document.getElementById(
+            "comment-edit-" + commentId
+        ).style.display = "none";
+    }
+</script>
+
+</body>
+</html>

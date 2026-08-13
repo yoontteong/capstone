@@ -17,6 +17,9 @@
             justify-content: center;
             gap: 30px;
             margin-top: 40px;
+
+            /* 화면이 좁으면 자동으로 다음 줄로 */
+            flex-wrap: wrap;
         }
 
         .card {
@@ -26,6 +29,9 @@
             border-radius: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             cursor: pointer;
+
+            /* hover 움직임 부드럽게 */
+            transition: transform 0.2s;
         }
 
         .card:hover {
@@ -40,21 +46,31 @@
     <p>원하는 기능을 선택해주세요.</p>
 
     <div class="menu">
+
+        <!-- 여행 일정 추천 -->
         <div class="card" onclick="location.href='/ai-schedule'">
             <h2>여행 일정 추천</h2>
             <p>반려견과 함께하는 제주 여행 일정을 추천합니다.</p>
         </div>
 
+        <!-- 준비물 체크리스트 -->
         <div class="card" onclick="location.href='/checklist'">
             <h2>준비물 체크리스트</h2>
             <p>제주 날씨와 여행 조건에 따라 준비물을 추천합니다.</p>
         </div>
 
-        <!--기록측정 추가-->
+        <!-- 활동 기록 -->
         <div class="card" onclick="location.href='/activity'">
             <h2>활동 기록</h2>
             <p>반려견과의 산책 및 이동 거리를 기록합니다.</p>
         </div>
+
+        <!-- 커뮤니티 -->
+        <div class="card" onclick="location.href='/community'">
+            <h2>커뮤니티</h2>
+            <p>반려견과 함께한 여행 후기와 정보를 공유합니다.</p>
+        </div>
+
     </div>
 
 </body>
