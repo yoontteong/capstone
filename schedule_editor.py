@@ -226,7 +226,7 @@ def edited_schedule_result():
     travel_info = session.get("travel_info", {})
 
     return render_template(
-        "ai_schedule_result.html",
+        "schedule/ai_schedule_result.html",
         travel_period=travel_info.get("travel_period"),
         style=travel_info.get("style"),
         transport_type=travel_info.get("transport_type"),
