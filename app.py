@@ -18,7 +18,7 @@ def home():
 
 @app.route("/checklist")
 def checklist_page():
-    return render_template("checklist.html")
+    return render_template("checklist/checklist.html")
 
 
 @app.route("/checklist-result", methods=["POST"])
@@ -36,7 +36,7 @@ def checklist_result():
     )
 
     return render_template(
-        "checklist_result.html",
+        "checklist/checklist_result.html",
         travel_date=travel_date,
         weather=weather,
         items=items
@@ -45,7 +45,7 @@ def checklist_result():
 
 @app.route("/ai-schedule", methods=["GET"])
 def ai_schedule_form():
-    return render_template("ai_schedule.html")
+    return render_template("schedule/ai_schedule.html")
 
 
 @app.route("/ai-schedule/result", methods=["POST"])
@@ -77,7 +77,7 @@ def ai_schedule_result():
     }
 
     return render_template(
-        "ai_schedule_result.html",
+        "schedule/ai_schedule_result.html",
         travel_period=travel_period,
         style=style,
         transport_type=transport_type,
@@ -91,7 +91,7 @@ def ai_schedule_result():
 #기록측정추가
 @app.route("/activity")
 def activity():
-    return render_template("activity.html")
+    return render_template("activity/activity.html")
 
 
 if __name__ == "__main__":
