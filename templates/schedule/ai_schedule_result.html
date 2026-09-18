@@ -277,10 +277,12 @@
             text-decoration: none;
             padding: 16px;
             border-radius: 18px;
-            background: #4caf50;
-            color: white;
+
+            background: #f1f3f5;
+            color: #555;
+
             font-weight: bold;
-            margin-top: 24px;
+            margin-top: 10px;
         }
 
         .marker-number {
@@ -294,6 +296,26 @@
             font-weight: bold;
             border: 2px solid white;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .save-trip-btn {
+            width: 100%;
+            margin-top: 24px;
+            padding: 16px;
+
+            border: none;
+            border-radius: 18px;
+
+            background: #4caf50;
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-trip-btn:hover {
+            background: #43a047;
         }
     </style>
 </head>
@@ -489,6 +511,23 @@
                                             {{ item.place.rating }}
                                         </div>
 
+                                        {% if item.place.review_count > 0 %}
+
+                                            <div>
+                                                💬 사용자 평점
+                                                {{ item.place.review_avg }} / 5
+                                                · 후기 {{ item.place.review_count }}개
+                                            </div>
+
+                                        {% else %}
+
+                                            <div>
+                                                💬 아직 등록된 후기가 없습니다.
+                                            </div>
+
+                                        {% endif %}
+
+
                                     </div>
 
 
@@ -599,12 +638,37 @@
 
     </div>
 
+    {% if saved_trip %}
 
-    <a
-        href="/ai-schedule"
-        class="back-btn">
-        다시 생성하기
-    </a>
+        <a
+            href="/trips"
+            class="back-btn"
+        >
+            내 여행 목록으로
+        </a>
+
+    {% else %}
+
+        <form
+            method="POST"
+            action="/trip/save-ai"
+        >
+            <button
+                type="submit"
+                class="save-trip-btn"
+            >
+                내 여행에 저장하기
+            </button>
+        </form>
+
+        <a
+            href="/trip/create"
+            class="back-btn"
+        >
+            다시 만들기
+        </a>
+
+    {% endif %}
 
 </div>
 

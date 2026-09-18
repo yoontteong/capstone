@@ -3,8 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>장소 후기 작성</title>
 
@@ -17,6 +20,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f6f7f9;
+            color: #222;
         }
 
         .app {
@@ -24,17 +28,25 @@
             margin: 0 auto;
             min-height: 100vh;
             background: white;
-            padding: 25px 20px;
+            padding: 25px 20px 40px;
         }
 
         h1 {
-            margin-top: 0;
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .description {
+            margin-bottom: 25px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
         }
 
         label {
             display: block;
-            font-weight: bold;
             margin: 18px 0 8px;
+            font-weight: bold;
         }
 
         input,
@@ -50,10 +62,135 @@
         textarea {
             height: 160px;
             resize: vertical;
+            font-family: Arial, sans-serif;
         }
+
+
+        /* =========================
+           장소 검색
+        ========================= */
+
+        .search-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-row input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-btn {
+            flex-shrink: 0;
+            padding: 0 18px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #333;
+            color: white;
+
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background: #222;
+        }
+
+
+        /* =========================
+           검색 결과
+        ========================= */
+
+        .search-results {
+            display: none;
+
+            margin-top: 10px;
+
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+
+            overflow: hidden;
+        }
+
+        .search-result {
+            padding: 13px;
+
+            border-bottom: 1px solid #eee;
+
+            cursor: pointer;
+        }
+
+        .search-result:last-child {
+            border-bottom: none;
+        }
+
+        .search-result:hover {
+            background: #f7f7f7;
+        }
+
+        .result-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .result-address {
+            margin-top: 4px;
+
+            color: #888;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           선택 장소
+        ========================= */
+
+        .selected-place {
+            display: none;
+
+            margin-top: 12px;
+            padding: 14px;
+
+            border-radius: 13px;
+
+            background: #f3f8f3;
+        }
+
+        .selected-title {
+            margin-bottom: 6px;
+
+            color: #2e7d32;
+
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .selected-name {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .selected-address {
+            margin-top: 5px;
+
+            color: #666;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           버튼
+        ========================= */
 
         .submit-btn {
             width: 100%;
+
             margin-top: 25px;
             padding: 14px;
 
@@ -63,78 +200,192 @@
             background: #4caf50;
             color: white;
 
+            font-size: 15px;
             font-weight: bold;
+
             cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #43a047;
         }
 
         .back {
             display: block;
-            text-align: center;
+
             margin-top: 18px;
+
+            text-align: center;
             text-decoration: none;
+
             color: #666;
         }
     </style>
 </head>
 
+
 <body>
 
 <div class="app">
 
-    <h1>📍 장소 후기 작성</h1>
+    <h1>
+        📍 장소 후기 작성
+    </h1>
+
+    <div class="description">
+        반려견과 방문했던 제주 장소를 검색하고 후기를 남겨보세요.
+    </div>
+
 
     <form
         method="POST"
         enctype="multipart/form-data"
+        id="reviewForm"
     >
 
-        <label>장소</label>
-
-        <select name="place_id" required>
-
-            <option value="">
-                장소를 선택해주세요
-            </option>
-
-            {% for place in places %}
-
-                <option value="{{ place.id }}">
-                    {{ place.name }} ({{ place.category }})
-                </option>
-
-            {% endfor %}
-
-        </select>
-
-
-        <label>작성자</label>
+        <!-- =========================
+             선택한 장소 정보
+             서버로 전송
+        ========================== -->
 
         <input
-            type="text"
-            name="author"
-            placeholder="닉네임"
-            required
+            type="hidden"
+            name="place_name"
+            id="placeName"
+        >
+
+        <input
+            type="hidden"
+            name="place_address"
+            id="placeAddress"
+        >
+
+        <input
+            type="hidden"
+            name="place_category"
+            id="placeCategory"
+        >
+
+        <input
+            type="hidden"
+            name="place_latitude"
+            id="placeLatitude"
+        >
+
+        <input
+            type="hidden"
+            name="place_longitude"
+            id="placeLongitude"
         >
 
 
-        <label>별점</label>
+        <!-- =========================
+             장소 검색
+        ========================== -->
 
-        <select name="rating" required>
+        <label>
+            장소
+        </label>
+
+        <div class="search-row">
+
+            <input
+                type="text"
+                id="placeSearch"
+                placeholder="예: 함덕해수욕장"
+                autocomplete="off"
+            >
+
+            <button
+                type="button"
+                class="search-btn"
+                onclick="searchPlace()"
+            >
+                검색
+            </button>
+
+        </div>
+
+
+        <!-- 검색 결과 -->
+
+        <div
+            class="search-results"
+            id="searchResults"
+        ></div>
+
+
+        <!-- 선택된 장소 -->
+
+        <div
+            class="selected-place"
+            id="selectedPlace"
+        >
+
+            <div class="selected-title">
+                선택한 장소
+            </div>
+
+            <div
+                class="selected-name"
+                id="selectedName"
+            ></div>
+
+            <div
+                class="selected-address"
+                id="selectedAddress"
+            ></div>
+
+        </div>
+
+
+        <!-- =========================
+             별점
+        ========================== -->
+
+        <label>
+            별점
+        </label>
+
+        <select
+            name="rating"
+            required
+        >
 
             <option value="">
                 별점을 선택해주세요
             </option>
 
-            <option value="5">⭐⭐⭐⭐⭐ 5점</option>
-            <option value="4">⭐⭐⭐⭐ 4점</option>
-            <option value="3">⭐⭐⭐ 3점</option>
-            <option value="2">⭐⭐ 2점</option>
-            <option value="1">⭐ 1점</option>
+            <option value="5">
+                ⭐⭐⭐⭐⭐ 5점
+            </option>
+
+            <option value="4">
+                ⭐⭐⭐⭐ 4점
+            </option>
+
+            <option value="3">
+                ⭐⭐⭐ 3점
+            </option>
+
+            <option value="2">
+                ⭐⭐ 2점
+            </option>
+
+            <option value="1">
+                ⭐ 1점
+            </option>
 
         </select>
 
 
-        <label>후기</label>
+        <!-- =========================
+             후기
+        ========================== -->
+
+        <label>
+            후기
+        </label>
 
         <textarea
             name="content"
@@ -143,7 +394,13 @@
         ></textarea>
 
 
-        <label>사진</label>
+        <!-- =========================
+             사진
+        ========================== -->
+
+        <label>
+            사진
+        </label>
 
         <input
             type="file"
@@ -151,6 +408,10 @@
             accept="image/*"
         >
 
+
+        <!-- =========================
+             등록
+        ========================== -->
 
         <button
             type="submit"
@@ -161,11 +422,305 @@
 
     </form>
 
-    <a href="/reviews" class="back">
+
+    <a
+        href="/reviews"
+        class="back"
+    >
         취소
     </a>
 
 </div>
 
+
+<script>
+
+    /* =========================
+       장소 검색
+    ========================= */
+
+    async function searchPlace() {
+
+        const input =
+            document.getElementById(
+                "placeSearch"
+            );
+
+        const query =
+            input.value.trim();
+
+
+        if (!query) {
+
+            alert(
+                "장소명을 입력해주세요."
+            );
+
+            return;
+        }
+
+
+        const results =
+            document.getElementById(
+                "searchResults"
+            );
+
+
+        results.style.display =
+            "block";
+
+        results.innerHTML =
+            '<div class="search-result">검색 중...</div>';
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/trip/manual/place/search?q="
+                    +
+                    encodeURIComponent(query)
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message
+                    ||
+                    "장소 검색에 실패했습니다."
+                );
+            }
+
+
+            results.innerHTML = "";
+
+
+            if (
+                !data.places
+                ||
+                data.places.length === 0
+            ) {
+
+                results.innerHTML =
+                    '<div class="search-result">'
+                    +
+                    '검색 결과가 없습니다.'
+                    +
+                    '</div>';
+
+                return;
+            }
+
+
+            data.places.forEach(
+                function(place) {
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    item.className =
+                        "search-result";
+
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    name.className =
+                        "result-name";
+
+                    name.textContent =
+                        place.name;
+
+
+                    const address =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    address.className =
+                        "result-address";
+
+                    address.textContent =
+                        place.address
+                        ||
+                        "주소 정보 없음";
+
+
+                    item.appendChild(
+                        name
+                    );
+
+                    item.appendChild(
+                        address
+                    );
+
+
+                    item.addEventListener(
+                        "click",
+                        function() {
+
+                            selectPlace(
+                                place
+                            );
+
+                        }
+                    );
+
+
+                    results.appendChild(
+                        item
+                    );
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            results.innerHTML =
+                '<div class="search-result">'
+                +
+                '장소 검색 중 오류가 발생했습니다.'
+                +
+                '</div>';
+        }
+    }
+
+
+    /* =========================
+       장소 선택
+    ========================= */
+
+    function selectPlace(place) {
+
+        document.getElementById(
+            "placeName"
+        ).value =
+            place.name || "";
+
+
+        document.getElementById(
+            "placeAddress"
+        ).value =
+            place.address || "";
+
+
+        document.getElementById(
+            "placeCategory"
+        ).value =
+            place.category || "";
+
+
+        document.getElementById(
+            "placeLatitude"
+        ).value =
+            place.latitude ?? "";
+
+
+        document.getElementById(
+            "placeLongitude"
+        ).value =
+            place.longitude ?? "";
+
+
+        document.getElementById(
+            "selectedName"
+        ).textContent =
+            "📍 " + place.name;
+
+
+        document.getElementById(
+            "selectedAddress"
+        ).textContent =
+            place.address || "";
+
+
+        document.getElementById(
+            "selectedPlace"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "searchResults"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "placeSearch"
+        ).value =
+            place.name;
+    }
+
+
+    /* =========================
+       Enter 키로 검색
+    ========================= */
+
+    document.getElementById(
+        "placeSearch"
+    ).addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                searchPlace();
+            }
+        }
+    );
+
+
+    /* =========================
+       장소 선택 여부 검사
+    ========================= */
+
+    document.getElementById(
+        "reviewForm"
+    ).addEventListener(
+        "submit",
+        function(event) {
+
+            const placeName =
+                document.getElementById(
+                    "placeName"
+                ).value;
+
+
+            if (!placeName) {
+
+                event.preventDefault();
+
+                alert(
+                    "후기를 작성할 장소를 검색해서 선택해주세요."
+                );
+
+            }
+        }
+    );
+
+</script>
+
 </body>
+
 </html>

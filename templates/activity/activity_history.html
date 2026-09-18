@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>활동 기록</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 460px;
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 24px 18px 40px;
+            background: white;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .record-card {
+            display: block;
+
+            padding: 18px;
+            margin-bottom: 14px;
+
+            border: 1px solid #eee;
+            border-radius: 16px;
+
+            text-decoration: none;
+            color: inherit;
+
+            background: #fafafa;
+        }
+
+        .record-card:hover {
+            background: #f3f3f3;
+        }
+
+        .record-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 14px;
+        }
+
+        .dog-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .date {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .dog-info {
+            margin-bottom: 14px;
+
+            color: #777;
+            font-size: 13px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .stat {
+            text-align: center;
+
+            padding: 10px 5px;
+
+            background: white;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            margin-top: 4px;
+
+            color: #999;
+            font-size: 11px;
+        }
+
+        .empty {
+            padding: 50px 0;
+
+            color: #999;
+            text-align: center;
+        }
+
+        .buttons {
+            margin-top: 25px;
+        }
+
+        .button {
+            display: block;
+
+            width: 100%;
+            padding: 14px;
+
+            margin-top: 10px;
+
+            border-radius: 12px;
+
+            text-align: center;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .activity-button {
+            background: #4caf50;
+            color: white;
+        }
+
+        .home-button {
+            background: #eee;
+            color: #555;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <h2>🐾 활동 기록</h2>
+
+    <div class="subtitle">
+        반려견과 함께한 활동을 확인해보세요.
+    </div>
+
+
+    {% if records %}
+
+        {% for record in records %}
+
+        <a
+            class="record-card"
+            href="/activity/history/{{ record.id }}"
+        >
+
+            <div class="record-top">
+
+                <div class="dog-name">
+                    🐶 {{ record.dog_name }}
+                </div>
+
+                <div class="date">
+                    {{ record.activity_date.strftime('%Y.%m.%d') }}
+                </div>
+
+            </div>
+
+
+            <div class="dog-info">
+
+                {% if record.breed %}
+                    {{ record.breed }}
+                {% endif %}
+
+                {% if record.size_category %}
+                    · {{ record.size_category }}
+                {% endif %}
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <div class="stat-value">
+                        {{ "%.2f"|format(record.distance_km) }} km
+                    </div>
+
+                    <div class="stat-label">
+                        이동거리
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-value">
+
+                        {{ record.duration_seconds // 60 }}분
+                        {{ record.duration_seconds % 60 }}초
+
+                    </div>
+
+                    <div class="stat-label">
+                        활동시간
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-value">
+                        {{ "%.1f"|format(record.average_speed) }}
+                    </div>
+
+                    <div class="stat-label">
+                        평균 km/h
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="empty">
+
+            아직 저장된 활동 기록이 없습니다.<br><br>
+
+            반려견과 산책을 시작해보세요! 🐶
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="buttons">
+
+        <a
+            href="/activity"
+            class="button activity-button">
+            새로운 활동 기록
+        </a>
+
+        <a
+            href="/"
+            class="button home-button">
+            메인으로 돌아가기
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

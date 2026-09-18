@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>새 여행 만들기</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 26px;
+        }
+
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .dog-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            margin-bottom: 9px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .method-card {
+            display: block;
+            padding: 20px;
+            margin-bottom: 14px;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            text-decoration: none;
+            color: #222;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .method-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .method-title {
+            margin-bottom: 7px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .method-description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .notice {
+            padding: 18px;
+            border-radius: 16px;
+            background: #f3f8f3;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .register-btn {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px;
+
+            border-radius: 14px;
+            background: #4caf50;
+            color: white;
+
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back {
+            display: block;
+            margin-top: 24px;
+            text-align: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <h2>✈️ 새 여행 만들기</h2>
+
+        <div class="description">
+            함께 여행할 반려견을 선택하고
+            원하는 일정 생성 방식을 선택해주세요.
+        </div>
+    </div>
+
+
+    {% if dogs %}
+
+        <div class="dog-section">
+
+            <div class="section-title">
+                함께 여행할 반려견
+            </div>
+
+            <select id="dogSelect">
+
+                {% for dog in dogs %}
+
+                    <option value="{{ dog.id }}">
+                        {{ dog.name }}
+
+                        {% if dog.breed %}
+                            · {{ dog.breed }}
+                        {% endif %}
+
+                        · {{ dog.size_category }}
+
+                        {% if dog.personality %}
+                            · {{ dog.personality }}
+                        {% endif %}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <a
+            href="#"
+            class="method-card"
+            onclick="goToAI(); return false;"
+        >
+            <div class="method-title">
+                ✨ AI로 일정 만들기
+            </div>
+
+            <div class="method-description">
+                여행 조건과 반려견 정보를 바탕으로
+                AI가 제주 여행 일정과 동선을 자동으로 추천합니다.
+            </div>
+        </a>
+
+
+        <a
+            href="#"
+            class="method-card"
+            onclick="goToManual(); return false;"
+        >
+            <div class="method-title">
+                ✏️ 직접 일정 만들기
+            </div>
+
+            <div class="method-description">
+                원하는 날짜와 장소, 시간을 직접 선택하여
+                제주 여행 일정을 구성합니다.
+            </div>
+        </a>
+
+
+    {% else %}
+
+        <div class="notice">
+            등록된 반려견이 없습니다.<br>
+            여행을 만들기 전에 반려견을 먼저 등록해주세요.
+        </div>
+
+        <a
+            href="/dog/register"
+            class="register-btn"
+        >
+            반려견 등록하기
+        </a>
+
+    {% endif %}
+
+
+    <a
+        href="/trips"
+        class="back"
+    >
+        내 여행으로 돌아가기
+    </a>
+
+</div>
+
+
+{% if dogs %}
+
+<script>
+
+    function getDogId() {
+        return document.getElementById("dogSelect").value;
+    }
+
+    function goToAI() {
+        const dogId = getDogId();
+
+        location.href =
+            "/ai-schedule?dog_id=" + dogId;
+    }
+
+    function goToManual() {
+        const dogId = getDogId();
+
+        location.href =
+            "/trip/manual?dog_id=" + dogId;
+    }
+
+</script>
+
+{% endif %}
+
+</body>
+</html>

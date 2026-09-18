@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>반려견 등록</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+
+            border: none;
+            border-radius: 14px;
+
+            background: #4caf50;
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #666;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h2>🐶 반려견 등록</h2>
+
+    <div class="description">
+        여행과 활동 기록에 사용할 반려견 정보를 등록해주세요.
+    </div>
+
+    <form method="POST" action="/dog/register">
+
+        <label for="name">
+            반려견 이름
+        </label>
+
+        <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="예: 보리"
+            required
+        >
+
+
+        <label for="breed">
+            품종
+        </label>
+
+        <input
+            type="text"
+            id="breed"
+            name="breed"
+            placeholder="예: 말티즈"
+        >
+
+
+        <label for="size_category">
+            체급
+        </label>
+
+        <select
+            id="size_category"
+            name="size_category"
+            required
+        >
+
+            <option value="">
+                체급을 선택해주세요
+            </option>
+
+            <option value="소형견">
+                소형견
+            </option>
+
+            <option value="중형견">
+                중형견
+            </option>
+
+            <option value="대형견">
+                대형견
+            </option>
+
+        </select>
+
+
+        <label for="birth_date">
+            생년월일
+        </label>
+
+        <input
+            type="date"
+            id="birth_date"
+            name="birth_date"
+        >
+
+
+        <label for="personality">
+            성향
+        </label>
+
+        <select
+            id="personality"
+            name="personality"
+        >
+            <option value="">
+                성향을 선택해주세요
+            </option>
+
+            <option value="활발함">
+                활발함
+            </option>
+
+            <option value="조용함">
+                조용함
+            </option>
+
+            <option value="겁많음">
+                겁많음
+            </option>
+        </select>
+
+        <button
+            type="submit"
+            class="submit-btn"
+        >
+            반려견 등록
+        </button>
+
+    </form>
+
+
+    <a
+        href="/"
+        class="back"
+    >
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>

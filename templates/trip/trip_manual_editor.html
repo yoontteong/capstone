@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>직접 일정 구성</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 22px;
+        }
+
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .trip-info {
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 16px;
+            background: #f3f8f3;
+        }
+
+        .trip-info div {
+            margin: 6px 0;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .day-card {
+            margin-bottom: 22px;
+            padding: 18px;
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .day-title {
+            margin-bottom: 14px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .schedule-list {
+            margin-bottom: 14px;
+        }
+
+        .empty {
+            padding: 15px;
+            border-radius: 12px;
+            background: #f7f7f7;
+            color: #888;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .schedule-item {
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #e7e7e7;
+            border-radius: 14px;
+        }
+
+        .schedule-time {
+            margin-bottom: 6px;
+            color: #2e7d32;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .schedule-place {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .schedule-address {
+            margin-top: 5px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-form {
+            display: none;
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            background: #f7f8fa;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-row input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            padding: 0 16px;
+            border: none;
+            border-radius: 10px;
+            background: #333;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .search-results {
+            margin-top: 10px;
+        }
+
+        .place-result {
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .place-result:hover {
+            border-color: #4caf50;
+            background: #f5fff6;
+        }
+
+        .place-result.selected {
+            border: 2px solid #4caf50;
+            background: #f0fff3;
+        }
+
+        .result-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .result-address {
+            margin-top: 4px;
+            color: #777;
+            font-size: 11px;
+        }
+
+        .result-category {
+            margin-top: 4px;
+            color: #999;
+            font-size: 11px;
+        }
+
+        .no-result {
+            padding: 12px;
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .time-section {
+            display: none;
+            margin-top: 14px;
+        }
+
+        .selected-place {
+            margin-bottom: 10px;
+            padding: 11px;
+            border-radius: 10px;
+            background: #e8f5e9;
+            font-size: 13px;
+        }
+
+        .time-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .time-row input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .confirm-add-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #4caf50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-trip-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: #4caf50;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delete-btn {
+            flex-shrink: 0;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #d32f2f;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #ffe2e2;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <h2>✏️ 직접 일정 구성</h2>
+        <div class="description">
+            DAY별로 제주 장소를 검색해서 원하는 일정을 직접 구성해주세요.
+        </div>
+    </div>
+
+
+    <div class="trip-info">
+        <div><strong>여행:</strong> {{ title }}</div>
+        <div><strong>반려견:</strong> 🐶 {{ dog.name }}</div>
+        <div><strong>시작일:</strong> {{ start_date }}</div>
+        <div><strong>기간:</strong> {{ travel_period }}</div>
+        <div><strong>이동수단:</strong> {{ transport_type }}</div>
+    </div>
+
+
+    {% for day_num in range(1, day_count + 1) %}
+
+    <div class="day-card">
+
+        <div class="day-title">
+            Day {{ day_num }}
+        </div>
+
+        <div
+            class="schedule-list"
+            id="day-list-{{ day_num }}"
+        >
+            <div class="empty">
+                아직 추가된 일정이 없습니다.
+            </div>
+        </div>
+
+
+        <button
+            type="button"
+            class="add-btn"
+            data-day="{{ day_num }}"
+        >
+            + 장소 추가
+        </button>
+
+
+        <div
+            class="add-form"
+            id="add-form-{{ day_num }}"
+        >
+
+            <div class="search-row">
+
+                <input
+                    type="text"
+                    id="search-input-{{ day_num }}"
+                    placeholder="장소 검색 (예: 함덕해수욕장)"
+                >
+
+                <button
+                    type="button"
+                    class="search-btn"
+                    data-day="{{ day_num }}"
+                >
+                    검색
+                </button>
+
+            </div>
+
+
+            <div
+                class="search-results"
+                id="search-results-{{ day_num }}"
+            ></div>
+
+
+            <div
+                class="time-section"
+                id="time-section-{{ day_num }}"
+            >
+
+                <div
+                    class="selected-place"
+                    id="selected-place-{{ day_num }}"
+                ></div>
+
+                <div class="time-row">
+
+                    <input
+                        type="time"
+                        id="start-time-{{ day_num }}"
+                    >
+
+                    <span>~</span>
+
+                    <input
+                        type="time"
+                        id="end-time-{{ day_num }}"
+                    >
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="confirm-add-btn"
+                    data-day="{{ day_num }}"
+                >
+                    일정에 추가
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+
+    <button
+        type="button"
+        class="save-trip-btn"
+        id="saveTripBtn"
+    >
+        내 여행에 저장하기
+    </button>
+
+
+    <a
+        href="/trip/manual?dog_id={{ dog.id }}"
+        class="back"
+    >
+        이전으로 돌아가기
+    </a>
+
+</div>
+
+
+<script>
+
+    const selectedPlaces = {};
+
+
+    // 장소 추가 영역 열기/닫기
+    document.querySelectorAll(".add-btn").forEach(function(button) {
+
+        button.addEventListener("click", function() {
+
+            const day = this.dataset.day;
+
+            const form =
+                document.getElementById(
+                    "add-form-" + day
+                );
+
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            } else {
+                form.style.display = "block";
+            }
+
+        });
+
+    });
+
+
+    // 검색 버튼
+    document.querySelectorAll(".search-btn").forEach(function(button) {
+
+        button.addEventListener("click", function() {
+
+            searchPlace(this.dataset.day);
+
+        });
+
+    });
+
+
+    // Enter로도 검색
+    document.querySelectorAll("[id^='search-input-']").forEach(function(input) {
+
+        input.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                const day =
+                    this.id.replace(
+                        "search-input-",
+                        ""
+                    );
+
+                searchPlace(day);
+            }
+
+        });
+
+    });
+
+
+    async function searchPlace(day) {
+
+        const input =
+            document.getElementById(
+                "search-input-" + day
+            );
+
+        const keyword =
+            input.value.trim();
+
+        if (!keyword) {
+            alert("검색할 장소명을 입력해주세요.");
+            return;
+        }
+
+
+        const resultsBox =
+            document.getElementById(
+                "search-results-" + day
+            );
+
+        resultsBox.innerHTML =
+            '<div class="no-result">검색 중...</div>';
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/trip/manual/place/search?q="
+                    + encodeURIComponent(keyword)
+                );
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok || !result.success) {
+
+                resultsBox.innerHTML =
+                    '<div class="no-result">'
+                    + (result.message || "검색에 실패했습니다.")
+                    + '</div>';
+
+                return;
+            }
+
+
+            resultsBox.innerHTML = "";
+
+
+            if (result.places.length === 0) {
+
+                resultsBox.innerHTML =
+                    '<div class="no-result">'
+                    + '검색 결과가 없습니다.'
+                    + '</div>';
+
+                return;
+            }
+
+
+            result.places.forEach(function(place) {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "place-result";
+
+
+                const name =
+                    document.createElement("div");
+
+                name.className =
+                    "result-name";
+
+                name.textContent =
+                    place.name;
+
+
+                const address =
+                    document.createElement("div");
+
+                address.className =
+                    "result-address";
+
+                address.textContent =
+                    place.address;
+
+
+                const category =
+                    document.createElement("div");
+
+                category.className =
+                    "result-category";
+
+                category.textContent =
+                    place.category || "";
+
+
+                item.appendChild(name);
+                item.appendChild(address);
+                item.appendChild(category);
+
+
+                item.addEventListener(
+                    "click",
+                    function() {
+
+                        selectPlace(
+                            day,
+                            place,
+                            item
+                        );
+
+                    }
+                );
+
+
+                resultsBox.appendChild(item);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            resultsBox.innerHTML =
+                '<div class="no-result">'
+                + '장소 검색 중 오류가 발생했습니다.'
+                + '</div>';
+
+        }
+
+    }
+
+
+    function selectPlace(
+        day,
+        place,
+        element
+    ) {
+
+        selectedPlaces[day] = place;
+
+
+        const results =
+            document.getElementById(
+                "search-results-" + day
+            );
+
+
+        results
+            .querySelectorAll(".place-result")
+            .forEach(function(item) {
+
+                item.classList.remove(
+                    "selected"
+                );
+
+            });
+
+
+        element.classList.add(
+            "selected"
+        );
+
+
+        document.getElementById(
+            "selected-place-" + day
+        ).textContent =
+            "선택한 장소: " + place.name;
+
+
+        document.getElementById(
+            "time-section-" + day
+        ).style.display = "block";
+
+    }
+
+
+    // 일정 추가 버튼
+    document
+        .querySelectorAll(".confirm-add-btn")
+        .forEach(function(button) {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    addSchedule(
+                        this.dataset.day
+                    );
+
+                }
+            );
+
+        });
+
+
+    async function addSchedule(day) {
+
+        const place =
+            selectedPlaces[day];
+
+        if (!place) {
+            alert("장소를 먼저 선택해주세요.");
+            return;
+        }
+
+
+        const startTime =
+            document.getElementById(
+                "start-time-" + day
+            ).value;
+
+        const endTime =
+            document.getElementById(
+                "end-time-" + day
+            ).value;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/trip/manual/schedule/add",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            day: Number(day),
+
+                            name:
+                                place.name,
+
+                            address:
+                                place.address,
+
+                            latitude:
+                                place.latitude,
+
+                            longitude:
+                                place.longitude,
+
+                            category:
+                                place.category,
+
+                            start_time:
+                                startTime,
+
+                            end_time:
+                                endTime
+                        })
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok ||
+                !result.success) {
+
+                alert(
+                    result.message ||
+                    "일정 추가에 실패했습니다."
+                );
+
+                return;
+            }
+
+
+            addItemToScreen(
+                day,
+                result.item
+            );
+
+
+            // 입력 초기화
+            document.getElementById(
+                "search-input-" + day
+            ).value = "";
+
+
+            document.getElementById(
+                "search-results-" + day
+            ).innerHTML = "";
+
+
+            document.getElementById(
+                "start-time-" + day
+            ).value = "";
+
+
+            document.getElementById(
+                "end-time-" + day
+            ).value = "";
+
+
+            document.getElementById(
+                "time-section-" + day
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "add-form-" + day
+            ).style.display = "none";
+
+
+            delete selectedPlaces[day];
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "일정을 추가하는 중 오류가 발생했습니다."
+            );
+
+        }
+
+    }
+
+
+    function addItemToScreen(day, item) {
+
+        const list =
+            document.getElementById(
+                "day-list-" + day
+            );
+
+        const empty =
+            list.querySelector(".empty");
+
+        if (empty) {
+            empty.remove();
+        }
+
+
+        const scheduleItem =
+            document.createElement("div");
+
+        scheduleItem.className = "schedule-item";
+        scheduleItem.dataset.uid = item.uid;
+
+
+        const header =
+            document.createElement("div");
+
+        header.className = "schedule-header";
+
+
+        const time =
+            document.createElement("div");
+
+        time.className = "schedule-time";
+
+        time.textContent =
+            (item.start_time || "시간 미정")
+            + " ~ "
+            + (item.end_time || "시간 미정");
+
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.type = "button";
+        deleteButton.className = "delete-btn";
+        deleteButton.textContent = "삭제";
+
+        deleteButton.addEventListener(
+            "click",
+            function() {
+                deleteSchedule(
+                    day,
+                    item.uid,
+                    scheduleItem
+                );
+            }
+        );
+
+
+        header.appendChild(time);
+        header.appendChild(deleteButton);
+
+
+        const name =
+            document.createElement("div");
+
+        name.className = "schedule-place";
+        name.textContent = "📍 " + item.place.name;
+
+
+        const address =
+            document.createElement("div");
+
+        address.className = "schedule-address";
+        address.textContent = item.place.address || "";
+
+
+        scheduleItem.appendChild(header);
+        scheduleItem.appendChild(name);
+        scheduleItem.appendChild(address);
+
+        list.appendChild(scheduleItem);
+    }
+
+    async function deleteSchedule(
+        day,
+        uid,
+        element
+    ) {
+
+        if (!confirm("이 일정을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/trip/manual/schedule/delete",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            uid: uid
+                        })
+                    }
+                );
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok || !result.success) {
+
+                alert(
+                    result.message ||
+                    "일정 삭제에 실패했습니다."
+                );
+
+                return;
+            }
+
+
+            element.remove();
+
+
+            const list =
+                document.getElementById(
+                    "day-list-" + day
+                );
+
+
+            if (
+                list.querySelectorAll(
+                    ".schedule-item"
+                ).length === 0
+            ) {
+
+                const empty =
+                    document.createElement("div");
+
+                empty.className = "empty";
+                empty.textContent =
+                    "아직 추가된 일정이 없습니다.";
+
+                list.appendChild(empty);
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "일정을 삭제하는 중 오류가 발생했습니다."
+            );
+
+        }
+    }
+
+
+    // 실제 DB 저장은 다음 단계
+    document.getElementById(
+        "saveTripBtn"
+    ).addEventListener(
+        "click",
+        async function() {
+
+            const button = this;
+
+            if (!confirm(
+                "현재 일정을 내 여행에 저장하시겠습니까?"
+            )) {
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = "저장 중...";
+
+            try {
+
+                const response = await fetch(
+                    "/trip/manual/save",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok ||
+                    !result.success) {
+
+                    alert(
+                        result.message ||
+                        "여행 저장에 실패했습니다."
+                    );
+
+                    button.disabled = false;
+                    button.textContent =
+                        "내 여행에 저장하기";
+
+                    return;
+                }
+
+
+                alert("여행이 저장되었습니다!");
+
+                location.href = "/trips";
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "여행을 저장하는 중 오류가 발생했습니다."
+                );
+
+                button.disabled = false;
+                button.textContent =
+                    "내 여행에 저장하기";
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

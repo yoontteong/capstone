@@ -2,117 +2,404 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>추천 준비물</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>체크리스트 상세</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f7f8fa;
-            padding: 60px;
+            background: #f6f7f9;
+            color: #222;
         }
 
-        .box {
-            width: 500px;
-            margin: auto;
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
             background: white;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px 20px 40px;
         }
 
-        li {
-            margin: 12px 0;
+        .header {
+            margin-bottom: 22px;
         }
 
-        button {
-            padding: 8px 12px;
-            margin-left: 8px;
-            border: none;
-            border-radius: 6px;
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .info-card {
+            padding: 18px;
+            margin-bottom: 20px;
+
+            background: #f3f8f3;
+            border-radius: 16px;
+        }
+
+        .info {
+            margin: 7px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            padding: 14px 15px;
+            margin-bottom: 10px;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 14px;
+        }
+
+        .item label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            flex: 1;
             cursor: pointer;
         }
 
+        .item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4caf50;
+        }
+
+        .item span {
+            font-size: 14px;
+        }
+
         .delete {
-            background: #ffdddd;
+            border: none;
+            border-radius: 10px;
+
+            padding: 8px 11px;
+
+            background: #fff0f0;
+            color: #d32f2f;
+
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .add-area input {
+            flex: 1;
+
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+
+            font-size: 14px;
         }
 
         .add-btn {
-            background: #333;
+            padding: 12px 16px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #4caf50;
             color: white;
+
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .nav-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
         }
 
         .nav-btn {
-            margin-top: 20px;
-            background: #777;
-            color: white;
+            flex: 1;
+
+            padding: 13px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #e8f5e9;
+            color: #2e7d32;
+
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        input[type="text"] {
-            padding: 10px;
-            width: 70%;
+        .back {
+            display: block;
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="box">
-    <h1>추천 준비물</h1>
+<div class="app">
 
-    <p><strong>여행지:</strong> 제주도</p>
-    <p><strong>날짜:</strong> {{ travel_date }}</p>
-    <p><strong>예상 날씨:</strong> {{ weather }}</p>
+    <div class="header">
+        <h2>🎒 {{ checklist.title }}</h2>
 
-    <hr>
+        <div class="description">
+            여행 전에 하나씩 체크해보세요.
+        </div>
+    </div>
 
-    <ul id="checklist">
+
+    <div class="info-card">
+
+        <div class="info">
+            <strong>여행지</strong> 제주도
+        </div>
+
+        <div class="info">
+            <strong>날짜</strong> {{ checklist.travel_date }}
+        </div>
+
+        <div class="info">
+            <strong>예상 날씨</strong> {{ checklist.weather }}
+        </div>
+
+    </div>
+
+
+    <ul
+        id="checklist"
+        class="checklist"
+    >
+
         {% for item in items %}
-        <li>
-            <label>
-                <input type="checkbox">
-                <span>{{ item }}</span>
-            </label>
-            <button class="delete" onclick="deleteItem(this)">삭제</button>
-        </li>
+
+            <li class="item">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        onchange="toggleItem({{ item.id }}, this.checked)"
+                        {% if item.is_checked %}checked{% endif %}
+                    >
+
+                    <span>
+                        {{ item.item_name }}
+                    </span>
+                </label>
+
+                <button
+                    class="delete"
+                    onclick="deleteItem({{ item.id }}, this)"
+                >
+                    삭제
+                </button>
+
+            </li>
+
         {% endfor %}
+
     </ul>
 
-    <input type="text" id="newItem" placeholder="준비물 추가">
-    <button class="add-btn" onclick="addItem()">추가</button>
 
-    <br>
+    <div class="add-area">
 
-    <button class="nav-btn" onclick="location.href='/checklist'">다시 추천받기</button>
-    <button class="nav-btn" onclick="location.href='/'">메인으로</button>
+        <input
+            type="text"
+            id="newItem"
+            placeholder="준비물 추가"
+        >
+
+        <button
+            class="add-btn"
+            onclick="addItem()"
+        >
+            추가
+        </button>
+
+    </div>
+
+
+    <div class="nav-area">
+
+        <button
+            class="nav-btn"
+            onclick="location.href='/checklist'"
+        >
+            새 체크리스트
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="location.href='/checklists'"
+        >
+            목록으로
+        </button>
+
+    </div>
+
+
+    <a
+        href="/"
+        class="back"
+    >
+        메인으로 돌아가기
+    </a>
+
 </div>
 
+
 <script>
+
+    function toggleItem(itemId, checked) {
+
+        fetch("/checklist/item/toggle", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                item_id: itemId,
+                is_checked: checked
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if (!data.success) {
+                alert("체크 상태 저장에 실패했습니다.");
+            }
+
+        });
+    }
+
+
     function addItem() {
-        const input = document.getElementById("newItem");
-        const value = input.value.trim();
+
+        const input =
+            document.getElementById("newItem");
+
+        const value =
+            input.value.trim();
 
         if (value === "") {
             return;
         }
 
-        const ul = document.getElementById("checklist");
+        fetch("/checklist/item/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                checklist_id: {{ checklist.id }},
+                item_name: value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
 
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <label>
-                <input type="checkbox">
-                <span>${value}</span>
-            </label>
-            <button class="delete" onclick="deleteItem(this)">삭제</button>
-        `;
+            if (!data.success) {
+                alert("준비물 추가에 실패했습니다.");
+                return;
+            }
 
-        ul.appendChild(li);
-        input.value = "";
+            const ul =
+                document.getElementById("checklist");
+
+            const li =
+                document.createElement("li");
+
+            li.className = "item";
+
+            li.innerHTML = `
+                <label>
+                    <input
+                        type="checkbox"
+                        onchange="toggleItem(${data.item_id}, this.checked)"
+                    >
+
+                    <span>
+                        ${value}
+                    </span>
+                </label>
+
+                <button
+                    class="delete"
+                    onclick="deleteItem(${data.item_id}, this)"
+                >
+                    삭제
+                </button>
+            `;
+
+            ul.appendChild(li);
+
+            input.value = "";
+        });
     }
 
-    function deleteItem(button) {
-        button.parentElement.remove();
+
+    function deleteItem(itemId, button) {
+
+        if (!confirm("이 준비물을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch("/checklist/item/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                item_id: itemId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if (!data.success) {
+                alert("준비물 삭제에 실패했습니다.");
+                return;
+            }
+
+            button
+                .parentElement
+                .remove();
+        });
     }
+
 </script>
 
 </body>

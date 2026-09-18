@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>내 체크리스트</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        .create-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 22px;
+
+            background: #4caf50;
+            color: white;
+
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+
+            border-radius: 14px;
+        }
+
+        .create-btn:hover {
+            background: #43a047;
+        }
+
+        .checklist-card {
+            padding: 20px;
+            margin-bottom: 16px;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+
+            cursor: pointer;
+        }
+
+        .checklist-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .title {
+            margin: 0 0 10px;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .progress {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .empty {
+            padding: 30px 20px;
+            text-align: center;
+            color: #777;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+
+            color: #666;
+            text-decoration: none;
+        }
+
+        .card-content {
+            cursor: pointer;
+        }
+
+        .delete-btn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 11px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #fff0f0;
+            color: #d32f2f;
+
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #ffe0e0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <h2>🎒 내 체크리스트</h2>
+
+        <div class="description">
+            여행별 준비물 체크리스트를 저장하고 관리할 수 있습니다.
+        </div>
+    </div>
+
+
+    <a href="/checklist"
+       class="create-btn">
+        + 새 체크리스트 만들기
+    </a>
+
+
+    {% if checklists %}
+
+        {% for checklist in checklists %}
+
+            <div class="checklist-card">
+
+                <div
+                    class="card-content"
+                    onclick="location.href='/checklist/{{ checklist.id }}'"
+                >
+
+                    <div class="title">
+                        {{ checklist.title }}
+                    </div>
+
+                    <div class="info">
+                        여행 날짜: {{ checklist.travel_date }}
+                    </div>
+
+                    {% if checklist.weather %}
+                        <div class="info">
+                            예상 날씨: {{ checklist.weather }}
+                        </div>
+                    {% endif %}
+
+                    <div class="progress">
+                        {{ checklist.checked_count or 0 }}
+                        /
+                        {{ checklist.total_count or 0 }}
+                        준비 완료
+                    </div>
+
+                </div>
+
+                <form
+                    method="POST"
+                    action="/checklist/delete/{{ checklist.id }}"
+                    onsubmit="return confirm('{{ checklist.title }} 체크리스트를 정말 삭제하시겠습니까?');"
+                >
+                    <button
+                        type="submit"
+                        class="delete-btn"
+                    >
+                        삭제하기
+                    </button>
+                </form>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            아직 저장된 체크리스트가 없습니다.<br><br>
+            새 체크리스트를 만들어보세요.
+        </div>
+
+    {% endif %}
+
+
+    <a href="/"
+       class="back">
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>

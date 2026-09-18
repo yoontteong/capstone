@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>직접 일정 만들기</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            margin-bottom: 9px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .dog-card {
+            padding: 16px;
+            border: 1px solid #e7e7e7;
+            border-radius: 16px;
+            background: #f8fbf8;
+        }
+
+        .dog-name {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .dog-info {
+            color: #666;
+            font-size: 13px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px;
+
+            border: 1px solid #ddd;
+            border-radius: 14px;
+
+            background: white;
+            font-size: 14px;
+        }
+
+        .period-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .period-card {
+            display: block;
+            padding: 14px 6px;
+
+            border: 1px solid #ddd;
+            border-radius: 14px;
+
+            text-align: center;
+            cursor: pointer;
+
+            font-size: 13px;
+        }
+
+        .period-card input {
+            display: none;
+        }
+
+        .period-card:has(input:checked) {
+            border: 2px solid #4caf50;
+            background: #f0fff3;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 15px;
+
+            border: none;
+            border-radius: 14px;
+
+            background: #4caf50;
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .next-btn:hover {
+            background: #43a047;
+        }
+
+        .back {
+            display: block;
+            margin-top: 20px;
+
+            text-align: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <h2>✏️ 직접 일정 만들기</h2>
+
+        <div class="description">
+            여행 기본 정보를 설정한 뒤 원하는 장소와 시간을 직접 구성해보세요.
+        </div>
+    </div>
+
+
+    <form action="/trip/manual/editor" method="POST">
+
+        <input
+            type="hidden"
+            name="dog_id"
+            value="{{ dog.id }}"
+        >
+
+
+        <div class="section">
+
+            <div class="section-title">
+                함께 여행할 반려견
+            </div>
+
+            <div class="dog-card">
+
+                <div class="dog-name">
+                    🐶 {{ dog.name }}
+                </div>
+
+                <div class="dog-info">
+
+                    {% if dog.breed %}
+                        {{ dog.breed }} ·
+                    {% endif %}
+
+                    {{ dog.size_category }}
+
+                    {% if dog.personality %}
+                        · {{ dog.personality }}
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <div class="section-title">
+                여행 제목
+            </div>
+
+            <input
+                type="text"
+                name="title"
+                placeholder="예: 보리와 함께하는 제주 여행"
+                required
+            >
+
+        </div>
+
+
+        <div class="section">
+
+            <div class="section-title">
+                여행 시작일
+            </div>
+
+            <input
+                type="date"
+                name="start_date"
+                required
+            >
+
+        </div>
+
+
+        <div class="section">
+
+            <div class="section-title">
+                여행 기간
+            </div>
+
+            <div class="period-grid">
+
+                <label class="period-card">
+                    <input
+                        type="radio"
+                        name="travel_period"
+                        value="당일치기"
+                        required
+                    >
+                    당일치기
+                </label>
+
+                <label class="period-card">
+                    <input
+                        type="radio"
+                        name="travel_period"
+                        value="1박2일"
+                    >
+                    1박 2일
+                </label>
+
+                <label class="period-card">
+                    <input
+                        type="radio"
+                        name="travel_period"
+                        value="2박3일"
+                    >
+                    2박 3일
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <div class="section-title">
+                이동수단
+            </div>
+
+            <select name="transport_type">
+
+                <option value="">
+                    선택하세요
+                </option>
+
+                <option value="뚜벅이">
+                    뚜벅이
+                </option>
+
+                <option value="대중교통">
+                    대중교통
+                </option>
+
+                <option value="자가용">
+                    자가용
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="next-btn"
+        >
+            일정 구성하기
+        </button>
+
+    </form>
+
+
+    <a
+        href="/trip/create"
+        class="back"
+    >
+        이전으로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>

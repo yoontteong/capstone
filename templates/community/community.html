@@ -82,6 +82,64 @@
             margin-top: 24px;
             color: #555;
         }
+
+        .community-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0 28px;
+        }
+
+        .community-menu-card {
+            display: block;
+            padding: 18px 12px;
+
+            background: white;
+            border: 1px solid #eeeeee;
+            border-radius: 16px;
+
+            text-decoration: none;
+            color: #222;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+            transition: 0.2s;
+        }
+
+        .community-menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .menu-icon {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .menu-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .menu-description {
+            font-size: 12px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+
+        /* 모바일 */
+        @media (max-width: 600px) {
+
+            .community-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .community-menu-card {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 
@@ -93,6 +151,34 @@
 
     <div class="subtitle">
         반려견과 함께한 여행 정보와 이야기를 공유해보세요.
+    </div>
+
+    <div class="community-menu">
+
+        <a href="/community" class="community-menu-card">
+            <div class="menu-icon">💬</div>
+            <div class="menu-title">자유게시판</div>
+            <div class="menu-description">
+                여행 정보와 이야기를 자유롭게 공유해보세요.
+            </div>
+        </a>
+
+        <a href="/reviews" class="community-menu-card">
+            <div class="menu-icon">📍</div>
+            <div class="menu-title">장소 후기</div>
+            <div class="menu-description">
+                반려견과 방문한 장소의 후기를 확인해보세요.
+            </div>
+        </a>
+
+        <a href="/matches" class="community-menu-card">
+            <div class="menu-icon">🐾</div>
+            <div class="menu-title">여행 메이트</div>
+            <div class="menu-description">
+                반려견 성향에 맞는 여행 친구를 찾아보세요.
+            </div>
+        </a>
+
     </div>
 
     <button

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>여행 메이트 모집글 수정</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 25px 20px 40px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .description {
+            margin-bottom: 25px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+
+            border: 1px solid #ddd;
+            border-radius: 12px;
+
+            background: white;
+
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+
+        textarea {
+            height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* 반려견 정보 */
+
+        .dog-box {
+            padding: 15px;
+
+            border-radius: 14px;
+            background: #f3f8f3;
+
+            line-height: 1.7;
+        }
+
+        .dog-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .dog-info {
+            margin-top: 3px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .dog-description {
+            margin-top: 8px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* 버튼 */
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .save-btn {
+            flex: 1;
+
+            padding: 14px;
+
+            border: none;
+            border-radius: 13px;
+
+            background: #4caf50;
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #43a047;
+        }
+
+        .cancel-btn {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 14px;
+
+            border-radius: 13px;
+
+            background: #f1f1f1;
+            color: #555;
+
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .cancel-btn:hover {
+            background: #e7e7e7;
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <h1>
+        ✏️ 모집글 수정
+    </h1>
+
+    <div class="description">
+        여행 메이트 모집 정보를 수정할 수 있습니다.
+    </div>
+
+
+    <form method="POST">
+
+        <!-- =========================
+             반려견
+        ========================== -->
+
+        <label>
+            함께할 반려견
+        </label>
+
+        <div class="dog-box">
+
+            <div class="dog-name">
+                🐶 {{ match.dog_name }}
+            </div>
+
+            <div class="dog-info">
+                {{ match.dog_size }}
+
+                {% if match.dog_personality %}
+                    · {{ match.dog_personality }}
+                {% endif %}
+            </div>
+
+            <div class="dog-description">
+                모집글 작성 후에는 반려견을 변경할 수 없습니다.
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             제목
+        ========================== -->
+
+        <label>
+            제목
+        </label>
+
+        <input
+            type="text"
+            name="title"
+            value="{{ match.title }}"
+            placeholder="예: 애월 같이 산책하실 분!"
+            required
+        >
+
+
+        <!-- =========================
+             여행 날짜
+        ========================== -->
+
+        <label>
+            여행 날짜
+        </label>
+
+        <input
+            type="date"
+            name="travel_date"
+            value="{{ match.travel_date }}"
+            required
+        >
+
+
+        <!-- =========================
+             지역
+        ========================== -->
+
+        <label>
+            지역
+        </label>
+
+        <select
+            name="region"
+            required
+        >
+
+            <option value="">
+                지역을 선택해주세요
+            </option>
+
+            <option
+                value="제주시"
+                {% if match.region == "제주시" %}selected{% endif %}
+            >
+                제주시
+            </option>
+
+            <option
+                value="애월"
+                {% if match.region == "애월" %}selected{% endif %}
+            >
+                애월
+            </option>
+
+            <option
+                value="한림"
+                {% if match.region == "한림" %}selected{% endif %}
+            >
+                한림
+            </option>
+
+            <option
+                value="조천"
+                {% if match.region == "조천" %}selected{% endif %}
+            >
+                조천
+            </option>
+
+            <option
+                value="구좌"
+                {% if match.region == "구좌" %}selected{% endif %}
+            >
+                구좌
+            </option>
+
+            <option
+                value="성산"
+                {% if match.region == "성산" %}selected{% endif %}
+            >
+                성산
+            </option>
+
+            <option
+                value="서귀포"
+                {% if match.region == "서귀포" %}selected{% endif %}
+            >
+                서귀포
+            </option>
+
+            <option
+                value="중문"
+                {% if match.region == "중문" %}selected{% endif %}
+            >
+                중문
+            </option>
+
+        </select>
+
+
+        <!-- =========================
+             모집 인원
+        ========================== -->
+
+        <label>
+            총 모집 인원
+        </label>
+
+        <input
+            type="number"
+            name="max_people"
+            value="{{ match.max_people }}"
+            min="2"
+            max="10"
+            required
+        >
+
+
+        <!-- =========================
+             내용
+        ========================== -->
+
+        <label>
+            내용
+        </label>
+
+        <textarea
+            name="content"
+            placeholder="어떤 여행을 함께하고 싶은지 적어주세요."
+            required
+        >{{ match.content }}</textarea>
+
+
+        <!-- =========================
+             버튼
+        ========================== -->
+
+        <div class="button-row">
+
+            <a
+                href="/matches/{{ match.id }}"
+                class="cancel-btn"
+            >
+                취소
+            </a>
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                수정 완료
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

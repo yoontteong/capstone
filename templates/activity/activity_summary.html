@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>반려견 활동성</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            background: #f5f5f5;
+
+            font-family: Arial, sans-serif;
+
+            color: #222;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 460px;
+            min-height: 100vh;
+
+            margin: 0 auto;
+
+            padding: 24px 18px 40px;
+
+            background: white;
+        }
+
+        h2 {
+            margin: 0 0 6px;
+        }
+
+        .subtitle {
+            margin-bottom: 22px;
+
+            color: #888;
+            font-size: 13px;
+        }
+
+        .dog-card {
+            padding: 16px;
+
+            margin-bottom: 18px;
+
+            background: #f7f7f7;
+
+            border-radius: 16px;
+            border: 1px solid #eee;
+        }
+
+        .dog-name {
+            font-size: 20px;
+            font-weight: bold;
+
+            margin-bottom: 6px;
+        }
+
+        .dog-info {
+            color: #777;
+
+            font-size: 13px;
+        }
+
+        .score-box {
+            padding: 25px 15px;
+
+            margin-bottom: 18px;
+
+            background: #f3f8f3;
+
+            border-radius: 18px;
+
+            text-align: center;
+        }
+
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+
+            color: #2e7d32;
+        }
+
+        .score-label {
+            margin-top: 5px;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .confidence {
+            margin-top: 9px;
+
+            color: #777;
+
+            font-size: 12px;
+        }
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 8px;
+
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            padding: 14px 5px;
+
+            background: #fafafa;
+
+            border: 1px solid #eee;
+
+            border-radius: 12px;
+
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+
+            color: #999;
+
+            font-size: 11px;
+        }
+
+        .detail-box {
+            padding: 16px;
+
+            border: 1px solid #eee;
+
+            border-radius: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .detail-title {
+            font-weight: bold;
+
+            margin-bottom: 12px;
+        }
+
+        .score-row {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            margin: 10px 0;
+
+            font-size: 14px;
+        }
+
+        .notice {
+            padding: 13px;
+
+            background: #f7f7f7;
+
+            border-radius: 12px;
+
+            color: #777;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+        .button {
+            display: block;
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 10px;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .history-btn {
+            background: #4caf50;
+
+            color: white;
+        }
+
+        .home-btn {
+            background: #eee;
+
+            color: #555;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <h2>
+        ⚡ 반려견 활동성
+    </h2>
+
+
+    <div class="subtitle">
+        최근 GPS 활동 기록을 기반으로 분석합니다.
+    </div>
+
+
+    <div class="dog-card">
+
+        <div class="dog-name">
+
+            🐶
+            {{ summary.dog.name }}
+
+        </div>
+
+
+        <div class="dog-info">
+
+            {% if summary.dog.breed %}
+
+                {{ summary.dog.breed }}
+
+            {% endif %}
+
+
+            · {{ summary.dog.size_category }}
+
+
+            {% if summary.dog.personality %}
+
+                · {{ summary.dog.personality }}
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    {% if summary.activity_score is not none %}
+
+
+        <!-- 활동성 점수 -->
+        <div class="score-box">
+
+            <div class="score">
+
+                {{ summary.activity_score }}
+
+                <span style="font-size:20px;">
+                    / 100
+                </span>
+
+            </div>
+
+
+            <div class="score-label">
+
+                활동성
+                {{ summary.activity_level }}
+
+            </div>
+
+
+            <div class="confidence">
+
+                GPS 기록
+                {{ summary.record_count }}회
+
+                · 데이터 신뢰도
+                {{ summary.confidence }}%
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 실제 GPS 평균 -->
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-value">
+
+                    {{ summary.avg_distance }}
+                    km
+
+                </div>
+
+                <div class="stat-label">
+                    평균 거리
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-value">
+
+                    {{ summary.avg_duration_minutes }}
+                    분
+
+                </div>
+
+                <div class="stat-label">
+                    평균 활동시간
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-value">
+
+                    {{ summary.avg_speed }}
+                    km/h
+
+                </div>
+
+                <div class="stat-label">
+                    평균 속도
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 점수 구성 -->
+        <div class="detail-box">
+
+            <div class="detail-title">
+                활동성 분석
+            </div>
+
+
+            <div class="score-row">
+
+                <span>
+                    🚶 이동거리
+                </span>
+
+                <strong>
+
+                    {{ summary.distance_score }}
+                    / 50
+
+                </strong>
+
+            </div>
+
+
+            <div class="score-row">
+
+                <span>
+                    ⏱ 활동시간
+                </span>
+
+                <strong>
+
+                    {{ summary.duration_score }}
+                    / 50
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="score-box">
+
+            아직 활동 기록이 없습니다.
+
+        </div>
+
+
+    {% endif %}
+
+
+
+    <div class="notice">
+
+        현재 활동성 점수는 반려견의 체급과 최근 GPS 활동 기록을
+        바탕으로 계산한 여행 메이트 매칭용 지표입니다.
+        건강상 적정 운동량을 의미하지 않습니다.
+
+    </div>
+
+
+
+    <a
+        href="/activity/history"
+        class="button history-btn">
+
+        활동 기록 보기
+
+    </a>
+
+
+    <a
+        href="/"
+        class="button home-btn">
+
+        메인으로 돌아가기
+
+    </a>
+
+
+</div>
+
+</body>
+
+</html>

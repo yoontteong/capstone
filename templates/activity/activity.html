@@ -7,276 +7,1399 @@
 
     <title>활동 기록</title>
 
-    <style>
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css"
+    >
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
+    <style>
+        * {
+            box-sizing: border-box;
         }
 
-        .box {
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 460px;
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 24px 18px 40px;
             background: white;
-            border-radius: 20px;
-            padding: 20px;
         }
 
         h2 {
-            margin-bottom: 20px;
+            margin: 0 0 22px;
+            font-size: 24px;
         }
 
-        .info {
-            font-size: 18px;
-            line-height: 2;
+        .main-distance {
+            margin-bottom: 24px;
+        }
+
+        .distance-number {
+            font-size: 52px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .distance-unit {
+            margin-top: 8px;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .summary-card {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+
+        .summary-value {
+            margin-bottom: 5px;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .summary-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        #status {
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #f7f7f7;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #map {
+            width: 100%;
+            height: 420px;
+            margin-bottom: 18px;
+            border: 1px solid #ddd;
+            border-radius: 18px;
+            overflow: hidden;
         }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
+            margin-top: 10px;
             border: none;
             border-radius: 12px;
-            margin-top: 10px;
-            background: #4caf50;
-            color: white;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
+            color: white;
+            cursor: pointer;
         }
 
-        #status {
-            margin-top: 15px;
-            font-size: 18px;
-            font-weight: bold;
+        #startBtn {
+            background: #4caf50;
+        }
+
+        #stopBtn {
+            background: #ef5350;
+        }
+
+        .test-btn {
+            background: #607d8b;
         }
 
         button:disabled {
-            background: #cccccc;
+            background: #ccc !important;
+            cursor: default;
+        }
+
+        .back-btn {
+            display: block;
+            margin-top: 18px;
+            text-align: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
         }
 
         #secure-check {
             display: none;
         }
 
+        .distance-marker {
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 20px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #saveBtn {
+            background: #1976d2;
+        }
+
+        .history-btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 14px;
+
+            border-radius: 14px;
+
+            background: #eeeeee;
+            color: #555;
+
+            text-align: center;
+            text-decoration: none;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
 
-<p id="secure-check"></p>
+<div class="app">
 
-<div class="box">
+    <p id="secure-check"></p>
 
     <h2>🐶 반려견 활동 기록</h2>
 
-    <div class="info">
-        <div>이동 거리: <span id="distance">0</span> km</div>
-        <div>활동 시간: <span id="time">0분 0초</span></div>
+    <div>
+        <label for="dog-select">
+            활동할 반려견
+        </label>
+
+        <select id="dog-select">
+            {% for dog in dogs %}
+                <option value="{{ dog.id }}">
+                    {{ dog.name }}
+                    {% if dog.breed %}
+                        - {{ dog.breed }}
+                    {% endif %}
+                </option>
+            {% endfor %}
+        </select>
+    </div>  
+
+    <!-- 총 이동 거리 -->
+    <div class="main-distance">
+
+        <div class="distance-number">
+            <span id="distance">0.00</span>
+        </div>
+
+        <div class="distance-unit">
+            킬로미터
+        </div>
+
     </div>
+
+
+    <!-- 활동 요약 -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div
+                class="summary-value"
+                id="time">
+                0분 0초
+            </div>
+
+            <div class="summary-label">
+                활동 시간
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div
+                class="summary-value"
+                id="speed">
+                0.0 km/h
+            </div>
+
+            <div class="summary-label">
+                평균 속도
+            </div>
+
+        </div>
+
+    </div>
+
 
     <div id="status">
-    기록 대기 중
+        기록 대기 중
     </div>
 
-    <button id="startBtn" onclick="startTracking()">
+
+    <!-- 지도 -->
+    <div id="map"></div>
+
+
+    <button
+        id="startBtn"
+        onclick="startTracking()">
         기록 시작
     </button>
 
-    <button id="stopBtn" onclick="stopTracking()" disabled>
+
+    <button
+        id="stopBtn"
+        onclick="stopTracking()"
+        disabled>
         기록 종료
     </button>
 
-    <button onclick="testGPS()">
-    GPS 테스트
-</button>
+    <button
+        id="saveBtn"
+        onclick="saveActivity()"
+        disabled>
+        활동 기록 저장
+    </button>
+
+    <a
+        href="/activity/history"
+        class="history-btn"
+    >
+        📋 지난 활동 기록 보기
+    </a>
+
+
+    <button
+        class="test-btn"
+        onclick="testGPS()">
+        GPS 테스트
+    </button>
+
+
+    <a
+        href="/"
+        class="back-btn">
+        메인으로 돌아가기
+    </a>
 
 </div>
 
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
 <script>
 
-document.getElementById("secure-check").innerText =
-    "보안 환경 여부: " + window.isSecureContext;
+/* =========================================
+   보안 환경 확인
+========================================= */
 
+document.getElementById(
+    "secure-check"
+).innerText =
+    "보안 환경 여부: "
+    + window.isSecureContext;
+
+
+/* =========================================
+   활동 기록 변수
+========================================= */
 
 let timerInterval = null;
 let watchId = null;
+
 let isTracking = false;
+
 let positions = [];
+
 let totalDistance = 0;
+
 let startTime = null;
+
+
+/* =========================================
+   지도 변수
+========================================= */
+
+let map = null;
+
+let routeLine = null;
+
+let startMarker = null;
+
+let currentMarker = null;
+
+let endMarker = null;
+
+let distanceMarkers = [];
+
+let nextDistanceMarker = 1;
+
+let finalDurationSeconds = 0;
+
+
+/* =========================================
+   지도 초기화
+========================================= */
+
+function initMap() {
+
+    map = L.map(
+        "map",
+        {
+            zoomControl: true
+        }
+    ).setView(
+        [33.3617, 126.5292],
+        10
+    );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "OpenStreetMap"
+        }
+    ).addTo(map);
+
+}
+
+
+/* =========================================
+   지도 기록 초기화
+========================================= */
+
+function resetMap() {
+
+    if (!map) {
+        return;
+    }
+
+
+    if (routeLine) {
+
+        map.removeLayer(
+            routeLine
+        );
+
+        routeLine = null;
+
+    }
+
+
+    if (startMarker) {
+
+        map.removeLayer(
+            startMarker
+        );
+
+        startMarker = null;
+
+    }
+
+
+    if (currentMarker) {
+
+        map.removeLayer(
+            currentMarker
+        );
+
+        currentMarker = null;
+
+    }
+
+
+    if (endMarker) {
+
+        map.removeLayer(
+            endMarker
+        );
+
+        endMarker = null;
+
+    }
+
+
+    distanceMarkers.forEach(
+        marker => {
+
+            map.removeLayer(
+                marker
+            );
+
+        }
+    );
+
+
+    distanceMarkers = [];
+
+    nextDistanceMarker = 1;
+
+
+    map.setView(
+        [33.3617, 126.5292],
+        10
+    );
+
+}
+
+
+/* =========================================
+   활동 기록 시작
+========================================= */
 
 function startTracking() {
 
     if (!navigator.geolocation) {
 
-        alert("GPS를 지원하지 않는 브라우저입니다.");
+        alert(
+            "GPS를 지원하지 않는 브라우저입니다."
+        );
+
         return;
     }
 
+
     if (isTracking) {
-    return;
+        return;
     }
+
 
     isTracking = true;
 
-    document.getElementById("status")
-        .innerText = "🟢 활동 기록 중...";
-
-    document.getElementById("startBtn")
-        .disabled = true;
-
-    document.getElementById("stopBtn")
-        .disabled = false;
-    
-
     positions = [];
-    totalDistance = 0;
 
-    document.getElementById("distance").innerText = "0";
-    document.getElementById("time").innerText = "0";
+    totalDistance = 0;
 
     startTime = new Date();
 
-    timerInterval = setInterval(function() {
 
-        if (!isTracking) {
-            return;
-        }
+    resetMap();
 
-        const now = new Date();
 
-        const totalSeconds =
-            Math.floor((now - startTime) / 1000);
+    document.getElementById(
+        "distance"
+    ).innerText =
+        "0.00";
 
-        const minutes =
-        Math.floor(totalSeconds / 60);
 
-        const seconds =
-            totalSeconds % 60;
+    document.getElementById(
+        "time"
+    ).innerText =
+        "0분 0초";
 
-        document.getElementById("time")
-            .innerText =
-            minutes + "분 " + seconds + "초";
 
-    }, 1000);
+    document.getElementById(
+        "speed"
+    ).innerText =
+        "0.0 km/h";
 
-    watchId =
-        navigator.geolocation.watchPosition(
-            updatePosition,
-            errorPosition,
-            {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 10000
-            }
+
+    document.getElementById(
+        "status"
+    ).innerText =
+        "🟢 활동 기록 중...";
+
+
+    document.getElementById(
+        "startBtn"
+    ).disabled =
+        true;
+
+
+    document.getElementById(
+        "stopBtn"
+    ).disabled =
+        false;
+
+
+    /* 활동 시간 갱신 */
+
+    timerInterval =
+        setInterval(
+            updateTimer,
+            1000
         );
 
-    alert("활동 기록 시작");
+
+    /* GPS 위치 추적 */
+
+    watchId =
+        navigator.geolocation
+        .watchPosition(
+
+            updatePosition,
+
+            errorPosition,
+
+            {
+                enableHighAccuracy:
+                    true,
+
+                maximumAge:
+                    0,
+
+                timeout:
+                    15000
+            }
+
+        );
+
+
+    alert(
+        "활동 기록 시작"
+    );
+
 }
 
-function updatePosition(position) {
+
+/* =========================================
+   활동시간 + 평균속도 계산
+========================================= */
+
+function updateTimer() {
 
     if (!isTracking) {
         return;
     }
 
-    if (watchId === null) {
-        return;
-    }
 
-    const accuracy = position.coords.accuracy;
+    const now =
+        new Date();
 
-    if (accuracy > 50) {
-        return;
-    }
 
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
-
-    const current = {
-        lat: lat,
-        lng: lng
-    };
-
-    // 첫 위치 저장
-    if (positions.length === 0) {
-
-        positions.push(current);
-
-    } else {
-
-        const prev =
-            positions[positions.length - 1];
-
-        const distance = calculateDistance(
-            prev.lat,
-            prev.lng,
-            current.lat,
-            current.lng
+    const totalSeconds =
+        Math.floor(
+            (now - startTime)
+            / 1000
         );
 
-        // GPS 순간 튐 방지
-        if (distance < 0.1) {
 
-            totalDistance += distance;
+    const minutes =
+        Math.floor(
+            totalSeconds / 60
+        );
 
-            positions.push(current);
 
-            document.getElementById("distance")
-                .innerText = totalDistance.toFixed(2);
+    const seconds =
+        totalSeconds % 60;
+
+
+    document.getElementById(
+        "time"
+    ).innerText =
+        minutes
+        + "분 "
+        + seconds
+        + "초";
+
+
+    const hours =
+        totalSeconds / 3600;
+
+
+    let averageSpeed =
+        0;
+
+
+    if (
+        hours > 0
+    ) {
+
+        averageSpeed =
+            totalDistance
+            / hours;
+
+    }
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+        averageSpeed
+        .toFixed(1)
+        + " km/h";
+
+}
+
+
+/* =========================================
+   GPS 위치 업데이트
+========================================= */
+
+function updatePosition(
+    position
+) {
+
+    if (!isTracking) {
+        return;
+    }
+
+
+    const accuracy =
+        position.coords.accuracy;
+
+
+    const gpsSpeed =
+        position.coords.speed;
+
+
+    /*
+        정확도가 25m보다 나쁘면 무시
+
+        실내나 건물 주변에서
+        크게 튀는 좌표 방지
+    */
+
+    if (
+        accuracy > 25
+    ) {
+
+        console.log(
+            "GPS 정확도 낮음:",
+            accuracy
+        );
+
+        return;
+    }
+
+
+    const lat =
+        position.coords.latitude;
+
+
+    const lng =
+        position.coords.longitude;
+
+
+    const current = {
+
+        lat: lat,
+        lng: lng,
+        time: Date.now()
+
+    };
+
+
+    /* =====================================
+       첫 위치
+    ===================================== */
+
+    if (
+        positions.length === 0
+    ) {
+
+        positions.push(
+            current
+        );
+
+
+        /*
+            첫 GPS 위치로 확대
+        */
+
+        map.setView(
+            [lat, lng],
+            18
+        );
+
+
+        /*
+            출발점
+        */
+
+        startMarker =
+            L.circleMarker(
+                [lat, lng],
+                {
+                    radius: 8,
+
+                    color:
+                        "#2e7d32",
+
+                    fillColor:
+                        "#4caf50",
+
+                    fillOpacity:
+                        1,
+
+                    weight:
+                        3
+                }
+            )
+            .addTo(map)
+            .bindTooltip(
+                "출발"
+            );
+
+
+        /*
+            현재 위치
+        */
+
+        currentMarker =
+            L.circleMarker(
+                [lat, lng],
+                {
+                    radius: 7,
+
+                    color:
+                        "#1565c0",
+
+                    fillColor:
+                        "#2196f3",
+
+                    fillOpacity:
+                        1,
+
+                    weight:
+                        3
+                }
+            )
+            .addTo(map);
+
+
+        return;
+
+    }
+
+
+    /* =====================================
+       이전 위치와 현재 위치 거리 계산
+    ===================================== */
+
+    const prev =
+        positions[
+            positions.length - 1
+        ];
+
+
+    const distance =
+        calculateDistance(
+
+            prev.lat,
+            prev.lng,
+
+            current.lat,
+            current.lng
+
+        );
+
+
+    /*
+        3m 미만 움직임은
+        GPS 흔들림으로 판단
+    */
+
+    if (
+        distance < 0.003
+    ) {
+
+        return;
+    }
+
+
+    /*
+        한번에 30m 이상 이동했다면
+        GPS 순간 튐으로 판단
+
+        걷기 기록에 맞춘 기준
+    */
+
+    if (
+        distance >= 0.03
+    ) {
+
+        console.log(
+            "GPS 순간 튐 제거:",
+            distance,
+            "km"
+        );
+
+        return;
+    }
+
+
+    /*
+        스마트폰 GPS가 속도값을 제공하고
+        시속 15km 이상이라면
+        걷기/산책 기록으로 비정상 판단
+    */
+
+    if (
+        gpsSpeed !== null
+        && gpsSpeed >= 0
+        && gpsSpeed * 3.6 > 15
+    ) {
+
+        console.log(
+            "비정상 GPS 속도 제거:",
+            gpsSpeed * 3.6,
+            "km/h"
+        );
+
+        return;
+    }
+
+
+    /*
+        이전 정상 GPS와 시간 차이 계산
+    */
+
+    const elapsedSeconds =
+        (
+            current.time
+            - prev.time
+        )
+        / 1000;
+
+
+    /*
+        시간 기준으로 계산한 구간 속도
+
+        예:
+        GPS 자체 speed 값이 없더라도
+        실제 좌표 이동속도로 추가 검증
+    */
+
+    if (
+        elapsedSeconds > 0
+    ) {
+
+        const calculatedSpeed =
+            distance
+            /
+            (
+                elapsedSeconds
+                / 3600
+            );
+
+
+        /*
+            좌표상 계산된 속도가
+            15km/h 이상이면 무시
+        */
+
+        if (
+            calculatedSpeed > 15
+        ) {
+
+            console.log(
+                "계산 속도 이상:",
+                calculatedSpeed
+            );
+
+            return;
         }
+
+    }
+
+
+    /* =====================================
+       정상 GPS 좌표로 인정
+    ===================================== */
+
+    totalDistance +=
+        distance;
+
+
+    positions.push(
+        current
+    );
+
+
+    document.getElementById(
+        "distance"
+    ).innerText =
+        totalDistance
+        .toFixed(2);
+
+
+    updateRoute();
+
+
+    updateCurrentMarker(
+        lat,
+        lng
+    );
+
+
+    addDistanceMarkerIfNeeded(
+        lat,
+        lng
+    );
+
+
+    /*
+        현재 위치를 따라감
+    */
+
+    map.panTo(
+        [lat, lng]
+    );
+
+}
+
+
+/* =========================================
+   이동 경로 그리기
+========================================= */
+
+function updateRoute() {
+
+    if (
+        positions.length < 2
+    ) {
+
+        return;
+    }
+
+
+    const routePoints =
+        positions.map(
+            pos => [
+
+                pos.lat,
+                pos.lng
+
+            ]
+        );
+
+
+    if (
+        routeLine
+    ) {
+
+        map.removeLayer(
+            routeLine
+        );
+
+    }
+
+
+    routeLine =
+        L.polyline(
+            routePoints,
+            {
+                color:
+                    "#4285f4",
+
+                weight:
+                    6,
+
+                opacity:
+                    0.9,
+
+                lineJoin:
+                    "round",
+
+                lineCap:
+                    "round"
+            }
+        )
+        .addTo(map);
+
+}
+
+
+/* =========================================
+   현재 위치 마커 이동
+========================================= */
+
+function updateCurrentMarker(
+    lat,
+    lng
+) {
+
+    if (
+        !currentMarker
+    ) {
+
+        return;
+    }
+
+
+    currentMarker
+        .setLatLng(
+            [lat, lng]
+        );
+
+}
+
+
+/* =========================================
+   거리 마커
+
+   1km마다 생성
+========================================= */
+
+function addDistanceMarkerIfNeeded(
+    lat,
+    lng
+) {
+
+    /*
+        한 번에 여러 km 기준점을
+        넘어갈 가능성까지 처리
+    */
+
+    while (
+        totalDistance
+        >= nextDistanceMarker
+    ) {
+
+        const distanceIcon =
+            L.divIcon({
+
+                className:
+                    "distance-marker",
+
+                html:
+                    nextDistanceMarker
+                    + " km",
+
+                iconSize:
+                    null
+
+            });
+
+
+        const marker =
+            L.marker(
+                [lat, lng],
+                {
+                    icon:
+                        distanceIcon
+                }
+            )
+            .addTo(map);
+
+
+        distanceMarkers.push(
+            marker
+        );
+
+
+        nextDistanceMarker +=
+            1;
+
     }
 
 }
+
+
+/* =========================================
+   활동 기록 종료
+========================================= */
 
 function stopTracking() {
 
-    isTracking = false;
-    
-    if (watchId !== null) {
+    if (!isTracking) {
+        return;
+    }
 
-        navigator.geolocation.clearWatch(
-            watchId
+    // 최종 활동 시간 저장
+    finalDurationSeconds =
+        Math.floor(
+            (new Date() - startTime) / 1000
         );
 
-        watchId = null;
+    isTracking = false;
+
+
+    /*
+        GPS 추적 종료
+    */
+
+    if (
+        watchId !== null
+    ) {
+
+        navigator.geolocation
+            .clearWatch(
+                watchId
+            );
+
+        watchId =
+            null;
+
     }
 
-    clearInterval(timerInterval);
-    timerInterval = null;
 
-    document.getElementById("status")
-        .innerText = "🔴 활동 기록 종료";
+    /*
+        타이머 종료
+    */
 
-    document.getElementById("startBtn")
-        .disabled = false;
+    if (
+        timerInterval !== null
+    ) {
 
-    document.getElementById("stopBtn")
-        .disabled = true;
+        clearInterval(
+            timerInterval
+        );
 
-    alert("활동 기록 종료");
+        timerInterval =
+            null;
+
+    }
+
+
+    /*
+        현재 위치 파란 점 제거
+    */
+
+    if (
+        currentMarker
+    ) {
+
+        map.removeLayer(
+            currentMarker
+        );
+
+        currentMarker =
+            null;
+
+    }
+
+
+    /*
+        종료점 생성
+    */
+
+    if (
+        positions.length > 0
+    ) {
+
+        const last =
+            positions[
+                positions.length - 1
+            ];
+
+
+        endMarker =
+            L.circleMarker(
+                [
+                    last.lat,
+                    last.lng
+                ],
+                {
+                    radius:
+                        8,
+
+                    color:
+                        "#b71c1c",
+
+                    fillColor:
+                        "#f44336",
+
+                    fillOpacity:
+                        1,
+
+                    weight:
+                        3
+                }
+            )
+            .addTo(map)
+            .bindTooltip(
+                "종료"
+            );
+
+    }
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
+        "🔴 활동 기록 종료";
+
+
+    document.getElementById(
+        "startBtn"
+    ).disabled =
+        false;
+
+
+    document.getElementById(
+        "stopBtn"
+    ).disabled =
+        true;
+    
+    document.getElementById(
+        "saveBtn"
+    ).disabled =
+        positions.length === 0;    
+
+
+    /*
+        마지막 평균 속도도 한 번 계산
+    */
+
+    updateFinalSpeed();
+
+
+    /*
+        전체 경로가 보이도록
+        지도 확대/축소
+    */
+
+    if (
+        routeLine
+        && positions.length > 1
+    ) {
+
+        map.fitBounds(
+            routeLine.getBounds(),
+            {
+                padding:
+                    [30, 30]
+            }
+        );
+
+    }
+
+
+    alert(
+        "활동 기록 종료"
+    );
+
 }
 
-function errorPosition(error) {
 
-    console.log(error);
+/* =========================================
+   활동 종료 시 평균 속도
+========================================= */
 
-    switch(error.code) {
+function updateFinalSpeed() {
+
+    if (
+        !startTime
+    ) {
+
+        return;
+    }
+
+
+    const now =
+        new Date();
+
+
+    const totalSeconds =
+        Math.floor(
+            (now - startTime)
+            / 1000
+        );
+
+
+    const hours =
+        totalSeconds / 3600;
+
+
+    let averageSpeed =
+        0;
+
+
+    if (
+        hours > 0
+    ) {
+
+        averageSpeed =
+            totalDistance
+            / hours;
+
+    }
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+        averageSpeed
+        .toFixed(1)
+        + " km/h";
+
+}
+
+
+/* =========================================
+   GPS 에러
+========================================= */
+
+function errorPosition(
+    error
+) {
+
+    console.log(
+        error
+    );
+
+
+    switch(
+        error.code
+    ) {
 
         case error.PERMISSION_DENIED:
-            alert("위치 권한이 거부되었습니다.");
+
+            alert(
+                "위치 권한이 거부되었습니다."
+            );
+
             break;
+
 
         case error.POSITION_UNAVAILABLE:
-            alert("위치 정보를 사용할 수 없습니다.");
+
+            alert(
+                "위치 정보를 사용할 수 없습니다."
+            );
+
             break;
+
 
         case error.TIMEOUT:
-            alert("위치 요청 시간이 초과되었습니다.");
+
+            alert(
+                "위치 요청 시간이 초과되었습니다."
+            );
+
             break;
 
+
         default:
-            alert("GPS 오류");
+
+            alert(
+                "GPS 오류"
+            );
+
     }
+
 }
+
+
+/* =========================================
+   두 GPS 좌표 사이 거리 계산
+
+   Haversine 공식
+========================================= */
 
 function calculateDistance(
     lat1,
@@ -285,56 +1408,316 @@ function calculateDistance(
     lon2
 ) {
 
-    const R = 6371;
+    const R =
+        6371;
+
 
     const dLat =
-        (lat2 - lat1) * Math.PI / 180;
+        (
+            lat2 - lat1
+        )
+        * Math.PI
+        / 180;
+
 
     const dLon =
-        (lon2 - lon1) * Math.PI / 180;
+        (
+            lon2 - lon1
+        )
+        * Math.PI
+        / 180;
+
 
     const a =
-        Math.sin(dLat / 2) *
-        Math.sin(dLat / 2) +
 
-        Math.cos(lat1 * Math.PI / 180) *
-        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(
+            dLat / 2
+        )
+        *
+        Math.sin(
+            dLat / 2
+        )
 
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+        +
 
-    const c =
-        2 * Math.atan2(
-            Math.sqrt(a),
-            Math.sqrt(1 - a)
+        Math.cos(
+            lat1
+            * Math.PI
+            / 180
+        )
+
+        *
+
+        Math.cos(
+            lat2
+            * Math.PI
+            / 180
+        )
+
+        *
+
+        Math.sin(
+            dLon / 2
+        )
+
+        *
+
+        Math.sin(
+            dLon / 2
         );
 
+
+    const c =
+
+        2
+        *
+        Math.atan2(
+
+            Math.sqrt(a),
+
+            Math.sqrt(
+                1 - a
+            )
+
+        );
+
+
     return R * c;
+
 }
 
 
+/* =========================================
+   GPS 테스트
+========================================= */
+
 function testGPS() {
 
-    navigator.geolocation.getCurrentPosition(
+    if (
+        !navigator.geolocation
+    ) {
 
-        function(position) {
+        alert(
+            "GPS를 지원하지 않는 브라우저입니다."
+        );
+
+        return;
+    }
+
+
+    navigator.geolocation
+        .getCurrentPosition(
+
+            function(
+                position
+            ) {
+
+                const lat =
+                    position
+                    .coords
+                    .latitude;
+
+
+                const lng =
+                    position
+                    .coords
+                    .longitude;
+
+
+                const accuracy =
+                    position
+                    .coords
+                    .accuracy;
+
+
+                map.setView(
+                    [lat, lng],
+                    18
+                );
+
+
+                alert(
+                    "GPS 성공"
+                    + "\n위도: "
+                    + lat
+                    + "\n경도: "
+                    + lng
+                    + "\n정확도: 약 "
+                    + Math.round(
+                        accuracy
+                    )
+                    + "m"
+                );
+
+            },
+
+
+            function(
+                error
+            ) {
+
+                console.log(
+                    error
+                );
+
+
+                alert(
+                    "GPS 에러 코드: "
+                    + error.code
+                );
+
+            },
+
+
+            {
+                enableHighAccuracy:
+                    true,
+
+                timeout:
+                    15000,
+
+                maximumAge:
+                    0
+            }
+
+        );
+
+}
+
+
+/* =========================================
+   페이지 로드
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        initMap();
+
+    }
+);
+
+function saveActivity() {
+
+    if (positions.length === 0) {
+
+        alert(
+            "저장할 GPS 기록이 없습니다."
+        );
+
+        return;
+    }
+
+
+    if (!startTime) {
+
+        alert(
+            "활동 기록 정보가 없습니다."
+        );
+
+        return;
+    }
+
+
+    const hours =
+        finalDurationSeconds
+        / 3600;
+
+
+    let averageSpeed = 0;
+
+
+    if (hours > 0) {
+
+        averageSpeed =
+            totalDistance
+            / hours;
+
+    }
+
+    const dogId =
+        document.getElementById(
+            "dog-select"
+        ).value;
+
+
+    const data = {
+
+        // 현재는 테스트용 보리 ID
+        dog_id: dogId,
+
+        distance_km:
+            Number(
+                totalDistance.toFixed(3)
+            ),
+
+        duration_seconds:
+            finalDurationSeconds,
+
+        average_speed:
+            Number(
+                averageSpeed.toFixed(2)
+            ),
+
+        positions:
+            positions
+
+    };
+
+
+    fetch(
+        "/activity/save",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(data)
+        }
+    )
+
+    .then(
+        response =>
+            response.json()
+    )
+
+    .then(
+        data => {
+
+            if (data.success) {
+
+                alert(
+                    "활동 기록이 저장되었습니다!"
+                );
+
+                window.location.href =
+                    "/activity/history";
+
+            } else {
+
+                alert(
+                    data.message
+                    || "저장에 실패했습니다."
+                );
+
+            }
+        }
+    )
+
+    .catch(
+        error => {
+
+            console.error(error);
 
             alert(
-                "GPS 성공\n위도: " +
-                position.coords.latitude +
-                "\n경도: " +
-                position.coords.longitude
-            );
-        },
-
-        function(error) {
-
-            alert(
-                "GPS 에러 코드: " +
-                error.code
+                "활동 기록 저장 중 오류가 발생했습니다."
             );
 
-            console.log(error);
         }
     );
 }

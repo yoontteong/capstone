@@ -1,0 +1,264 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>내 반려견</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .register-btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 22px;
+            padding: 14px;
+
+            text-align: center;
+            text-decoration: none;
+
+            background: #4caf50;
+            color: white;
+
+            border-radius: 14px;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .register-btn:hover {
+            background: #43a047;
+        }
+
+        .dog-card {
+            padding: 20px;
+            margin-bottom: 16px;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .dog-name {
+            margin: 0 0 16px;
+            font-size: 20px;
+        }
+
+        .dog-info {
+            margin: 9px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .label {
+            color: #777;
+            margin-right: 5px;
+        }
+
+        .button-area {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn {
+            flex: 1;
+            padding: 11px;
+
+            text-align: center;
+            text-decoration: none;
+
+            border-radius: 12px;
+
+            background: #e8f5e9;
+            color: #2e7d32;
+
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .edit-btn:hover {
+            background: #dcedc8;
+        }
+
+        .empty {
+            padding: 30px 20px;
+            text-align: center;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            color: #777;
+            font-size: 14px;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+
+            color: #666;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        .delete-form {
+            flex: 1;
+            margin: 0;
+        }
+
+        .delete-btn {
+            width: 100%;
+            height: 100%;
+            padding: 11px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #fff0f0;
+            color: #d32f2f;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #ffe0e0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <h2>🐶 내 반려견</h2>
+
+        <div class="description">
+            여행 일정 추천과 활동 기록에 사용할 반려견을 관리할 수 있습니다.
+        </div>
+    </div>
+
+    <a href="/dog/register"
+       class="register-btn">
+        + 반려견 등록하기
+    </a>
+
+
+    {% if dogs %}
+
+        {% for dog in dogs %}
+
+            <div class="dog-card">
+
+                <h3 class="dog-name">
+                    {{ dog.name }}
+                </h3>
+
+                <div class="dog-info">
+                    <span class="label">견종</span>
+                    {{ dog.breed or "미등록" }}
+                </div>
+
+                <div class="dog-info">
+                    <span class="label">크기</span>
+                    {{ dog.size_category }}
+                </div>
+
+                <div class="dog-info">
+                    <span class="label">생년월일</span>
+                    {{ dog.birth_date or "미등록" }}
+                </div>
+
+                <div class="dog-info">
+                    <span class="label">성향</span>
+                    {{ dog.personality or "미등록" }}
+                </div>
+
+                <div class="button-area">
+                    <a href="/dog/edit/{{ dog.id }}"
+                       class="edit-btn">
+                        수정하기
+                    </a>
+
+                    <form
+                        method="POST"
+                        action="/dog/delete/{{ dog.id }}"
+                        onsubmit="return confirm('{{ dog.name }}의 정보를 정말 삭제하시겠습니까?');"
+                        class="delete-form"
+                    >
+                        <button
+                            type="submit"
+                            class="delete-btn"
+                        >
+                            삭제하기
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            아직 등록된 반려견이 없습니다.<br><br>
+            반려견을 등록하고 맞춤 여행을 시작해보세요.
+        </div>
+
+    {% endif %}
+
+
+    <a href="/"
+       class="back">
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>
+```

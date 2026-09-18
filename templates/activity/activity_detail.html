@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>활동 기록 상세</title>
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 460px;
+            min-height: 100vh;
+
+            margin: 0 auto;
+            padding: 24px 18px 40px;
+
+            background: white;
+        }
+
+        h2 {
+            margin: 0 0 8px;
+        }
+
+        .date {
+            margin-bottom: 20px;
+
+            color: #888;
+            font-size: 13px;
+        }
+
+        .dog-box {
+            padding: 15px;
+            margin-bottom: 18px;
+
+            background: #f7f7f7;
+
+            border: 1px solid #eee;
+            border-radius: 14px;
+        }
+
+        .dog-name {
+            font-size: 18px;
+            font-weight: bold;
+
+            margin-bottom: 5px;
+        }
+
+        .dog-info {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 8px;
+
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            padding: 13px 6px;
+
+            border: 1px solid #eee;
+            border-radius: 12px;
+
+            background: #fafafa;
+
+            text-align: center;
+        }
+
+        .value {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .label {
+            margin-top: 5px;
+
+            color: #999;
+            font-size: 11px;
+        }
+
+        #map {
+            width: 100%;
+            height: 420px;
+
+            border: 1px solid #ddd;
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            margin-bottom: 18px;
+        }
+
+        .point-count {
+            margin-bottom: 18px;
+
+            color: #777;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .button {
+            display: block;
+
+            width: 100%;
+            padding: 14px;
+
+            margin-top: 10px;
+
+            border-radius: 12px;
+
+            text-align: center;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .history-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .home-btn {
+            background: #eee;
+            color: #555;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <h2>
+        🐾 활동 기록 상세
+    </h2>
+
+
+    <div class="date">
+        {{ record.activity_date.strftime('%Y.%m.%d %H:%M') }}
+    </div>
+
+
+    <div class="dog-box">
+
+        <div class="dog-name">
+            🐶 {{ record.dog_name }}
+        </div>
+
+        <div class="dog-info">
+
+            {% if record.breed %}
+                {{ record.breed }}
+            {% endif %}
+
+            {% if record.size_category %}
+                · {{ record.size_category }}
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- 활동 요약 -->
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <div class="value">
+                {{ "%.2f"|format(record.distance_km) }}
+                km
+            </div>
+
+            <div class="label">
+                이동거리
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="value">
+
+                {{ record.duration_seconds // 60 }}분
+                {{ record.duration_seconds % 60 }}초
+
+            </div>
+
+            <div class="label">
+                활동시간
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="value">
+                {{ "%.1f"|format(record.average_speed) }}
+            </div>
+
+            <div class="label">
+                평균 km/h
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GPS 경로 지도 -->
+    <div id="map"></div>
+
+
+    <div class="point-count">
+        GPS 기록 {{ points|length }}개
+    </div>
+
+
+    <a
+        href="/activity/history"
+        class="button history-btn">
+        활동 기록 목록
+    </a>
+
+
+    <a
+        href="/"
+        class="button home-btn">
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
+<script>
+
+const points = [
+
+    {% for point in points %}
+
+        {
+            lat: {{ point.latitude }},
+            lng: {{ point.longitude }}
+        }
+
+        {% if not loop.last %}
+        ,
+        {% endif %}
+
+    {% endfor %}
+
+];
+
+
+const map =
+    L.map("map")
+    .setView(
+        [33.3617, 126.5292],
+        10
+    );
+
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom: 19,
+        attribution: "OpenStreetMap"
+    }
+).addTo(map);
+
+
+
+if (
+    points.length > 0
+) {
+
+    const routePoints =
+        points.map(
+            point => [
+                Number(point.lat),
+                Number(point.lng)
+            ]
+        );
+
+
+    /* 출발점 */
+
+    const start =
+        routePoints[0];
+
+
+    L.circleMarker(
+        start,
+        {
+            radius: 8,
+
+            color: "#2e7d32",
+
+            fillColor: "#4caf50",
+
+            fillOpacity: 1,
+
+            weight: 3
+        }
+    )
+    .addTo(map)
+    .bindTooltip("출발");
+
+
+
+    /* 경로 */
+
+    if (
+        routePoints.length > 1
+    ) {
+
+        const routeLine =
+            L.polyline(
+                routePoints,
+                {
+                    color: "#4285f4",
+
+                    weight: 6,
+
+                    opacity: 0.9,
+
+                    lineJoin: "round",
+
+                    lineCap: "round"
+                }
+            )
+            .addTo(map);
+
+
+        /* 종료점 */
+
+        const end =
+            routePoints[
+                routePoints.length - 1
+            ];
+
+
+        L.circleMarker(
+            end,
+            {
+                radius: 8,
+
+                color: "#b71c1c",
+
+                fillColor: "#f44336",
+
+                fillOpacity: 1,
+
+                weight: 3
+            }
+        )
+        .addTo(map)
+        .bindTooltip("종료");
+
+
+        /*
+            전체 경로가 지도 안에
+            들어오도록 자동 조절
+        */
+
+        map.fitBounds(
+            routeLine.getBounds(),
+            {
+                padding: [30, 30]
+            }
+        );
+
+    }
+
+    else {
+
+        map.setView(
+            start,
+            17
+        );
+
+    }
+
+}
+
+</script>
+
+
+</body>
+</html>

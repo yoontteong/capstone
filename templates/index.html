@@ -2,76 +2,279 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>반려견 제주 여행 서비스</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f7f8fa;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 460px;
+            min-height: 100vh;
+
+            margin: 0 auto;
+            padding: 45px 20px;
+
+            background: white;
+        }
+
+        .header {
             text-align: center;
-            padding: 80px;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 25px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #777;
+            font-size: 14px;
         }
 
         .menu {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-
-            /* 화면이 좁으면 자동으로 다음 줄로 */
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 14px;
         }
 
         .card {
-            width: 260px;
-            padding: 35px 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
 
-            /* hover 움직임 부드럽게 */
-            transition: transform 0.2s;
+            padding: 20px;
+
+            background: white;
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+
+            cursor: pointer;
+            transition: 0.2s;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 14px;
+            background: #e8f5e9;
+
+            font-size: 24px;
+        }
+
+        .card-text {
+            text-align: left;
+        }
+
+        .card-title {
+            margin-bottom: 5px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .card-description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .user-menu {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 22px;
+
+            font-size: 14px;
+        }
+
+        .user-menu span {
+            font-weight: bold;
+        }
+
+        .user-menu a {
+            color: #555;
+            text-decoration: none;
+        }
+
+        .user-menu a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .app {
+                padding: 32px 16px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h1>🐶 반려견 제주 여행 서비스</h1>
-    <p>원하는 기능을 선택해주세요.</p>
+<div class="app">
+
+    <div class="user-menu">
+
+        {% if session.get("user_id") %}
+
+            <span>
+                {{ session.get("nickname") }}님
+            </span>
+
+            <a href="/logout">
+                로그아웃
+            </a>
+
+        {% else %}
+
+            <a href="/login">
+                로그인
+            </a>
+
+            <a href="/register">
+                회원가입
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="header">
+        <h1>🐶 반려견 제주 여행</h1>
+        <p>반려견과 함께하는 제주 여행을 준비해보세요.</p>
+    </div>
 
     <div class="menu">
 
-        <!-- 여행 일정 추천 -->
-        <div class="card" onclick="location.href='/ai-schedule'">
-            <h2>여행 일정 추천</h2>
-            <p>반려견과 함께하는 제주 여행 일정을 추천합니다.</p>
+        <div class="card"
+            onclick="location.href='/dogs'">
+
+            <div class="icon">🐕</div>
+
+            <div class="card-text">
+                <div class="card-title">
+                    내 반려견
+                </div>
+
+                <div class="card-description">
+                    반려견 정보를 등록하고 관리합니다.
+                </div>
+            </div>
+
         </div>
 
-        <!-- 준비물 체크리스트 -->
-        <div class="card" onclick="location.href='/checklist'">
-            <h2>준비물 체크리스트</h2>
-            <p>제주 날씨와 여행 조건에 따라 준비물을 추천합니다.</p>
+        <div class="card"
+            onclick="location.href='/trips'">
+
+            <div class="icon">✈️</div>
+
+            <div class="card-text">
+
+                <div class="card-title">
+                    내 여행
+                </div>
+
+                <div class="card-description">
+                    저장한 제주 여행 일정과 여행 정보를 관리합니다.
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- 활동 기록 -->
-        <div class="card" onclick="location.href='/activity'">
-            <h2>활동 기록</h2>
-            <p>반려견과의 산책 및 이동 거리를 기록합니다.</p>
+        <div class="card"
+             onclick="location.href='/checklists'">
+
+            <div class="icon">🎒</div>
+
+            <div class="card-text">
+                <div class="card-title">
+                    준비물 체크리스트
+                </div>
+
+                <div class="card-description">
+                    제주 날씨와 여행 조건에 맞는 준비물을 확인합니다.
+                </div>
+            </div>
+
         </div>
 
-        <!-- 커뮤니티 -->
-        <div class="card" onclick="location.href='/community'">
-            <h2>커뮤니티</h2>
-            <p>반려견과 함께한 여행 후기와 정보를 공유합니다.</p>
+
+        <div class="card"
+             onclick="location.href='/activity'">
+
+            <div class="icon">🐾</div>
+
+            <div class="card-text">
+                <div class="card-title">
+                    활동 기록
+                </div>
+
+                <div class="card-description">
+                    산책 시간과 이동 거리, 활동 경로를 기록합니다.
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card"
+             onclick="location.href='/community'">
+
+            <div class="icon">💬</div>
+
+            <div class="card-text">
+                <div class="card-title">
+                    커뮤니티
+                </div>
+
+                <div class="card-description">
+                    장소 후기와 여행 정보, 여행 메이트를 공유합니다.
+                </div>
+            </div>
+
         </div>
 
     </div>
+
+</div>
 
 </body>
 </html>

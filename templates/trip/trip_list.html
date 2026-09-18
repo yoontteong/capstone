@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>내 여행</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #222;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding: 30px 20px 40px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .create-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 22px;
+
+            border-radius: 14px;
+
+            background: #4caf50;
+            color: white;
+
+            text-align: center;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .create-btn:hover {
+            background: #43a047;
+        }
+
+        .trip-card {
+            padding: 20px;
+            margin-bottom: 16px;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.08);
+        }
+
+        .trip-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .trip-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .type-badge {
+            flex-shrink: 0;
+            padding: 5px 9px;
+            border-radius: 15px;
+
+            background: #e8f5e9;
+            color: #2e7d32;
+
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .manual-badge {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .info {
+            margin-top: 7px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .schedule-count {
+            margin-top: 14px;
+
+            color: #2e7d32;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .empty {
+            padding: 32px 20px;
+
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+
+        <h2>✈️ 내 여행</h2>
+
+        <div class="description">
+            저장한 반려견 동반 제주 여행을 확인하고 관리할 수 있습니다.
+        </div>
+
+    </div>
+
+
+    <a
+        href="/trip/create"
+        class="create-btn"
+    >
+        + 새 여행 만들기
+    </a>
+
+
+    {% if trips %}
+
+        {% for trip in trips %}
+
+            <div
+                class="trip-card"
+
+                {% if trip.schedule_type == "AI" %}
+                    onclick="location.href='/trip/{{ trip.id }}/ai'"
+                {% else %}
+                    onclick="location.href='/trip/{{ trip.id }}'"
+                {% endif %}
+            >
+                <div class="trip-top">
+
+                    <div class="trip-title">
+                        {{ trip.title }}
+                    </div>
+
+                    {% if trip.schedule_type == "MANUAL" %}
+
+                        <div class="type-badge manual-badge">
+                            직접 만든 일정
+                        </div>
+
+                    {% else %}
+
+                        <div class="type-badge">
+                            AI 일정
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="info">
+                    🐶 {{ trip.dog_name }}
+                </div>
+
+                <div class="info">
+                    📅 {{ trip.start_date }}
+                    · {{ trip.travel_period }}
+                </div>
+
+                <div class="info">
+                    🚗 {{ trip.transport_type or "미설정" }}
+                    · {{ trip.style or "미설정" }}
+                </div>
+
+                <div class="schedule-count">
+                    일정 {{ trip.schedule_count }}개
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="empty">
+            아직 저장된 여행이 없습니다.<br>
+            새로운 제주 여행을 만들어보세요.
+        </div>
+
+    {% endif %}
+
+
+    <a
+        href="/"
+        class="back"
+    >
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+</body>
+</html>
