@@ -129,6 +129,16 @@
             text-decoration: underline;
         }
 
+        .mypage-link {
+            color: #222 !important;
+            font-weight: bold;
+            text-decoration: none !important;
+        }
+
+        .mypage-link:hover {
+            color: #ff7968 !important;
+        }
+
         @media (max-width: 480px) {
             .app {
                 padding: 32px 16px;
@@ -153,9 +163,9 @@
 
         {% if session.get("user_id") %}
 
-            <span>
+            <a href="/mypage" class="mypage-link">
                 {{ session.get("nickname") }}님
-            </span>
+            </a>
 
             <a href="/logout">
                 로그아웃
@@ -184,23 +194,6 @@
     <div class="menu">
 
         <div class="card"
-            onclick="location.href='/dogs'">
-
-            <div class="icon">🐕</div>
-
-            <div class="card-text">
-                <div class="card-title">
-                    내 반려견
-                </div>
-
-                <div class="card-description">
-                    반려견 정보를 등록하고 관리합니다.
-                </div>
-            </div>
-
-        </div>
-
-        <div class="card"
             onclick="location.href='/trips'">
 
             <div class="icon">✈️</div>
@@ -208,7 +201,7 @@
             <div class="card-text">
 
                 <div class="card-title">
-                    내 여행
+                    여행 일정 짜기
                 </div>
 
                 <div class="card-description">

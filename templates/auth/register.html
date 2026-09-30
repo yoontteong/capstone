@@ -1,58 +1,1012 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>회원가입</title>
+    <title>회원가입 | 반려견 제주 여행</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f8fa;
+            color: #333;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 440px;
+            background: white;
+            border-radius: 20px;
+            padding: 38px 34px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+            font-size: 26px;
+        }
+
+        .description {
+            margin: 10px 0 32px;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+
+            border: 1px solid #ddd;
+            border-radius: 10px;
+
+            font-size: 15px;
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #ff8b7b;
+            box-shadow: 0 0 0 3px rgba(255, 139, 123, 0.12);
+        }
+
+        /* 사용 가능 */
+        input.valid {
+            border-color: #46a66f;
+        }
+
+        input.valid:focus {
+            border-color: #46a66f;
+            box-shadow: 0 0 0 3px rgba(70, 166, 111, 0.12);
+        }
+
+        /* 사용 불가능 */
+        input.invalid {
+            border-color: #e45858;
+        }
+
+        input.invalid:focus {
+            border-color: #e45858;
+            box-shadow: 0 0 0 3px rgba(228, 88, 88, 0.12);
+        }
+
+        .help-text {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .message {
+            min-height: 15px;
+            margin-top: 6px;
+            font-size: 12px;
+        }
+
+        .success {
+            color: #3c9b62;
+        }
+
+        .error {
+            color: #e45858;
+        }
+
+        .checking {
+            color: #999;
+        }
+
+        .register-button {
+            width: 100%;
+            height: 50px;
+
+            margin-top: 10px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #ff8b7b;
+            color: white;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .register-button:hover {
+            background: #f77b6b;
+        }
+
+        .register-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .login-area {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .login-area a {
+            margin-left: 5px;
+            color: #ff7968;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-area a:hover {
+            text-decoration: underline;
+        }
+
+        .back {
+            display: block;
+            margin-top: 18px;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #666;
+        }
+
+    </style>
 </head>
+
 
 <body>
 
-    <h2>회원가입</h2>
+<div class="page">
 
-    <form method="POST" action="/register">
+    <div class="register-container">
 
-        <div>
-            <label for="username">아이디</label>
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-            >
+        <div class="logo">
+            🐾
         </div>
 
-        <div>
-            <label for="password">비밀번호</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-            >
-        </div>
-
-        <div>
-            <label for="nickname">닉네임</label>
-            <input
-                type="text"
-                id="nickname"
-                name="nickname"
-                required
-            >
-        </div>
-
-        <button type="submit">
+        <h1>
             회원가입
-        </button>
+        </h1>
 
-    </form>
+        <p class="description">
+            반려견과 함께하는 제주 여행을 시작해보세요.
+        </p>
 
-    <a href="/">
-        메인으로 돌아가기
-    </a>
+
+        <form
+            method="POST"
+            action="/register"
+            id="registerForm"
+        >
+
+            <!-- ==============================
+                 아이디
+            ============================== -->
+            <div class="form-group">
+
+                <label for="username">
+                    아이디
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="아이디를 입력해주세요"
+                    minlength="4"
+                    maxlength="20"
+                    autocomplete="username"
+                    required
+                >
+
+                <div
+                    id="usernameMessage"
+                    class="message"
+                >
+                    4~20자로 입력해주세요.
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 비밀번호
+            ============================== -->
+            <div class="form-group">
+
+                <label for="password">
+                    비밀번호
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="비밀번호를 입력해주세요"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <div class="help-text">
+                    8자 이상 입력해주세요.
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 비밀번호 확인
+            ============================== -->
+            <div class="form-group">
+
+                <label for="password_confirm">
+                    비밀번호 확인
+                </label>
+
+                <input
+                    type="password"
+                    id="password_confirm"
+                    name="password_confirm"
+                    placeholder="비밀번호를 한 번 더 입력해주세요"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <div
+                    id="passwordMessage"
+                    class="message"
+                ></div>
+
+            </div>
+
+
+            <!-- ==============================
+                 닉네임
+            ============================== -->
+            <div class="form-group">
+
+                <label for="nickname">
+                    닉네임
+                </label>
+
+                <input
+                    type="text"
+                    id="nickname"
+                    name="nickname"
+                    placeholder="사용할 닉네임을 입력해주세요"
+                    maxlength="50"
+                    required
+                >
+
+                <div
+                    id="nicknameMessage"
+                    class="message"
+                ></div>
+
+            </div>
+
+
+            <!-- ==============================
+                 이메일
+            ============================== -->
+            <div class="form-group">
+
+                <label for="email">
+                    이메일
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    required
+                >
+
+                <div
+                    id="emailMessage"
+                    class="message"
+                ></div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="register-button"
+                id="registerButton"
+            >
+                회원가입
+            </button>
+
+        </form>
+
+
+        <div class="login-area">
+
+            이미 회원이신가요?
+
+            <a href="/login">
+                로그인
+            </a>
+
+        </div>
+
+
+        <a
+            href="/"
+            class="back"
+        >
+            메인으로 돌아가기
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // ==========================================
+    // 요소 가져오기
+    // ==========================================
+
+    const form =
+        document.getElementById("registerForm");
+
+    const username =
+        document.getElementById("username");
+
+    const password =
+        document.getElementById("password");
+
+    const passwordConfirm =
+        document.getElementById("password_confirm");
+
+    const nickname =
+        document.getElementById("nickname");
+
+    const email =
+        document.getElementById("email");
+
+
+    const usernameMessage =
+        document.getElementById("usernameMessage");
+
+    const passwordMessage =
+        document.getElementById("passwordMessage");
+
+    const nicknameMessage =
+        document.getElementById("nicknameMessage");
+
+    const emailMessage =
+        document.getElementById("emailMessage");
+
+
+    // ==========================================
+    // 중복 확인 상태
+    // ==========================================
+
+    let usernameAvailable = false;
+    let nicknameAvailable = false;
+    let emailAvailable = false;
+
+
+    // ==========================================
+    // 입력창 상태 표시
+    // ==========================================
+
+    function setValid(input, messageElement, message) {
+
+        input.classList.remove("invalid");
+        input.classList.add("valid");
+
+        messageElement.textContent =
+            "✓ " + message;
+
+        messageElement.className =
+            "message success";
+    }
+
+
+    function setInvalid(input, messageElement, message) {
+
+        input.classList.remove("valid");
+        input.classList.add("invalid");
+
+        messageElement.textContent =
+            message;
+
+        messageElement.className =
+            "message error";
+    }
+
+
+    function resetState(input, messageElement) {
+
+        input.classList.remove(
+            "valid",
+            "invalid"
+        );
+
+        messageElement.textContent = "";
+        messageElement.className = "message";
+    }
+
+
+    // ==========================================
+    // Debounce
+    //
+    // 입력할 때마다 서버 요청하지 않고
+    // 500ms 동안 입력이 없으면 실행
+    // ==========================================
+
+    function debounce(func, delay) {
+
+        let timer;
+
+        return function(...args) {
+
+            clearTimeout(timer);
+
+            timer = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    }
+
+
+    // ==========================================
+    // 아이디 중복 확인
+    // ==========================================
+
+    async function checkUsername() {
+
+        const value = username.value.trim();
+
+        usernameAvailable = false;
+
+
+        if (value === "") {
+
+            resetState(
+                username,
+                usernameMessage
+            );
+
+            usernameMessage.textContent =
+                "4~20자로 입력해주세요.";
+
+            return;
+        }
+
+
+        if (
+            value.length < 4 ||
+            value.length > 20
+        ) {
+
+            setInvalid(
+                username,
+                usernameMessage,
+                "아이디는 4~20자로 입력해주세요."
+            );
+
+            return;
+        }
+
+
+        usernameMessage.textContent =
+            "확인 중...";
+
+        usernameMessage.className =
+            "message checking";
+
+
+        try {
+
+            const response = await fetch(
+                "/register/check-username?username=" +
+                encodeURIComponent(value)
+            );
+
+            const data = await response.json();
+
+
+            /*
+             * 요청을 보내는 동안 사용자가
+             * 값을 변경했다면 이전 결과 무시
+             */
+            if (
+                username.value.trim()
+                !== value
+            ) {
+                return;
+            }
+
+
+            if (data.available) {
+
+                usernameAvailable = true;
+
+                setValid(
+                    username,
+                    usernameMessage,
+                    data.message
+                );
+
+            } else {
+
+                usernameAvailable = false;
+
+                setInvalid(
+                    username,
+                    usernameMessage,
+                    data.message
+                );
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            usernameAvailable = false;
+
+            setInvalid(
+                username,
+                usernameMessage,
+                "중복 확인 중 오류가 발생했습니다."
+            );
+        }
+    }
+
+
+    // ==========================================
+    // 닉네임 중복 확인
+    // ==========================================
+
+    async function checkNickname() {
+
+        const value = nickname.value.trim();
+
+        nicknameAvailable = false;
+
+
+        if (value === "") {
+
+            resetState(
+                nickname,
+                nicknameMessage
+            );
+
+            return;
+        }
+
+
+        nicknameMessage.textContent =
+            "확인 중...";
+
+        nicknameMessage.className =
+            "message checking";
+
+
+        try {
+
+            const response = await fetch(
+                "/register/check-nickname?nickname=" +
+                encodeURIComponent(value)
+            );
+
+            const data = await response.json();
+
+
+            if (
+                nickname.value.trim()
+                !== value
+            ) {
+                return;
+            }
+
+
+            if (data.available) {
+
+                nicknameAvailable = true;
+
+                setValid(
+                    nickname,
+                    nicknameMessage,
+                    data.message
+                );
+
+            } else {
+
+                nicknameAvailable = false;
+
+                setInvalid(
+                    nickname,
+                    nicknameMessage,
+                    data.message
+                );
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            nicknameAvailable = false;
+
+            setInvalid(
+                nickname,
+                nicknameMessage,
+                "중복 확인 중 오류가 발생했습니다."
+            );
+        }
+    }
+
+
+    // ==========================================
+    // 이메일 중복 확인
+    // ==========================================
+
+    async function checkEmail() {
+
+        const value = email.value.trim();
+
+        emailAvailable = false;
+
+
+        if (value === "") {
+
+            resetState(
+                email,
+                emailMessage
+            );
+
+            return;
+        }
+
+
+        /*
+         * HTML 이메일 형식 검사를 이용
+         */
+        if (!email.checkValidity()) {
+
+            setInvalid(
+                email,
+                emailMessage,
+                "올바른 이메일 형식으로 입력해주세요."
+            );
+
+            return;
+        }
+
+
+        emailMessage.textContent =
+            "확인 중...";
+
+        emailMessage.className =
+            "message checking";
+
+
+        try {
+
+            const response = await fetch(
+                "/register/check-email?email=" +
+                encodeURIComponent(value)
+            );
+
+            const data = await response.json();
+
+
+            if (
+                email.value.trim()
+                !== value
+            ) {
+                return;
+            }
+
+
+            if (data.available) {
+
+                emailAvailable = true;
+
+                setValid(
+                    email,
+                    emailMessage,
+                    data.message
+                );
+
+            } else {
+
+                emailAvailable = false;
+
+                setInvalid(
+                    email,
+                    emailMessage,
+                    data.message
+                );
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            emailAvailable = false;
+
+            setInvalid(
+                email,
+                emailMessage,
+                "중복 확인 중 오류가 발생했습니다."
+            );
+        }
+    }
+
+
+    // ==========================================
+    // 비밀번호 확인
+    // ==========================================
+
+    function checkPassword() {
+
+        const passwordValue =
+            password.value;
+
+        const confirmValue =
+            passwordConfirm.value;
+
+
+        if (confirmValue === "") {
+
+            resetState(
+                passwordConfirm,
+                passwordMessage
+            );
+
+            return;
+        }
+
+
+        if (
+            passwordValue ===
+            confirmValue
+        ) {
+
+            setValid(
+                passwordConfirm,
+                passwordMessage,
+                "비밀번호가 일치합니다."
+            );
+
+        } else {
+
+            setInvalid(
+                passwordConfirm,
+                passwordMessage,
+                "비밀번호가 일치하지 않습니다."
+            );
+        }
+    }
+
+
+    // ==========================================
+    // 자동 검사 연결
+    // ==========================================
+
+    const delayedUsernameCheck =
+        debounce(checkUsername, 500);
+
+    const delayedNicknameCheck =
+        debounce(checkNickname, 500);
+
+    const delayedEmailCheck =
+        debounce(checkEmail, 500);
+
+
+    username.addEventListener(
+        "input",
+        function() {
+
+            usernameAvailable = false;
+
+            username.classList.remove(
+                "valid",
+                "invalid"
+            );
+
+            usernameMessage.textContent =
+                "확인 중...";
+
+            usernameMessage.className =
+                "message checking";
+
+            delayedUsernameCheck();
+        }
+    );
+
+
+    nickname.addEventListener(
+        "input",
+        function() {
+
+            nicknameAvailable = false;
+
+            nickname.classList.remove(
+                "valid",
+                "invalid"
+            );
+
+            nicknameMessage.textContent =
+                "확인 중...";
+
+            nicknameMessage.className =
+                "message checking";
+
+            delayedNicknameCheck();
+        }
+    );
+
+
+    email.addEventListener(
+        "input",
+        function() {
+
+            emailAvailable = false;
+
+            email.classList.remove(
+                "valid",
+                "invalid"
+            );
+
+            emailMessage.textContent =
+                "확인 중...";
+
+            emailMessage.className =
+                "message checking";
+
+            delayedEmailCheck();
+        }
+    );
+
+
+    password.addEventListener(
+        "input",
+        checkPassword
+    );
+
+    passwordConfirm.addEventListener(
+        "input",
+        checkPassword
+    );
+
+
+    // ==========================================
+    // 회원가입 제출
+    // ==========================================
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            // 비밀번호 확인
+            if (
+                password.value !==
+                passwordConfirm.value
+            ) {
+
+                event.preventDefault();
+
+                setInvalid(
+                    passwordConfirm,
+                    passwordMessage,
+                    "비밀번호가 일치하지 않습니다."
+                );
+
+                passwordConfirm.focus();
+
+                return;
+            }
+
+
+            // 아이디 중복 확인
+            if (!usernameAvailable) {
+
+                event.preventDefault();
+
+                setInvalid(
+                    username,
+                    usernameMessage,
+                    "사용 가능한 아이디인지 확인해주세요."
+                );
+
+                username.focus();
+
+                return;
+            }
+
+
+            // 닉네임 중복 확인
+            if (!nicknameAvailable) {
+
+                event.preventDefault();
+
+                setInvalid(
+                    nickname,
+                    nicknameMessage,
+                    "사용 가능한 닉네임인지 확인해주세요."
+                );
+
+                nickname.focus();
+
+                return;
+            }
+
+
+            // 이메일 중복 확인
+            if (!emailAvailable) {
+
+                event.preventDefault();
+
+                setInvalid(
+                    email,
+                    emailMessage,
+                    "사용 가능한 이메일인지 확인해주세요."
+                );
+
+                email.focus();
+
+                return;
+            }
+
+        }
+    );
+
+</script>
 
 </body>
 </html>

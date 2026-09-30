@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MY | 반려견 제주 여행</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f8fa;
+            color: #333;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 620px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            padding-bottom: 50px;
+        }
+
+        /* ==============================
+           상단
+        ============================== */
+
+        .header {
+            position: relative;
+            padding: 28px 24px 15px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .home-button {
+            position: absolute;
+            left: 24px;
+            top: 29px;
+
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* ==============================
+           프로필
+        ============================== */
+
+        .profile-section {
+            text-align: center;
+            padding: 25px 20px 30px;
+        }
+
+        .profile-image-wrapper {
+            width: 105px;
+            height: 105px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+            background: #fff1ee;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .default-profile {
+            font-size: 48px;
+        }
+
+        .nickname {
+            margin: 0;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .email {
+            margin-top: 6px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .profile-edit-button {
+            margin-top: 17px;
+
+            padding: 9px 22px;
+
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+
+            font-size: 13px;
+            color: #555;
+
+            cursor: pointer;
+        }
+
+        .profile-edit-button:hover {
+            background: #f7f7f7;
+        }
+
+        /* ==============================
+           구분선
+        ============================== */
+
+        .divider {
+            height: 10px;
+            background: #f7f8fa;
+        }
+
+        /* ==============================
+           공통 영역
+        ============================== */
+
+        .section {
+            padding: 25px 24px;
+        }
+
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 17px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .add-dog {
+            color: #ff7968;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           반려견
+        ============================== */
+
+        .dog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dog-card {
+            display: flex;
+            align-items: center;
+
+            padding: 16px;
+
+            border: 1px solid #eee;
+            border-radius: 15px;
+
+            text-decoration: none;
+            color: inherit;
+
+            transition: 0.2s;
+        }
+
+        .dog-card:hover {
+            border-color: #ffb7ad;
+            background: #fffafa;
+        }
+
+        .dog-icon {
+            width: 55px;
+            height: 55px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+            background: #fff1ee;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+
+            margin-right: 15px;
+        }
+
+        .dog-info {
+            flex: 1;
+        }
+
+        .dog-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .dog-detail {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .arrow {
+            color: #bbb;
+            font-size: 20px;
+        }
+
+        .empty-dog {
+            text-align: center;
+
+            padding: 30px 20px;
+
+            background: #fafafa;
+            border-radius: 15px;
+
+            color: #999;
+            font-size: 14px;
+        }
+
+        .empty-dog a {
+            display: inline-block;
+
+            margin-top: 12px;
+
+            color: #ff7968;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           메뉴
+        ============================== */
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item {
+            min-height: 58px;
+
+            display: flex;
+            align-items: center;
+
+            border-bottom: 1px solid #eee;
+
+            color: #333;
+            text-decoration: none;
+
+            font-size: 15px;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-icon {
+            width: 38px;
+            font-size: 20px;
+        }
+
+        .menu-name {
+            flex: 1;
+        }
+
+        .menu-arrow {
+            color: #bbb;
+        }
+
+        .logout {
+            color: #888;
+        }
+
+        .profile-edit-button {
+            margin-top: 17px;
+            padding: 9px 22px;
+
+            display: inline-block;
+
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+
+            font-size: 13px;
+            color: #555;
+
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <!-- ==============================
+         상단
+    ============================== -->
+
+    <header class="header">
+
+        <a href="/" class="home-button">
+            ← 홈
+        </a>
+
+        <h1>MY</h1>
+
+    </header>
+
+
+    <!-- ==============================
+         사용자 프로필
+    ============================== -->
+
+    <section class="profile-section">
+
+        <div class="profile-image-wrapper">
+
+            {% if user.profile_image %}
+
+                <img
+                    src="{{ user.profile_image }}"
+                    alt="프로필 사진"
+                    class="profile-image"
+                >
+
+            {% else %}
+
+                <div class="default-profile">
+                    🐶
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <h2 class="nickname">
+            {{ user.nickname }}
+        </h2>
+
+
+        <div class="email">
+            {{ user.email }}
+        </div>
+
+
+        <!-- 다음 단계에서 실제 기능 연결 -->
+        <a
+            href="/mypage/edit"
+            class="profile-edit-button"
+        >
+            프로필 수정
+        </a>
+    </section>
+
+
+    <div class="divider"></div>
+
+
+    <!-- ==============================
+         내 반려견
+    ============================== -->
+
+    <section class="section">
+
+        <div class="section-title-row">
+
+            <h2 class="section-title">
+                🐾 내 반려견
+            </h2>
+
+            <a
+                href="/dog/register"
+                class="add-dog"
+            >
+                + 반려견 등록
+            </a>
+
+        </div>
+
+
+        {% if dogs %}
+
+            <div class="dog-list">
+
+                {% for dog in dogs %}
+
+                    <a
+                        href="/dog/edit/{{ dog.id }}"
+                        class="dog-card"
+                    >
+
+                        <div class="dog-icon">
+                            🐶
+                        </div>
+
+
+                        <div class="dog-info">
+
+                            <div class="dog-name">
+                                {{ dog.name }}
+                            </div>
+
+
+                            <div class="dog-detail">
+
+                                {% if dog.breed %}
+                                    {{ dog.breed }}
+                                {% else %}
+                                    견종 미등록
+                                {% endif %}
+
+                                {% if dog.size_category %}
+                                    · {{ dog.size_category }}
+                                {% endif %}
+
+                                <br>
+
+                                {% if dog.personality %}
+                                    {{ dog.personality }}
+                                {% else %}
+                                    성향 미등록
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="arrow">
+                            ›
+                        </div>
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <div class="empty-dog">
+
+                아직 등록된 반려견이 없습니다.
+
+                <br>
+
+                <a href="/dog/register">
+                    반려견 등록하기
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <div class="divider"></div>
+
+
+    <!-- ==============================
+         나의 여행
+    ============================== -->
+
+    <section class="section">
+
+        <h2 class="section-title"
+            style="margin-bottom: 12px;">
+            나의 여행
+        </h2>
+
+
+        <div class="menu-list">
+
+            <a href="/trips" class="menu-item">
+
+                <span class="menu-icon">
+                    ✈️
+                </span>
+
+                <span class="menu-name">
+                    저장한 여행 일정
+                </span>
+
+                <span class="menu-arrow">
+                    ›
+                </span>
+
+            </a>
+
+
+            <a href="/activity/history" class="menu-item">
+
+                <span class="menu-icon">
+                    📍
+                </span>
+
+                <span class="menu-name">
+                    반려견 활동 기록
+                </span>
+
+                <span class="menu-arrow">
+                    ›
+                </span>
+
+            </a>
+
+
+            <a href="/mypage/reviews" class="menu-item">
+
+                <span class="menu-icon">
+                    💬
+                </span>
+
+                <span class="menu-name">
+                    내가 작성한 후기
+                </span>
+
+                <span class="menu-arrow">
+                    ›
+                </span>
+
+            </a>
+
+
+            <a href="/checklists" class="menu-item">
+
+                <span class="menu-icon">
+                    🧳
+                </span>
+
+                <span class="menu-name">
+                    여행 체크리스트
+                </span>
+
+                <span class="menu-arrow">
+                    ›
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <div class="divider"></div>
+
+
+    <!-- ==============================
+         계정
+    ============================== -->
+
+    <section class="section">
+
+        <div class="menu-list">
+
+            <a href="#" class="menu-item">
+
+                <span class="menu-icon">
+                    ⚙️
+                </span>
+
+                <span class="menu-name">
+                    계정 설정
+                </span>
+
+                <span class="menu-arrow">
+                    ›
+                </span>
+
+            </a>
+
+
+            <a
+                href="/logout"
+                class="menu-item logout"
+            >
+
+                <span class="menu-icon">
+                    🚪
+                </span>
+
+                <span class="menu-name">
+                    로그아웃
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

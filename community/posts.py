@@ -1,4 +1,10 @@
-from flask import render_template, request, redirect, url_for
+from flask import (
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session
+)
 from db import get_connection
 
 from . import community
@@ -36,15 +42,27 @@ def community_list():
 @community.route("/community/write", methods=["GET", "POST"])
 def community_write():
 
+    # 로그인하지 않은 경우
+    if "user_id" not in session:
+        return redirect("/login")
+
     if request.method == "GET":
         return render_template(
             "community/community_write.html"
         )
 
-    author = request.form.get(
-        "author",
-        ""
-    ).strip()
+
+    # =========================
+    # 로그인 사용자 정보
+    # =========================
+
+    user_id = session["user_id"]
+    author = session["nickname"]
+
+
+    # =========================
+    # 게시글 내용
+    # =========================
 
     title = request.form.get(
         "title",
@@ -56,22 +74,28 @@ def community_write():
         ""
     ).strip()
 
-    if (
-        not author
-        or not title
-        or not content
-    ):
+
+    if not title or not content:
         return (
-            "작성자, 제목, 내용을 모두 입력해주세요.",
+            "제목과 내용을 모두 입력해주세요.",
             400
         )
 
+
+    # =========================
     # 이미지 업로드
+    # =========================
+
     image_file = request.files.get("image")
 
     image_path = save_image(
         image_file
     )
+
+
+    # =========================
+    # DB 저장
+    # =========================
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -79,13 +103,15 @@ def community_write():
     cursor.execute("""
         INSERT INTO posts
         (
+            user_id,
             author,
             title,
             content,
             image_path
         )
-        VALUES (%s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s)
     """, (
+        user_id,
         author,
         title,
         content,
@@ -97,12 +123,12 @@ def community_write():
     cursor.close()
     conn.close()
 
+
     return redirect(
         url_for(
             "community.community_list"
         )
     )
-
 
 # =========================
 # 게시글 상세

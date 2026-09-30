@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>반려견 등록</title>
 
@@ -52,20 +56,178 @@
             font-size: 14px;
         }
 
+        /* ==============================
+           AI 견종 분석 영역
+           ============================== */
+
+        .ai-section {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8faf8;
+            border: 1px solid #e1e8e1;
+            border-radius: 14px;
+        }
+
+        .ai-section > label {
+            margin-top: 0;
+        }
+
+        .ai-description {
+            margin: 0 0 15px;
+            color: #777;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* 실제 파일 입력은 숨김 */
+        .hidden-file-input {
+            display: none;
+        }
+
+        /* 촬영 / 갤러리 버튼 */
+        .image-button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .image-select-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: 1px solid #d7ddd7;
+            border-radius: 12px;
+            background: white;
+            color: #333;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .image-select-btn:hover {
+            background: #f0f7f0;
+            border-color: #4caf50;
+        }
+
+        /* ==============================
+           사진 미리보기
+           ============================== */
+
+        .preview-container {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .preview-title {
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .preview-box {
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background: #eee;
+        }
+
+        #imagePreview {
+            display: block;
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            background: #f1f1f1;
+        }
+
+        .selected-image-text {
+            margin-top: 7px;
+            color: #777;
+            font-size: 11px;
+            word-break: break-all;
+        }
+
+        /* ==============================
+           AI 분석 버튼
+           ============================== */
+
+        .analyze-btn {
+            width: 100%;
+            margin-top: 14px;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: #607d8b;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            background: #546e7a;
+        }
+
+        .analyze-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        #analysisStatus {
+            margin: 12px 0 0;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #predictionResults {
+            margin-top: 10px;
+        }
+
+        .prediction-btn {
+            width: 100%;
+            margin-top: 7px;
+            padding: 11px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            text-align: left;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .prediction-btn:hover {
+            background: #f0f7f0;
+            border-color: #4caf50;
+        }
+
+        /* 선택된 예측 결과 */
+        .prediction-btn.selected {
+            background: #edf7ed;
+            border-color: #4caf50;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           등록 버튼
+           ============================== */
+
         .submit-btn {
             width: 100%;
             margin-top: 25px;
             padding: 14px;
-
             border: none;
             border-radius: 14px;
-
             background: #4caf50;
             color: white;
-
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #43a047;
         }
 
         .back {
@@ -74,6 +236,12 @@
             margin-top: 18px;
             color: #666;
             text-decoration: none;
+        }
+
+        @media (max-width: 380px) {
+            .image-button-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -85,10 +253,19 @@
     <h2>🐶 반려견 등록</h2>
 
     <div class="description">
-        여행과 활동 기록에 사용할 반려견 정보를 등록해주세요.
+        여행과 활동 기록에 사용할
+        반려견 정보를 등록해주세요.
     </div>
 
-    <form method="POST" action="/dog/register">
+
+    <form
+        method="POST"
+        action="/dog/register"
+    >
+
+        <!-- ==============================
+             반려견 이름
+             ============================== -->
 
         <label for="name">
             반려견 이름
@@ -103,6 +280,129 @@
         >
 
 
+        <!-- ==============================
+             AI 견종 분석
+             ============================== -->
+
+        <div class="ai-section">
+
+            <label>
+                📷 반려견 사진으로 견종 찾기
+            </label>
+
+            <p class="ai-description">
+                사진을 직접 촬영하거나 갤러리에서 선택하면
+                AI가 예상 견종을 분석합니다.
+                <br>
+                AI 결과가 정확하지 않을 수 있으므로
+                분석 후 견종을 확인해주세요.
+            </p>
+
+
+            <!-- ==========================
+                 실제 카메라 파일 입력
+                 ========================== -->
+
+            <input
+                type="file"
+                id="cameraInput"
+                class="hidden-file-input"
+                accept="image/*"
+                capture="environment"
+            >
+
+
+            <!-- ==========================
+                 실제 갤러리 파일 입력
+                 ========================== -->
+
+            <input
+                type="file"
+                id="galleryInput"
+                class="hidden-file-input"
+                accept="image/*"
+            >
+
+
+            <!-- ==========================
+                 사용자에게 보이는 버튼
+                 ========================== -->
+
+            <div class="image-button-group">
+
+                <button
+                    type="button"
+                    id="cameraBtn"
+                    class="image-select-btn"
+                >
+                    📷 사진 촬영하기
+                </button>
+
+                <button
+                    type="button"
+                    id="galleryBtn"
+                    class="image-select-btn"
+                >
+                    🖼️ 갤러리에서 선택
+                </button>
+
+            </div>
+
+
+            <!-- ==========================
+                 사진 미리보기
+                 ========================== -->
+
+            <div
+                id="previewContainer"
+                class="preview-container"
+            >
+
+                <div class="preview-title">
+                    선택한 사진
+                </div>
+
+                <div class="preview-box">
+
+                    <img
+                        id="imagePreview"
+                        alt="반려견 사진 미리보기"
+                    >
+
+                </div>
+
+                <div
+                    id="selectedImageText"
+                    class="selected-image-text"
+                ></div>
+
+            </div>
+
+
+            <!-- ==========================
+                 AI 분석 버튼
+                 ========================== -->
+
+            <button
+                type="button"
+                id="analyzeBreedBtn"
+                class="analyze-btn"
+            >
+                🤖 AI로 견종 분석하기
+            </button>
+
+
+            <p id="analysisStatus"></p>
+
+            <div id="predictionResults"></div>
+
+        </div>
+
+
+        <!-- ==============================
+             품종
+             ============================== -->
+
         <label for="breed">
             품종
         </label>
@@ -114,6 +414,10 @@
             placeholder="예: 말티즈"
         >
 
+
+        <!-- ==============================
+             체급
+             ============================== -->
 
         <label for="size_category">
             체급
@@ -144,6 +448,10 @@
         </select>
 
 
+        <!-- ==============================
+             생년월일
+             ============================== -->
+
         <label for="birth_date">
             생년월일
         </label>
@@ -155,6 +463,10 @@
         >
 
 
+        <!-- ==============================
+             성향
+             ============================== -->
+
         <label for="personality">
             성향
         </label>
@@ -163,6 +475,7 @@
             id="personality"
             name="personality"
         >
+
             <option value="">
                 성향을 선택해주세요
             </option>
@@ -178,7 +491,13 @@
             <option value="겁많음">
                 겁많음
             </option>
+
         </select>
+
+
+        <!-- ==============================
+             등록 버튼
+             ============================== -->
 
         <button
             type="submit"
@@ -199,5 +518,484 @@
 
 </div>
 
+
+<script>
+
+    /* =====================================================
+       HTML 요소
+       ===================================================== */
+
+    const cameraInput =
+        document.getElementById("cameraInput");
+
+    const galleryInput =
+        document.getElementById("galleryInput");
+
+    const cameraButton =
+        document.getElementById("cameraBtn");
+
+    const galleryButton =
+        document.getElementById("galleryBtn");
+
+    const previewContainer =
+        document.getElementById("previewContainer");
+
+    const imagePreview =
+        document.getElementById("imagePreview");
+
+    const selectedImageText =
+        document.getElementById("selectedImageText");
+
+    const analyzeButton =
+        document.getElementById("analyzeBreedBtn");
+
+    const statusText =
+        document.getElementById("analysisStatus");
+
+    const resultBox =
+        document.getElementById("predictionResults");
+
+    const breedInput =
+        document.getElementById("breed");
+
+    const sizeInput =
+        document.getElementById("size_category");
+
+
+    /*
+     * 현재 선택되어 있는 사진을 저장한다.
+     *
+     * 카메라에서 찍은 사진과
+     * 갤러리에서 가져온 사진 모두
+     * 이 변수에 저장된다.
+     */
+    let selectedImageFile = null;
+
+    let previewObjectUrl = null;
+
+
+    /* =====================================================
+       사진 촬영 버튼
+       ===================================================== */
+
+    cameraButton.addEventListener(
+        "click",
+        function () {
+
+            cameraInput.click();
+
+        }
+    );
+
+
+    /* =====================================================
+       갤러리 선택 버튼
+       ===================================================== */
+
+    galleryButton.addEventListener(
+        "click",
+        function () {
+
+            galleryInput.click();
+
+        }
+    );
+
+
+    /* =====================================================
+       카메라로 촬영한 사진 선택
+       ===================================================== */
+
+    cameraInput.addEventListener(
+        "change",
+        function () {
+
+            if (!cameraInput.files.length) {
+                return;
+            }
+
+            setSelectedImage(
+                cameraInput.files[0],
+                "카메라 촬영"
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       갤러리에서 사진 선택
+       ===================================================== */
+
+    galleryInput.addEventListener(
+        "change",
+        function () {
+
+            if (!galleryInput.files.length) {
+                return;
+            }
+
+            setSelectedImage(
+                galleryInput.files[0],
+                "갤러리 선택"
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       선택한 사진 처리 + 미리보기
+       ===================================================== */
+
+    function setSelectedImage(
+        file,
+        source
+    ) {
+
+        selectedImageFile = file;
+
+
+        /*
+         * 이전 미리보기 URL이 있으면 제거
+         */
+        if (previewObjectUrl) {
+
+            URL.revokeObjectURL(
+                previewObjectUrl
+            );
+
+        }
+
+
+        /*
+         * 새 미리보기 URL 생성
+         */
+        previewObjectUrl =
+            URL.createObjectURL(file);
+
+
+        imagePreview.src =
+            previewObjectUrl;
+
+
+        previewContainer.style.display =
+            "block";
+
+
+        selectedImageText.textContent =
+            source + " · " + file.name;
+
+
+        /*
+         * 새 사진을 선택하면
+         * 이전 AI 결과 초기화
+         */
+        statusText.textContent = "";
+
+        resultBox.innerHTML = "";
+
+    }
+
+
+    /* =====================================================
+       AI 견종 분석
+       ===================================================== */
+
+    analyzeButton.addEventListener(
+        "click",
+        async function () {
+
+
+            /* 사진 선택 여부 */
+
+            if (!selectedImageFile) {
+
+                alert(
+                    "먼저 반려견 사진을 촬영하거나 선택해주세요."
+                );
+
+                return;
+
+            }
+
+
+            /* 서버 전송 데이터 */
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "image",
+                selectedImageFile
+            );
+
+
+            /* 분석 시작 */
+
+            statusText.textContent =
+                "🐶 AI가 견종을 분석하고 있습니다...";
+
+
+            resultBox.innerHTML = "";
+
+
+            analyzeButton.disabled =
+                true;
+
+
+            analyzeButton.textContent =
+                "분석 중...";
+
+
+            try {
+
+
+                /* Flask 서버 요청 */
+
+                const response =
+                    await fetch(
+                        "/dog/predict-breed",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                /* 서버 오류 */
+
+                if (!data.success) {
+
+                    statusText.textContent =
+                        data.message ||
+                        "견종 분석에 실패했습니다.";
+
+                    return;
+
+                }
+
+
+                /* 결과 없음 */
+
+                if (
+                    !data.predictions ||
+                    data.predictions.length === 0
+                ) {
+
+                    statusText.textContent =
+                        "견종을 예측하지 못했습니다.";
+
+                    return;
+
+                }
+
+
+                statusText.textContent =
+                    "예상 견종입니다. " +
+                    "가장 비슷한 견종을 선택해주세요.";
+
+
+                /* =========================================
+                   TOP 3 표시
+                   ========================================= */
+
+                data.predictions.forEach(
+                    function (
+                        prediction,
+                        index
+                    ) {
+
+
+                        const button =
+                            document.createElement(
+                                "button"
+                            );
+
+
+                        button.type =
+                            "button";
+
+
+                        button.className =
+                            "prediction-btn";
+
+
+                        button.textContent =
+                            (index + 1) +
+                            "위  " +
+                            prediction.breed +
+                            " (" +
+                            prediction.confidence +
+                            "%)";
+
+
+                        /* ================================
+                           AI 결과 클릭
+                           ================================ */
+
+                        button.addEventListener(
+                            "click",
+                            function () {
+
+
+                                /* 품종 자동 입력 */
+
+                                breedInput.value =
+                                    prediction.breed;
+
+
+                                /* 체급 자동 입력 */
+
+                                if (
+                                    prediction.size_category
+                                ) {
+
+                                    sizeInput.value =
+                                        prediction.size_category;
+
+                                }
+
+
+                                /*
+                                 * 선택된 결과 표시
+                                 */
+
+                                const buttons =
+                                    resultBox.querySelectorAll(
+                                        ".prediction-btn"
+                                    );
+
+
+                                buttons.forEach(
+                                    function (item) {
+
+                                        item.classList.remove(
+                                            "selected"
+                                        );
+
+                                    }
+                                );
+
+
+                                button.classList.add(
+                                    "selected"
+                                );
+
+                            }
+                        );
+
+
+                        resultBox.appendChild(
+                            button
+                        );
+
+
+                    }
+                );
+
+
+                /* =========================================
+                   1위 결과 자동 적용
+                   ========================================= */
+
+                const bestPrediction =
+                    data.predictions[0];
+
+
+                breedInput.value =
+                    bestPrediction.breed;
+
+
+                if (
+                    bestPrediction.size_category
+                ) {
+
+                    sizeInput.value =
+                        bestPrediction.size_category;
+
+                }
+
+
+                /*
+                 * 1위 버튼을 기본 선택 상태로 표시
+                 */
+
+                const firstButton =
+                    resultBox.querySelector(
+                        ".prediction-btn"
+                    );
+
+
+                if (firstButton) {
+
+                    firstButton.classList.add(
+                        "selected"
+                    );
+
+                }
+
+
+            }
+
+            catch (error) {
+
+
+                console.error(
+                    "견종 분석 오류:",
+                    error
+                );
+
+
+                statusText.textContent =
+                    "서버와 통신 중 오류가 발생했습니다.";
+
+
+            }
+
+            finally {
+
+
+                analyzeButton.disabled =
+                    false;
+
+
+                analyzeButton.textContent =
+                    "🤖 AI로 견종 분석하기";
+
+
+            }
+
+        }
+    );
+
+
+    /*
+     * 페이지 종료 시
+     * 미리보기 URL 메모리 해제
+     */
+    window.addEventListener(
+        "beforeunload",
+        function () {
+
+            if (previewObjectUrl) {
+
+                URL.revokeObjectURL(
+                    previewObjectUrl
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
 </body>
+
 </html>
