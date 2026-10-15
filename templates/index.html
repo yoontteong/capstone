@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>반려견 제주 여행 서비스</title>
+    <link rel="manifest" href="/static/manifest.json">
+
+    <meta name="theme-color" content="#4CAF50">
+
+    <!-- 아이폰 홈 화면 아이콘 -->
+    <link rel="apple-touch-icon"
+        href="/static/icons/icon-192.png">
+
+    <!-- 아이폰 앱 실행 설정 -->
+    <meta name="apple-mobile-web-app-capable"
+        content="yes">
+
+    <meta name="apple-mobile-web-app-title"
+        content="반려견 제주 여행">
 
     <style>
         * {
@@ -268,6 +282,22 @@
     </div>
 
 </div>
+
+<!-- Service Worker 등록 -->
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(() => {
+                console.log("PWA Service Worker 등록 성공");
+            })
+            .catch(error => {
+                console.log("PWA 등록 실패:", error);
+            });
+    });
+}
+</script>
+
 
 </body>
 </html>

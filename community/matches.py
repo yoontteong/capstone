@@ -8,6 +8,7 @@ from flask import (
 
 from db import get_connection
 from activity.service import calculate_activity_summary
+from datetime import date
 
 from . import community
 
@@ -531,6 +532,67 @@ def match_detail(match_id):
                 "applicant_activity"
             ]
         )
+
+        # -------------------------------------------------
+        # 메이트 평가 가능 여부
+        # -------------------------------------------------
+
+        req["can_review"] = False
+        req["already_reviewed"] = False
+        req["reviewed_user_id"] = None
+
+        current_user_id = session.get("user_id")
+
+        # 수락된 신청 + 여행 날짜가 지난 경우
+        if (
+            current_user_id
+            and req["status"] == "수락"
+            and match["travel_date"] <= date.today()
+        ):
+
+            # 모집자가 신청자를 평가하는 경우
+            if current_user_id == match["user_id"]:
+
+                reviewed_user_id = req["user_id"]
+
+            # 신청자가 모집자를 평가하는 경우
+            elif current_user_id == req["user_id"]:
+
+                reviewed_user_id = match["user_id"]
+
+            else:
+                reviewed_user_id = None
+
+
+            if reviewed_user_id:
+
+                req["reviewed_user_id"] = (
+                    reviewed_user_id
+                )
+
+                # 이미 평가했는지 확인
+                cursor.execute("""
+                    SELECT id
+                    FROM mate_reviews
+                    WHERE match_request_id = %s
+                      AND reviewer_id = %s
+                      AND reviewed_user_id = %s
+                    LIMIT 1
+                """, (
+                    req["id"],
+                    current_user_id,
+                    reviewed_user_id
+                ))
+
+                existing_review = cursor.fetchone()
+
+                if existing_review:
+
+                    req["already_reviewed"] = True
+
+                else:
+
+                    req["can_review"] = True    
 
 
     # -----------------------------------------------------
@@ -1681,3 +1743,233 @@ def match_request_cancel(match_id):
             match_id=match_id
         )
     )
+
+# =========================================================
+# 여행 메이트 평가
+# =========================================================
+
+@community.route(
+    "/matches/reviews/<int:request_id>",
+    methods=["GET", "POST"]
+)
+def mate_review(request_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    current_user_id = session["user_id"]
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # -------------------------------------------------
+        # 수락된 매칭 신청 + 모집글 정보 조회
+        # -------------------------------------------------
+        cursor.execute("""
+            SELECT
+                mr.id AS request_id,
+                mr.user_id AS applicant_user_id,
+                mr.applicant,
+                mr.status,
+
+                mp.id AS match_id,
+                mp.user_id AS host_user_id,
+                mp.author AS host_name,
+                mp.title,
+                mp.travel_date
+
+            FROM match_requests mr
+            JOIN match_posts mp
+                ON mr.match_post_id = mp.id
+
+            WHERE mr.id = %s
+        """, (request_id,))
+
+        match_request = cursor.fetchone()
+
+        if not match_request:
+            return "매칭 정보를 찾을 수 없습니다.", 404
+
+        # -------------------------------------------------
+        # 수락된 상대만 평가 가능
+        # -------------------------------------------------
+        if match_request["status"] != "수락":
+            return "수락된 메이트만 평가할 수 있습니다.", 400
+
+        # -------------------------------------------------
+        # 여행 날짜가 지나야 평가 가능
+        # -------------------------------------------------
+        if match_request["travel_date"] > date.today():
+            return "여행이 끝난 후 평가할 수 있습니다.", 400
+
+        # -------------------------------------------------
+        # 평가 대상 결정
+        # -------------------------------------------------
+        if current_user_id == match_request["host_user_id"]:
+
+            reviewed_user_id = match_request["applicant_user_id"]
+            reviewed_user_name = match_request["applicant"]
+
+        elif current_user_id == match_request["applicant_user_id"]:
+
+            reviewed_user_id = match_request["host_user_id"]
+            reviewed_user_name = match_request["host_name"]
+
+        else:
+            return "이 메이트를 평가할 권한이 없습니다.", 403
+
+        # -------------------------------------------------
+        # 중복 평가 확인
+        # -------------------------------------------------
+        cursor.execute("""
+            SELECT id
+            FROM mate_reviews
+            WHERE match_request_id = %s
+              AND reviewer_id = %s
+              AND reviewed_user_id = %s
+            LIMIT 1
+        """, (
+            request_id,
+            current_user_id,
+            reviewed_user_id
+        ))
+
+        if cursor.fetchone():
+            return "이미 평가를 완료한 메이트입니다.", 400
+
+        # -------------------------------------------------
+        # POST → 메이트 평가 저장
+        # -------------------------------------------------
+        if request.method == "POST":
+
+            score_fields = [
+                "punctuality_score",
+                "kindness_score",
+                "communication_score",
+                "dog_care_score"
+            ]
+
+            scores = {}
+
+            # 각 평가 항목 1~5점 검사
+            for field in score_fields:
+
+                try:
+                    score = int(request.form.get(field))
+
+                    if not 1 <= score <= 5:
+                        raise ValueError
+
+                    scores[field] = score
+
+                except (TypeError, ValueError):
+                    return (
+                        "모든 평가 항목을 1점부터 "
+                        "5점까지 선택해주세요.",
+                        400
+                    )
+
+            # 반려견 사교성: 선택사항
+            sociability_value = request.form.get(
+                "dog_sociability_score"
+            )
+
+            dog_sociability_score = None
+
+            if sociability_value not in (None, ""):
+
+                try:
+                    dog_sociability_score = int(
+                        sociability_value
+                    )
+
+                    if not 1 <= dog_sociability_score <= 5:
+                        raise ValueError
+
+                except (TypeError, ValueError):
+                    return (
+                        "반려견 사교성은 1점부터 "
+                        "5점까지 선택해주세요.",
+                        400
+                    )
+
+            content = request.form.get(
+                "content", ""
+            ).strip()
+
+            if len(content) > 500:
+                return "후기는 500자 이하로 작성해주세요.", 400
+
+            # -------------------------------------------------
+            # 가중평균 종합 평가 계산
+            # -------------------------------------------------
+            weighted_rating = (
+                scores["punctuality_score"] * 0.30
+                + scores["kindness_score"] * 0.25
+                + scores["communication_score"] * 0.20
+                + scores["dog_care_score"] * 0.25
+            )
+
+            # 기존 rating 컬럼은 TINYINT(정수형)
+            # 소수 첫째 자리 5 이상이면 올림
+            rating = int(weighted_rating + 0.5)
+
+            # -------------------------------------------------
+            # DB 저장
+            # -------------------------------------------------
+            cursor.execute("""
+                INSERT INTO mate_reviews (
+                    match_request_id,
+                    reviewer_id,
+                    reviewed_user_id,
+                    rating,
+                    punctuality_score,
+                    kindness_score,
+                    communication_score,
+                    dog_care_score,
+                    dog_sociability_score,
+                    content
+                )
+                VALUES (
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s
+                )
+            """, (
+                request_id,
+                current_user_id,
+                reviewed_user_id,
+                rating,
+                scores["punctuality_score"],
+                scores["kindness_score"],
+                scores["communication_score"],
+                scores["dog_care_score"],
+                dog_sociability_score,
+                content
+            ))
+
+            conn.commit()
+
+            return redirect(
+                url_for(
+                    "community.match_detail",
+                    match_id=match_request["match_id"]
+                )
+            )
+
+        # -------------------------------------------------
+        # GET → 평가 페이지
+        # -------------------------------------------------
+        return render_template(
+            "community/mate_review.html",
+            match_request=match_request,
+            reviewed_user_id=reviewed_user_id,
+            reviewed_user_name=reviewed_user_name
+        )
+
+   
+
+    finally:
+
+        cursor.close()
+        conn.close()

@@ -165,7 +165,7 @@ def dog_edit(dog_id):
     cursor.close()
     conn.close()
 
-    return redirect("/dogs")
+    return redirect("/mypage")
 
 
 @dog_bp.route("/dog/delete/<int:dog_id>", methods=["POST"])

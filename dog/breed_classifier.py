@@ -1,5 +1,8 @@
 from transformers import pipeline
 from PIL import Image
+import time
+import os
+import psutil
 
 
 # =========================================================
@@ -21,6 +24,13 @@ def get_classifier():
 
     # 아직 모델이 로드되지 않았을 때만 실행
     if classifier is None:
+
+        process = psutil.Process(os.getpid())
+
+        # 모델 로딩 전
+        memory_before = process.memory_info().rss / 1024 / 1024
+        print(f"모델 로딩 전 메모리: {memory_before:.2f} MB")
+
         print("견종 분류 AI 모델을 불러오는 중...")
 
         classifier = pipeline(
@@ -30,7 +40,17 @@ def get_classifier():
 
         print("AI 모델 로드 완료!")
 
-    return classifier   
+        # 모델 로딩 후
+        memory_after = process.memory_info().rss / 1024 / 1024
+        print(f"모델 로딩 후 메모리: {memory_after:.2f} MB")
+
+        # 증가량
+        print(
+            f"AI 모델 로딩으로 증가한 메모리: "
+            f"{memory_after - memory_before:.2f} MB"
+        )
+
+    return classifier
 
 
 # =========================================================
@@ -557,6 +577,8 @@ def get_breed_info(label):
 
 def predict_breed(image):
 
+    start = time.perf_counter()
+
     """
     강아지 사진을 분석하여
     가능성이 높은 견종 TOP 3를 반환한다.
@@ -595,6 +617,7 @@ def predict_breed(image):
     # -----------------------------------------------------
 
     model = get_classifier()
+
 
     predictions = model(
         image,
@@ -654,6 +677,8 @@ def predict_breed(image):
 
         })
 
+    end = time.perf_counter()
+    print(f"견종 예측 시간: {end - start:.3f}초")
 
     return results
 

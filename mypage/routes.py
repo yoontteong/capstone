@@ -50,9 +50,11 @@ def mypage():
     cursor = conn.cursor(dictionary=True)
 
     try:
+
         # ==============================
         # 사용자 정보 가져오기
         # ==============================
+
         cursor.execute("""
             SELECT
                 id,
@@ -76,6 +78,7 @@ def mypage():
         # ==============================
         # 사용자의 반려견 가져오기
         # ==============================
+
         cursor.execute("""
             SELECT
                 id,
@@ -92,7 +95,173 @@ def mypage():
         dogs = cursor.fetchall()
 
 
+        
+        # ==============================
+        # 메이트 신뢰도
+        # ==============================
+
+        cursor.execute("""
+            SELECT
+                punctuality_score,
+                kindness_score,
+                communication_score,
+                dog_care_score
+            FROM mate_reviews
+            WHERE reviewed_user_id = %s
+            ORDER BY id ASC
+        """, (user_id,))
+
+        reviews = cursor.fetchall()
+
+        # 기존 평가까지 포함한 전체 평가 수
+        review_count = len(reviews)
+
+        base_score = 60
+        review_change = 0
+
+        for review in reviews:
+
+            # 기존 방식으로 저장된 평가는
+            # 세부 항목이 없으므로 계산에서 제외
+            if any(
+                review[field] is None
+                for field in [
+                    "punctuality_score",
+                    "kindness_score",
+                    "communication_score",
+                    "dog_care_score"
+                ]
+            ):
+                continue
+
+            weighted_rating = (
+                review["punctuality_score"] * 0.30
+                + review["kindness_score"] * 0.25
+                + review["communication_score"] * 0.20
+                + review["dog_care_score"] * 0.25
+            )
+
+            if weighted_rating >= 4.5:
+                review_change += 2
+
+            elif weighted_rating >= 3.5:
+                review_change += 1
+
+            elif weighted_rating >= 2.5:
+                review_change += 0
+
+            elif weighted_rating >= 1.5:
+                review_change -= 2
+
+            else:
+                review_change -= 3
+
+        # ==============================
+        # 확정된 노쇼 횟수
+        # ==============================
+
+        cursor.execute("""
+            SELECT COUNT(*) AS no_show_count
+            FROM mate_no_show_reports
+            WHERE reported_user_id = %s
+              AND status = 'confirmed'
+        """, (user_id,))
+
+        no_show_result = cursor.fetchone()
+        no_show_count = no_show_result["no_show_count"] or 0
+
+        # 노쇼 누적 감점
+        if no_show_count == 0:
+            no_show_penalty = 0
+        elif no_show_count == 1:
+            no_show_penalty = 3
+        elif no_show_count == 2:
+            no_show_penalty = 10
+        else:
+            # 3회부터 22점 감점
+            no_show_penalty = 22
+
+        # ==============================
+        # 최종 신뢰도
+        # ==============================
+
+        trust_score = max(
+            0,
+            min(
+                100,
+                base_score + review_change - no_show_penalty
+            )
+        )
+
+
+
+        # ==============================
+        # 메이트 신청 응답률
+        # ==============================
+
+        cursor.execute("""
+            SELECT
+                COUNT(*) AS total_count,
+
+                SUM(
+                    CASE
+                        WHEN mr.status IN (
+                            '수락',
+                            '거절'
+                        )
+                        THEN 1
+                        ELSE 0
+                    END
+                ) AS responded_count
+
+            FROM match_requests mr
+
+            JOIN match_posts mp
+                ON mr.match_post_id = mp.id
+
+            WHERE mp.user_id = %s
+        """, (user_id,))
+
+        response_stats = cursor.fetchone()
+
+        total_requests = (
+            response_stats["total_count"] or 0
+        )
+
+        responded_requests = (
+            response_stats["responded_count"] or 0
+        )
+
+
+        # 받은 신청이 있을 경우
+        if total_requests > 0:
+
+            response_rate = round(
+                responded_requests
+                / total_requests
+                * 100
+            )
+
+        else:
+
+            # 아직 받은 신청이 없는 경우
+            response_rate = None
+
+
+        # ==============================
+        # 메이트 정보
+        # ==============================
+
+        mate_info = {
+            "trust_score": trust_score,
+            "review_count": review_count,
+            "response_rate": response_rate,
+            "total_requests": total_requests
+        }
+
+
     finally:
+
         cursor.close()
         conn.close()
 
@@ -100,7 +269,8 @@ def mypage():
     return render_template(
         "profile/mypage.html",
         user=user,
-        dogs=dogs
+        dogs=dogs,
+        mate_info=mate_info
     )
 
 
@@ -108,7 +278,10 @@ def mypage():
 # 프로필 수정
 # ==============================
 
-@profile_bp.route("/mypage/edit", methods=["GET", "POST"])
+@profile_bp.route(
+    "/mypage/edit",
+    methods=["GET", "POST"]
+)
 def edit_profile():
 
     if "user_id" not in session:
@@ -155,19 +328,27 @@ def edit_profile():
         # ==============================
 
         nickname = request.form.get(
-            "nickname", ""
+            "nickname",
+            ""
         ).strip()
 
         email = request.form.get(
-            "email", ""
+            "email",
+            ""
         ).strip()
 
 
         if not nickname:
-            return "닉네임을 입력해주세요.", 400
+            return (
+                "닉네임을 입력해주세요.",
+                400
+            )
 
         if not email:
-            return "이메일을 입력해주세요.", 400
+            return (
+                "이메일을 입력해주세요.",
+                400
+            )
 
 
         # ==============================
@@ -185,7 +366,10 @@ def edit_profile():
         ))
 
         if cursor.fetchone():
-            return "이미 사용 중인 닉네임입니다.", 400
+            return (
+                "이미 사용 중인 닉네임입니다.",
+                400
+            )
 
 
         # ==============================
@@ -203,7 +387,10 @@ def edit_profile():
         ))
 
         if cursor.fetchone():
-            return "이미 사용 중인 이메일입니다.", 400
+            return (
+                "이미 사용 중인 이메일입니다.",
+                400
+            )
 
 
         # ==============================
@@ -236,7 +423,10 @@ def edit_profile():
 
         if image and image.filename:
 
-            if not allowed_image(image.filename):
+            if not allowed_image(
+                image.filename
+            ):
+
                 return (
                     "PNG, JPG, JPEG, WEBP "
                     "이미지만 업로드할 수 있습니다.",
@@ -246,7 +436,9 @@ def edit_profile():
 
             # 원래 확장자
             extension = (
-                secure_filename(image.filename)
+                secure_filename(
+                    image.filename
+                )
                 .rsplit(".", 1)[1]
                 .lower()
             )
@@ -254,7 +446,8 @@ def edit_profile():
 
             # 파일명 충돌 방지를 위해 UUID 사용
             filename = (
-                f"{uuid.uuid4().hex}.{extension}"
+                f"{uuid.uuid4().hex}."
+                f"{extension}"
             )
 
 
@@ -338,9 +531,11 @@ def edit_profile():
 
     return redirect("/mypage")
 
-# =========================
+
+# ==============================
 # 내가 작성한 장소 후기
-# =========================
+# ==============================
+
 @profile_bp.route("/mypage/reviews")
 def my_reviews():
 
@@ -352,41 +547,45 @@ def my_reviews():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT
-            r.id,
-            r.user_id,
-            r.place_id,
-            r.author,
-            r.rating,
-            r.content,
-            r.image_path,
-            r.created_at,
-            r.updated_at,
+    try:
 
-            p.name AS place_name,
-            p.category AS place_category,
-            p.address AS place_address
+        cursor.execute("""
+            SELECT
+                r.id,
+                r.user_id,
+                r.place_id,
+                r.author,
+                r.rating,
+                r.content,
+                r.image_path,
+                r.created_at,
+                r.updated_at,
 
-        FROM reviews r
+                p.name AS place_name,
+                p.category AS place_category,
+                p.address AS place_address
 
-        JOIN places p
-            ON r.place_id = p.id
+            FROM reviews r
 
-        WHERE r.user_id = %s
+            JOIN places p
+                ON r.place_id = p.id
 
-        ORDER BY r.created_at DESC
-    """, (
-        user_id,
-    ))
+            WHERE r.user_id = %s
 
-    reviews = cursor.fetchall()
+            ORDER BY r.created_at DESC
+        """, (
+            user_id,
+        ))
 
-    cursor.close()
-    conn.close()
+        reviews = cursor.fetchall()
+
+    finally:
+
+        cursor.close()
+        conn.close()
+
 
     return render_template(
         "profile/my_reviews.html",
         reviews=reviews
     )
-    

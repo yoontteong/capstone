@@ -1,6 +1,11 @@
 from math import radians, sin, cos, sqrt, atan2
+
 from datetime import datetime, timedelta
+
 from db import get_connection
+
+import time
+import random
 
 
 def calculate_distance(lat1, lon1, lat2, lon2):
@@ -102,6 +107,8 @@ def adjust_pattern_by_dog_personality(pattern, dog_personality):
 
 
 def fetch_places(dog_size):
+    start = time.perf_counter()
+
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -126,6 +133,9 @@ def fetch_places(dog_size):
 
     cursor.close()
     conn.close()
+
+    end = time.perf_counter()
+    print(f"DB 장소 조회시간: {end - start:.4f}초")
 
     return places
 
@@ -171,6 +181,9 @@ def select_places_by_pattern(places, pattern, used_place_ids):
             and place["recommendation_type"] == "friendly"
             and place["id"] not in used_place_ids
         ]
+
+        random.shuffle(verified_places)
+        random.shuffle(friendly_places)
 
         verified_count = max(1, int(count * 0.5))
         friendly_count = count - verified_count
@@ -445,6 +458,8 @@ def add_accommodation_to_schedule(full_schedule, accommodations, days, transport
 
 
 def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transport_type):
+
+    start = time.perf_counter()
     days = get_days_by_period(travel_period)
 
     pattern = get_pattern_by_style(style)
@@ -496,5 +511,7 @@ def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transp
         days,
         transport_type
     )
+    end = time.perf_counter()
+    print(f"여행 일정 추천 응답시간: {end - start:.3f}초")
 
     return full_schedule, pattern

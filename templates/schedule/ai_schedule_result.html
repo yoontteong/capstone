@@ -661,12 +661,18 @@
             </button>
         </form>
 
-        <a
-            href="/trip/create"
-            class="back-btn"
+        <form
+            method="POST"
+            action="/ai-schedule/regenerate"
         >
-            다시 만들기
-        </a>
+            <button
+                type="submit"
+                class="back-btn"
+                style="width:100%; border:none; cursor:pointer;"
+            >
+                다시 만들기
+            </button>
+        </form>
 
     {% endif %}
 

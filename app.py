@@ -4,6 +4,8 @@ import json
 
 import requests
 
+from flask import send_from_directory
+
 from flask import (
     Flask,
     render_template,
@@ -2060,6 +2062,98 @@ def activity_summary(dog_id):
     return render_template(
         "activity/activity_summary.html",
         summary=summary
+    )
+
+@app.route("/ai-schedule/regenerate", methods=["POST"])
+def regenerate_ai_schedule():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    travel_info = session.get("travel_info")
+
+    if not travel_info:
+        return redirect("/trip/create")
+
+    start_date = travel_info.get("start_date")
+    travel_period = travel_info.get("travel_period")
+    style = travel_info.get("style")
+    transport_type = travel_info.get("transport_type")
+    dog_name = travel_info.get("dog_name")
+    dog_size = travel_info.get("dog_size")
+    dog_personality = travel_info.get("dog_personality")
+
+    # 기존 조건 그대로 일정 다시 생성
+    schedule, pattern = generate_ai_schedule(
+        dog_size=dog_size,
+        dog_personality=dog_personality,
+        style=style,
+        travel_period=travel_period,
+        transport_type=transport_type
+    )
+
+    schedule = normalize_schedule(schedule)
+
+    # 후기 정보 다시 추가
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    for item in schedule:
+        place = item.get("place", {})
+        place_id = place.get("id")
+
+        if not place_id:
+            place["review_avg"] = None
+            place["review_count"] = 0
+            continue
+
+        cursor.execute("""
+            SELECT
+                AVG(rating) AS review_avg,
+                COUNT(*) AS review_count
+            FROM reviews
+            WHERE place_id = %s
+        """, (place_id,))
+
+        review_info = cursor.fetchone()
+
+        if review_info:
+            place["review_avg"] = (
+                round(float(review_info["review_avg"]), 1)
+                if review_info["review_avg"] is not None
+                else None
+            )
+            place["review_count"] = review_info["review_count"]
+        else:
+            place["review_avg"] = None
+            place["review_count"] = 0
+
+    cursor.close()
+    conn.close()
+
+    # 새로 만들어진 일정으로 세션 교체
+    session["schedule"] = schedule
+    session["pattern"] = pattern
+
+    return render_template(
+        "schedule/ai_schedule_result.html",
+        start_date=start_date,
+        travel_period=travel_period,
+        style=style,
+        transport_type=transport_type,
+        dog_name=dog_name,
+        dog_size=dog_size,
+        dog_personality=dog_personality,
+        schedule=schedule,
+        pattern=pattern
+    )
+
+@app.route("/service-worker.js")
+def service_worker():
+    return send_from_directory(
+        app.static_folder,
+        "service-worker.js",
+        mimetype="application/javascript"
     )
 
 if __name__ == "__main__":

@@ -2,15 +2,23 @@
 <html lang="ko">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>MY | 반려견 제주 여행</title>
 
+
     <style>
+
         * {
             box-sizing: border-box;
         }
+
 
         body {
             margin: 0;
@@ -18,6 +26,7 @@
             background: #f7f8fa;
             color: #333;
         }
+
 
         .page {
             width: 100%;
@@ -27,6 +36,7 @@
             background: white;
             padding-bottom: 50px;
         }
+
 
         /* ==============================
            상단
@@ -38,10 +48,12 @@
             text-align: center;
         }
 
+
         .header h1 {
             margin: 0;
             font-size: 22px;
         }
+
 
         .home-button {
             position: absolute;
@@ -53,6 +65,7 @@
             font-size: 14px;
         }
 
+
         /* ==============================
            프로필
         ============================== */
@@ -61,6 +74,7 @@
             text-align: center;
             padding: 25px 20px 30px;
         }
+
 
         .profile-image-wrapper {
             width: 105px;
@@ -78,15 +92,18 @@
             overflow: hidden;
         }
 
+
         .profile-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
+
         .default-profile {
             font-size: 48px;
         }
+
 
         .nickname {
             margin: 0;
@@ -94,16 +111,19 @@
             font-weight: bold;
         }
 
+
         .email {
             margin-top: 6px;
             color: #999;
             font-size: 14px;
         }
 
+
         .profile-edit-button {
             margin-top: 17px;
-
             padding: 9px 22px;
+
+            display: inline-block;
 
             background: white;
             border: 1px solid #ddd;
@@ -113,11 +133,14 @@
             color: #555;
 
             cursor: pointer;
+            text-decoration: none;
         }
+
 
         .profile-edit-button:hover {
             background: #f7f7f7;
         }
+
 
         /* ==============================
            구분선
@@ -128,6 +151,148 @@
             background: #f7f8fa;
         }
 
+
+        /* ==============================
+           메이트 신뢰도
+        ============================== */
+
+        .mate-section {
+            padding: 25px 24px;
+        }
+
+
+        .mate-card {
+            padding: 22px 20px;
+
+            border: 1px solid #eee;
+            border-radius: 20px;
+
+            background: #fff;
+        }
+
+
+        .mate-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .mate-title {
+            margin: 0;
+
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        .mate-info-icon {
+            width: 19px;
+            height: 19px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 2px solid #aaa;
+            border-radius: 50%;
+
+            color: #999;
+
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+
+        .trust-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+
+        .trust-score {
+            font-size: 35px;
+            font-weight: bold;
+            color: #ff7968;
+        }
+
+
+        .trust-score.empty {
+            color: #aaa;
+        }
+
+
+        .trust-face {
+            width: 72px;
+            height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #fff1ee;
+
+            font-size: 39px;
+        }
+
+
+        .trust-bar {
+            width: 100%;
+            height: 10px;
+
+            margin-bottom: 28px;
+
+            background: #eee;
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+
+        .trust-bar-fill {
+            height: 100%;
+
+            background: #ff7968;
+
+            border-radius: 20px;
+
+            transition: width 0.3s ease;
+        }
+
+
+        .mate-stat {
+            margin-top: 22px;
+        }
+
+
+        .mate-stat:first-of-type {
+            margin-top: 0;
+        }
+
+
+        .mate-stat-title {
+            margin-bottom: 7px;
+
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+
+        .mate-stat-description {
+            color: #999;
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
         /* ==============================
            공통 영역
         ============================== */
@@ -135,6 +300,7 @@
         .section {
             padding: 25px 24px;
         }
+
 
         .section-title-row {
             display: flex;
@@ -144,10 +310,12 @@
             margin-bottom: 17px;
         }
 
+
         .section-title {
             margin: 0;
             font-size: 17px;
         }
+
 
         .add-dog {
             color: #ff7968;
@@ -155,6 +323,7 @@
             text-decoration: none;
             font-weight: bold;
         }
+
 
         /* ==============================
            반려견
@@ -165,6 +334,7 @@
             flex-direction: column;
             gap: 12px;
         }
+
 
         .dog-card {
             display: flex;
@@ -181,10 +351,12 @@
             transition: 0.2s;
         }
 
+
         .dog-card:hover {
             border-color: #ffb7ad;
             background: #fffafa;
         }
+
 
         .dog-icon {
             width: 55px;
@@ -204,9 +376,11 @@
             margin-right: 15px;
         }
 
+
         .dog-info {
             flex: 1;
         }
+
 
         .dog-name {
             font-size: 16px;
@@ -214,16 +388,19 @@
             margin-bottom: 5px;
         }
 
+
         .dog-detail {
             color: #888;
             font-size: 13px;
             line-height: 1.6;
         }
 
+
         .arrow {
             color: #bbb;
             font-size: 20px;
         }
+
 
         .empty-dog {
             text-align: center;
@@ -237,6 +414,7 @@
             font-size: 14px;
         }
 
+
         .empty-dog a {
             display: inline-block;
 
@@ -247,6 +425,7 @@
             font-weight: bold;
         }
 
+
         /* ==============================
            메뉴
         ============================== */
@@ -255,6 +434,7 @@
             display: flex;
             flex-direction: column;
         }
+
 
         .menu-item {
             min-height: 58px;
@@ -270,51 +450,42 @@
             font-size: 15px;
         }
 
+
         .menu-item:last-child {
             border-bottom: none;
         }
+
 
         .menu-icon {
             width: 38px;
             font-size: 20px;
         }
 
+
         .menu-name {
             flex: 1;
         }
+
 
         .menu-arrow {
             color: #bbb;
         }
 
+
         .logout {
             color: #888;
         }
 
-        .profile-edit-button {
-            margin-top: 17px;
-            padding: 9px 22px;
-
-            display: inline-block;
-
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-
-            font-size: 13px;
-            color: #555;
-
-            cursor: pointer;
-            text-decoration: none;
-        }
-
     </style>
+
 </head>
 
 
 <body>
 
+
 <div class="page">
+
 
     <!-- ==============================
          상단
@@ -322,7 +493,10 @@
 
     <header class="header">
 
-        <a href="/" class="home-button">
+        <a
+            href="/"
+            class="home-button"
+        >
             ← 홈
         </a>
 
@@ -336,6 +510,7 @@
     ============================== -->
 
     <section class="profile-section">
+
 
         <div class="profile-image-wrapper">
 
@@ -368,13 +543,146 @@
         </div>
 
 
-        <!-- 다음 단계에서 실제 기능 연결 -->
         <a
             href="/mypage/edit"
             class="profile-edit-button"
         >
             프로필 수정
         </a>
+
+
+    </section>
+
+
+    <div class="divider"></div>
+
+
+    <!-- ==============================
+         메이트 신뢰도
+    ============================== -->
+
+    <section class="mate-section">
+
+        <div class="mate-card">
+
+
+            <div class="mate-title-row">
+
+                <h2 class="mate-title">
+                    메이트 신뢰도
+                </h2>
+
+                <span
+                    class="mate-info-icon"
+                    title="함께 여행한 메이트의 평가를 바탕으로 계산됩니다."
+                >
+                    i
+                </span>
+
+            </div>
+
+
+            <!-- 신뢰도 점수 -->
+
+            <div class="trust-main">
+
+                <div class="trust-score">
+                    {{ mate_info.trust_score }}점
+                </div>
+
+                <div class="trust-face">
+
+                    {% if mate_info.trust_score >= 90 %}
+                        😊
+                    {% elif mate_info.trust_score >= 70 %}
+                        🙂
+                    {% elif mate_info.trust_score >= 50 %}
+                        😐
+                    {% else %}
+                        😕
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- 신뢰도 바 -->
+
+            <div class="trust-bar">
+                <div
+                    class="trust-bar-fill"
+                    data-score="{{ mate_info.trust_score }}"
+                ></div>
+            </div>
+
+
+            <!-- 받은 평가 -->
+
+            <div class="mate-stat">
+
+                {% if mate_info.review_count > 0 %}
+
+                    <div class="mate-stat-title">
+                        함께한 평가
+                        {{ mate_info.review_count }}개
+                    </div>
+
+                    <div class="mate-stat-description">
+                        함께 여행한 메이트에게 받은
+                        평가를 바탕으로 계산했어요.
+                    </div>
+
+                {% else %}
+
+                    <div class="mate-stat-title">
+                        함께한 평가 -개
+                    </div>
+
+                    <div class="mate-stat-description">
+                        표시할 만큼 충분한
+                        메이트 평가가 없어요.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- 응답률 -->
+
+            <div class="mate-stat">
+
+                {% if mate_info.response_rate is not none %}
+
+                    <div class="mate-stat-title">
+                        응답률
+                        {{ mate_info.response_rate }}%
+                    </div>
+
+                    <div class="mate-stat-description">
+                        받은 메이트 신청에
+                        응답한 비율이에요.
+                    </div>
+
+                {% else %}
+
+                    <div class="mate-stat-title">
+                        응답률 -%
+                    </div>
+
+                    <div class="mate-stat-description">
+                        표시할 만큼 충분한
+                        메이트 신청 내역이 없어요.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
     </section>
 
 
@@ -387,11 +695,13 @@
 
     <section class="section">
 
+
         <div class="section-title-row">
 
             <h2 class="section-title">
                 🐾 내 반려견
             </h2>
+
 
             <a
                 href="/dog/register"
@@ -407,6 +717,7 @@
 
             <div class="dog-list">
 
+
                 {% for dog in dogs %}
 
                     <a
@@ -414,12 +725,14 @@
                         class="dog-card"
                     >
 
+
                         <div class="dog-icon">
                             🐶
                         </div>
 
 
                         <div class="dog-info">
+
 
                             <div class="dog-name">
                                 {{ dog.name }}
@@ -429,24 +742,38 @@
                             <div class="dog-detail">
 
                                 {% if dog.breed %}
+
                                     {{ dog.breed }}
+
                                 {% else %}
+
                                     견종 미등록
+
                                 {% endif %}
 
+
                                 {% if dog.size_category %}
+
                                     · {{ dog.size_category }}
+
                                 {% endif %}
+
 
                                 <br>
 
+
                                 {% if dog.personality %}
+
                                     {{ dog.personality }}
+
                                 {% else %}
+
                                     성향 미등록
+
                                 {% endif %}
 
                             </div>
+
 
                         </div>
 
@@ -455,14 +782,17 @@
                             ›
                         </div>
 
+
                     </a>
 
                 {% endfor %}
+
 
             </div>
 
 
         {% else %}
+
 
             <div class="empty-dog">
 
@@ -476,7 +806,9 @@
 
             </div>
 
+
         {% endif %}
+
 
     </section>
 
@@ -490,15 +822,42 @@
 
     <section class="section">
 
-        <h2 class="section-title"
-            style="margin-bottom: 12px;">
+
+        <h2
+            class="section-title"
+            style="margin-bottom: 12px;"
+        >
             나의 여행
         </h2>
 
 
         <div class="menu-list">
 
-            <a href="/trips" class="menu-item">
+            
+        <!-- 내 메이트 채팅 -->
+        <a
+            href="{{ url_for('community.mate_chat_list') }}"
+            class="menu-item"
+        >
+            <span class="menu-icon">
+                💬
+            </span>
+
+            <span class="menu-name">
+                내 메이트 채팅
+            </span>
+
+            <span class="menu-arrow">
+                ›
+            </span>
+        </a>
+
+
+
+            <a
+                href="/trips"
+                class="menu-item"
+            >
 
                 <span class="menu-icon">
                     ✈️
@@ -515,7 +874,10 @@
             </a>
 
 
-            <a href="/activity/history" class="menu-item">
+            <a
+                href="/activity/history"
+                class="menu-item"
+            >
 
                 <span class="menu-icon">
                     📍
@@ -532,7 +894,10 @@
             </a>
 
 
-            <a href="/mypage/reviews" class="menu-item">
+            <a
+                href="/mypage/reviews"
+                class="menu-item"
+            >
 
                 <span class="menu-icon">
                     💬
@@ -549,7 +914,10 @@
             </a>
 
 
-            <a href="/checklists" class="menu-item">
+            <a
+                href="/checklists"
+                class="menu-item"
+            >
 
                 <span class="menu-icon">
                     🧳
@@ -565,7 +933,9 @@
 
             </a>
 
+
         </div>
+
 
     </section>
 
@@ -579,9 +949,14 @@
 
     <section class="section">
 
+
         <div class="menu-list">
 
-            <a href="#" class="menu-item">
+
+            <a
+                href="#"
+                class="menu-item"
+            >
 
                 <span class="menu-icon">
                     ⚙️
@@ -613,12 +988,31 @@
 
             </a>
 
+
         </div>
+
 
     </section>
 
+
 </div>
 
+<script>
+    const trustBar =
+        document.querySelector(".trust-bar-fill");
+
+    if (trustBar) {
+        const score =
+            Number(trustBar.dataset.score) || 0;
+
+        trustBar.style.width =
+            Math.max(0, Math.min(score, 100)) + "%";
+    }
+</script>
+
+
 </body>
+
+
 
 </html>

@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>내 메이트 채팅</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f8fa;
+            color: #333;
+        }
+
+        .page {
+            max-width: 620px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .header {
+            padding: 25px 24px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .back {
+            font-size: 14px;
+            color: #777;
+            text-decoration: none;
+        }
+
+        h1 {
+            margin: 18px 0 5px;
+            font-size: 23px;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .room-list {
+            padding: 10px 18px;
+        }
+
+        .room {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 19px 8px;
+            border-bottom: 1px solid #eee;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .room:hover {
+            background: #fafafa;
+        }
+
+        .room-icon {
+            width: 53px;
+            height: 53px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: #eaf6ec;
+            font-size: 25px;
+        }
+
+        .room-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .room-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .room-message {
+            color: #777;
+            font-size: 13px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .room-meta {
+            margin-top: 7px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .arrow {
+            color: #bbb;
+            font-size: 22px;
+        }
+
+        .empty {
+            margin: 35px 20px;
+            padding: 45px 20px;
+            background: #fafafa;
+            border-radius: 18px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .empty a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #4caf50;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="header">
+        <a href="/mypage" class="back">
+            ← 마이페이지
+        </a>
+
+        <h1>💬 내 메이트 채팅</h1>
+
+        <div class="description">
+            참여 중인 메이트 채팅방
+            {{ chat_rooms|length }}개
+        </div>
+    </header>
+
+    {% if chat_rooms %}
+
+        <div class="room-list">
+
+            {% for room in chat_rooms %}
+
+                <a
+                    href="{{ url_for('community.mate_chat', match_id=room.id) }}"
+                    class="room"
+                >
+
+                    <div class="room-icon">
+                        🐾
+                    </div>
+
+                    <div class="room-info">
+
+                        <div class="room-title">
+                            {{ room.title }}
+                        </div>
+
+                        <div class="room-message">
+                            {% if room.last_message %}
+                                {{ room.last_message }}
+                            {% else %}
+                                아직 메시지가 없습니다.
+                            {% endif %}
+                        </div>
+
+                        <div class="room-meta">
+                            👥 {{ room.participant_count }}명
+
+                            {% if room.last_message_at %}
+                                · {{ room.last_message_at.strftime('%m/%d %H:%M') }}
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="arrow">›</div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            🐶<br>
+            아직 참여 중인 메이트 채팅방이 없어요.
+
+            <br>
+
+            메이트를 모집하거나 신청해 보세요!
+
+            <br>
+
+            <a href="/matches">
+                메이트 모집글 보러 가기 →
+            </a>
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

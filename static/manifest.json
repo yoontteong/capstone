@@ -1,0 +1,23 @@
+
+{
+  "name": "반려견 제주 여행 서비스",
+  "short_name": "댕댕여행",
+  "description": "AI 기반 반려견 제주 여행 추천 서비스",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
