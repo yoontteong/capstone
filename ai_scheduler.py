@@ -6,6 +6,7 @@ from db import get_connection
 
 import time
 import random
+from collections import defaultdict
 
 
 def calculate_distance(lat1, lon1, lat2, lon2):
@@ -92,7 +93,7 @@ def adjust_pattern_by_dog_personality(pattern, dog_personality):
 
         if pattern.get("레포츠", 0) > 0:
             pattern["레포츠"] -= 1
-
+    
     elif dog_personality == "겁많음":
         pattern["문화시설"] = pattern.get("문화시설", 0) + 1
         pattern["맛집"] = pattern.get("맛집", 0) + 1
@@ -105,13 +106,19 @@ def adjust_pattern_by_dog_personality(pattern, dog_personality):
 
     return {k: v for k, v in pattern.items() if v > 0}
 
-
-def fetch_places(dog_size):
-    start = time.perf_counter()
-
-    conn = get_connection()
+def _fetch_rows(conn, sql, dog_size):
+    """기존 dictionary 결과 구조 유지, 커서만 각 SQL별로 사용."""
     cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(sql, (dog_size,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
 
+
+def fetch_places(dog_size, conn=None):
+    """conn이 전달되면 재사용하고, 단독 호출되면 연결을 직접 관리."""
+    start = time.perf_counter()
     sql = """
         SELECT *
         FROM places
@@ -120,30 +127,22 @@ def fetch_places(dog_size):
           AND (dog_size_allowed = %s OR dog_size_allowed = '전체')
           AND latitude IS NOT NULL
           AND longitude IS NOT NULL
-        ORDER BY 
-            CASE 
-                WHEN recommendation_type = 'verified' THEN 0
-                ELSE 1
-            END,
+        ORDER BY
+            CASE WHEN recommendation_type = 'verified' THEN 0 ELSE 1 END,
             rating DESC
     """
-
-    cursor.execute(sql, (dog_size,))
-    places = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    end = time.perf_counter()
-    print(f"DB 장소 조회시간: {end - start:.4f}초")
-
+    own_connection = conn is None
+    if own_connection:
+        conn = get_connection()
+    try:
+        places = _fetch_rows(conn, sql, dog_size)
+    finally:
+        if own_connection:
+            conn.close()
+    print(f"DB 장소 조회시간: {time.perf_counter() - start:.4f}초")
     return places
 
-
-def fetch_accommodations(dog_size):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-
+def fetch_accommodations(dog_size, conn=None):
     sql = """
         SELECT *
         FROM places
@@ -154,53 +153,41 @@ def fetch_accommodations(dog_size):
           AND longitude IS NOT NULL
         ORDER BY rating DESC
     """
-
-    cursor.execute(sql, (dog_size,))
-    accommodations = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return accommodations
+    own_connection = conn is None
+    if own_connection:
+        conn = get_connection()
+    try:
+        return _fetch_rows(conn, sql, dog_size)
+    finally:
+        if own_connection:
+            conn.close()
 
 
 def select_places_by_pattern(places, pattern, used_place_ids):
+    """사전 분류 방식. 같은 난수 상태라면 원래 방식과 선택 순서가 일치."""
+    grouped = defaultdict(list)
+    for place in places:
+        if place["id"] not in used_place_ids:
+            grouped[(place["category"], place["recommendation_type"])].append(place)
+
     selected = []
-
     for category, count in pattern.items():
-        verified_places = [
-            place for place in places
-            if place["category"] == category
-            and place["recommendation_type"] == "verified"
-            and place["id"] not in used_place_ids
-        ]
-
-        friendly_places = [
-            place for place in places
-            if place["category"] == category
-            and place["recommendation_type"] == "friendly"
-            and place["id"] not in used_place_ids
-        ]
-
+        verified_places = list(grouped[(category, "verified")])
+        friendly_places = list(grouped[(category, "friendly")])
         random.shuffle(verified_places)
         random.shuffle(friendly_places)
 
         verified_count = max(1, int(count * 0.5))
         friendly_count = count - verified_count
-
         selected.extend(verified_places[:verified_count])
         selected.extend(friendly_places[:friendly_count])
-
         if len(verified_places) < verified_count:
             shortage = verified_count - len(verified_places)
             selected.extend(friendly_places[friendly_count:friendly_count + shortage])
-
         if len(friendly_places) < friendly_count:
             shortage = friendly_count - len(friendly_places)
             selected.extend(verified_places[verified_count:verified_count + shortage])
-
     return selected
-
 
 def get_region(place):
     address = place.get("address") or ""
@@ -247,31 +234,31 @@ def filter_by_region_cluster(places, transport_type):
 
     return best_region_places
 
-
 def sort_by_distance(places):
+    """원래의 최근접 이웃 순서를 유지하면서 라디안 좌표를 미리 계산."""
     if not places:
         return []
 
-    route = [places[0]]
-    remaining = places[1:]
-
-    while remaining:
-        current = route[-1]
-
-        nearest = min(
-            remaining,
-            key=lambda place: calculate_distance(
-                current["latitude"],
-                current["longitude"],
-                place["latitude"],
-                place["longitude"]
-            )
-        )
-
-        route.append(nearest)
-        remaining.remove(nearest)
-
-    return route
+    coords = [(radians(float(p["latitude"])), radians(float(p["longitude"])))
+              for p in places]
+    unused = list(range(1, len(places)))
+    ordered = [0]
+    while unused:
+        current = ordered[-1]
+        lat1, lon1 = coords[current]
+        best = None
+        best_distance = float("inf")
+        for j in unused:
+            lat2, lon2 = coords[j]
+            dlat, dlon = lat2 - lat1, lon2 - lon1
+            a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+            distance = 6371 * 2 * atan2(sqrt(a), sqrt(1 - a))
+            if distance < best_distance:
+                best = j
+                best_distance = distance
+        ordered.append(best)
+        unused.remove(best)
+    return [places[i] for i in ordered]
 
 
 def find_nearest_accommodation(last_place, accommodations):
@@ -298,7 +285,6 @@ def find_nearest_accommodation(last_place, accommodations):
             acc["longitude"]
         )
     )
-
 
 def is_place_open(place, current_time):
     try:
@@ -359,7 +345,6 @@ def create_day_schedule(route, day, transport_type, dog_size, dog_personality):
 
     return schedule
 
-
 def make_reason(place, dog_size=None, dog_personality=None):
     recommendation_type = place.get("recommendation_type", "verified")
     category = place.get("category", "")
@@ -397,7 +382,6 @@ def make_reason(place, dog_size=None, dog_personality=None):
         "일반 관광 데이터를 기반으로 선택된 반려견 친화 추천 장소입니다. "
         "방문 전 동반 가능 여부 확인을 권장합니다."
     )
-
 
 def add_accommodation_to_schedule(full_schedule, accommodations, days, transport_type):
     if days <= 1:
@@ -456,7 +440,6 @@ def add_accommodation_to_schedule(full_schedule, accommodations, days, transport
 
     return full_schedule
 
-
 def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transport_type):
 
     start = time.perf_counter()
@@ -466,8 +449,13 @@ def generate_ai_schedule(dog_size, dog_personality, style, travel_period, transp
     pattern = adjust_pattern_by_dog_size(pattern, dog_size)
     pattern = adjust_pattern_by_dog_personality(pattern, dog_personality)
 
-    places = fetch_places(dog_size)
-    accommodations = fetch_accommodations(dog_size)
+    # 한 요청에서 DB 연결 하나를 공유하며, 예외가 나도 반드시 종료.
+    conn = get_connection()
+    try:
+        places = fetch_places(dog_size, conn=conn)
+        accommodations = fetch_accommodations(dog_size, conn=conn)
+    finally:
+        conn.close()
 
     full_schedule = []
     used_place_ids = set()

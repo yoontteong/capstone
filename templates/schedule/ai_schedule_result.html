@@ -1,18 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AI 추천 일정 결과</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 추천 일정 결과</title>
 
-    <!-- Leaflet 지도 -->
     <link rel="stylesheet"
-          href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+          href="https://unpkg.com/leaflet/dist/leaflet.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -25,7 +23,7 @@
             max-width: 430px;
             margin: 0 auto;
             min-height: 100vh;
-            background: #ffffff;
+            background: white;
             padding: 24px 20px 40px;
         }
 
@@ -65,7 +63,7 @@
 
         .pattern-title {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .pattern-list {
@@ -105,7 +103,7 @@
         .tab-btn {
             flex: 1;
             border: 1px solid #ddd;
-            background: #fff;
+            background: white;
             border-radius: 18px;
             padding: 10px 0;
             font-size: 14px;
@@ -120,13 +118,8 @@
             border-color: #4caf50;
         }
 
-        .day-content {
-            display: none;
-        }
-
-        .day-content.active {
-            display: block;
-        }
+        .day-content { display: none; }
+        .day-content.active { display: block; }
 
         .day-title {
             font-size: 18px;
@@ -207,10 +200,8 @@
             gap: 8px;
         }
 
-        .edit-btn,
-        .save-btn,
-        .delete-btn,
-        .add-btn {
+        .edit-btn, .save-btn,
+        .delete-btn, .add-btn {
             border: none;
             border-radius: 12px;
             padding: 9px 12px;
@@ -238,12 +229,11 @@
             width: 100%;
             background: #4caf50;
             color: white;
-            margin-top: 10px;
+            margin-top: 12px;
             padding: 14px;
         }
 
-        input,
-        textarea {
+        input, textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -277,314 +267,289 @@
             text-decoration: none;
             padding: 16px;
             border-radius: 18px;
-
             background: #f1f3f5;
             color: #555;
-
             font-weight: bold;
             margin-top: 10px;
-        }
-
-        .marker-number {
-            background: #4caf50;
-            color: white;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            line-height: 28px;
-            text-align: center;
-            font-weight: bold;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .save-trip-btn {
             width: 100%;
             margin-top: 24px;
             padding: 16px;
-
             border: none;
             border-radius: 18px;
-
             background: #4caf50;
             color: white;
-
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .save-trip-btn:hover {
-            background: #43a047;
+        /* 장소 검색 */
+        .place-search-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .place-search-row input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .place-search-button {
+            flex-shrink: 0;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background: #333;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .place-search-results {
+            margin: 8px 0 12px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .place-search-item {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            text-align: left;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .place-search-item:hover {
+            background: #f5fff6;
+            border-color: #4caf50;
+        }
+
+        .place-search-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .place-search-sub {
+            margin-top: 4px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .selected-place-hint {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-size: 13px;
         }
     </style>
 </head>
 
 <body>
-
 <div class="app">
 
-    <div>
-        <div class="badge">추천 완료</div>
-        <h1>
-            AI가 만든<br>
-            반려견 여행 일정
-        </h1>
-    </div>
+    <div class="badge">추천 완료</div>
+
+    <h1>
+        AI가 만든<br>
+        반려견 여행 일정
+    </h1>
 
     <!-- 여행 조건 -->
     <div class="summary">
-        <div>
-            <strong>여행 기간:</strong>
-            {{ travel_period }}
-        </div>
-
-        <div>
-            <strong>일정 스타일:</strong>
-            {{ style }}
-        </div>
-
-        <div>
-            <strong>이동수단:</strong>
-            {{ transport_type }}
-        </div>
-
-        <div>
-            <strong>반려견 크기:</strong>
-            {{ dog_size }}
-        </div>
-
-        <div>
-            <strong>반려견 성향:</strong>
-            {{ dog_personality }}
-        </div>
+        <div><strong>여행 기간:</strong> {{ travel_period }}</div>
+        <div><strong>일정 스타일:</strong> {{ style }}</div>
+        <div><strong>이동수단:</strong> {{ transport_type }}</div>
+        <div><strong>반려견 크기:</strong> {{ dog_size }}</div>
+        <div><strong>반려견 성향:</strong> {{ dog_personality }}</div>
     </div>
 
     <!-- AI 여행 패턴 -->
     <div class="pattern-box">
-
-        <div class="pattern-title">
-            AI 여행 패턴
-        </div>
-
+        <div class="pattern-title">AI 여행 패턴</div>
         <div class="pattern-list">
-
             {% for category, count in pattern.items() %}
-
-                <div class="pattern-item">
-                    {{ category }} {{ count }}개
-                </div>
-
+            <div class="pattern-item">
+                {{ category }} {{ count }}개
+            </div>
             {% endfor %}
-
         </div>
     </div>
 
-
     {% if schedule %}
 
-        <!-- 지도 -->
-        <div id="map"></div>
+    <!-- 지도 -->
+    <div id="map"></div>
 
-        <!-- 일차 탭 -->
-        <div class="tabs">
-
-            <button
-                class="tab-btn active"
+    <!-- 일차 선택 -->
+    <div class="tabs">
+        <button class="tab-btn active"
                 onclick="showDay(1, this)">
-                Day 1
-            </button>
+            Day 1
+        </button>
 
-            {% if travel_period == '1박2일'
-                  or travel_period == '2박3일' %}
+        {% if travel_period in ['1박2일', '2박3일'] %}
+        <button class="tab-btn"
+                onclick="showDay(2, this)">
+            Day 2
+        </button>
+        {% endif %}
 
-                <button
-                    class="tab-btn"
-                    onclick="showDay(2, this)">
-                    Day 2
-                </button>
+        {% if travel_period == '2박3일' %}
+        <button class="tab-btn"
+                onclick="showDay(3, this)">
+            Day 3
+        </button>
+        {% endif %}
+    </div>
 
-            {% endif %}
+    {% set day_count =
+        3 if travel_period == '2박3일'
+        else 2 if travel_period == '1박2일'
+        else 1
+    %}
 
-            {% if travel_period == '2박3일' %}
+    <!-- 일차별 일정 -->
+    {% for day_num in range(1, day_count + 1) %}
 
-                <button
-                    class="tab-btn"
-                    onclick="showDay(3, this)">
-                    Day 3
-                </button>
+    <div id="day-{{ day_num }}"
+         class="day-content {% if day_num == 1 %}active{% endif %}">
 
-            {% endif %}
-
+        <div class="day-title">
+            Day {{ day_num }} 일정
         </div>
 
+        {% for item in schedule %}
+        {% if item.day == day_num %}
 
-        <!-- Day 1 ~ Day 3 -->
-        {% for day_num in [1, 2, 3] %}
+        <div class="schedule-card"
+             data-uid="{{ item.uid }}">
 
-            {% if day_num == 1
-                  or travel_period == '1박2일'
-                  or travel_period == '2박3일' %}
+            <!-- 추천 유형 -->
+            {% if item.place.recommendation_type == 'verified' %}
+            <div class="type-badge verified">
+                🐶 검증된 반려견 가능 장소
+            </div>
 
-                {% if day_num != 3
-                      or travel_period == '2박3일' %}
+            {% elif item.place.recommendation_type == 'custom' %}
+            <div class="type-badge custom">
+                ✏️ 직접 추가한 일정
+            </div>
 
-                    <div
-                        id="day-{{ day_num }}"
-                        class="day-content
-                        {% if day_num == 1 %}active{% endif %}">
-
-                        <div class="day-title">
-                            Day {{ day_num }} 일정
-                        </div>
-
-                        {% for item in schedule %}
-
-                            {% if item.day == day_num %}
-
-                                <div
-                                    class="schedule-card"
-                                    data-uid="{{ item.uid }}">
-
-                                    <!-- 추천 유형 -->
-                                    {% if item.place.recommendation_type
-                                          == 'verified' %}
-
-                                        <div class="type-badge verified">
-                                            🐶 검증된 반려견 가능 장소
-                                        </div>
-
-                                    {% elif item.place.recommendation_type
-                                            == 'custom' %}
-
-                                        <div class="type-badge custom">
-                                            ✏️ 직접 추가한 일정
-                                        </div>
-
-                                    {% else %}
-
-                                        <div class="type-badge friendly">
-                                            🌿 반려견 친화 추천 장소
-                                        </div>
-
-                                    {% endif %}
-
-
-                                    <!-- 시간 -->
-                                    <div class="time">
-                                        {{ item.start_time }}
-                                        ~
-                                        {{ item.end_time }}
-                                    </div>
-
-
-                                    <!-- 장소명 -->
-                                    <div class="place-name">
-                                        {{ item.place.name }}
-                                    </div>
-
-
-                                    <!-- 장소 정보 -->
-                                    <div class="info">
-
-                                        <div>
-                                            📍
-                                            {{ item.place.address }}
-                                        </div>
-
-                                        <div>
-                                            🏷️
-                                            {{ item.place.category }}
-                                        </div>
-
-                                        <div>
-                                            🐶 반려견 동반 가능
-                                        </div>
-
-                                        <div>
-                                            ⏱️ 평균 체류시간
-                                            {{ item.place.avg_stay_minutes }}분
-                                        </div>
-
-                                        <div>
-                                            ⭐ 추천 점수
-                                            {{ item.place.rating }}
-                                        </div>
-
-                                        {% if item.place.review_count > 0 %}
-
-                                            <div>
-                                                💬 사용자 평점
-                                                {{ item.place.review_avg }} / 5
-                                                · 후기 {{ item.place.review_count }}개
-                                            </div>
-
-                                        {% else %}
-
-                                            <div>
-                                                💬 아직 등록된 후기가 없습니다.
-                                            </div>
-
-                                        {% endif %}
-
-
-                                    </div>
-
-
-                                    <!-- 추천 이유 -->
-                                    <div class="reason">
-                                        {{ item.reason }}
-                                    </div>
-
-
-                                    <!-- 수정 / 삭제 -->
-                                    <div class="button-box">
-
-                                        <button
-                                            class="edit-btn"
-                                            onclick="editCard(this)">
-                                            수정
-                                        </button>
-
-                                        <button
-                                            class="save-btn"
-                                            onclick="saveCard(this)"
-                                            style="display:none;">
-                                            저장
-                                        </button>
-
-                                        <button
-                                            class="delete-btn"
-                                            onclick="deleteCard('{{ item.uid }}')">
-                                            삭제
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            {% endif %}
-
-                        {% endfor %}
-
-                    </div>
-
-                {% endif %}
-
+            {% else %}
+            <div class="type-badge friendly">
+                🌿 반려견 친화 추천 장소
+            </div>
             {% endif %}
 
+            <!-- 시간 -->
+            <div class="time">
+                {{ item.start_time }} ~ {{ item.end_time }}
+            </div>
+
+            <!-- 장소명 -->
+            <div class="place-name">
+                {{ item.place.name }}
+            </div>
+
+            <!-- 상세 정보 -->
+            <div class="info">
+
+                <div>
+                    📍 {{ item.place.address }}
+                </div>
+
+                <div>
+                    🏷️ {{ item.place.category }}
+                </div>
+
+                <div>
+                    {% if item.place.recommendation_type == 'custom' %}
+                        🐶 반려견 동반 여부 미확인
+                    {% else %}
+                        🐶 반려견 동반 가능
+                    {% endif %}
+                </div>
+
+                <div>
+                    ⏱️ 평균 체류시간
+                    {{ item.place.avg_stay_minutes }}분
+                </div>
+
+                <div>
+                    {% if item.place.recommendation_type == 'custom' %}
+                        ⭐ 추천 점수 미평가
+                    {% else %}
+                        ⭐ 추천 점수 {{ item.place.rating }}
+                    {% endif %}
+                </div>
+
+                {% if item.place.review_count | default(0) | int > 0 %}
+                <div>
+                    💬 사용자 평점
+                    {{ item.place.review_avg }} / 5
+                    · 후기 {{ item.place.review_count }}개
+                </div>
+                {% else %}
+                <div>
+                    💬 아직 등록된 후기가 없습니다.
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- 추천 이유 -->
+            <div class="reason">
+                {{ item.reason }}
+            </div>
+
+            <!-- 수정 / 삭제 -->
+            <div class="button-box">
+
+                <button class="edit-btn"
+                        onclick="editCard(this)">
+                    수정
+                </button>
+
+                <button class="save-btn"
+                        style="display:none"
+                        onclick="saveCard(this)">
+                    저장
+                </button>
+
+                <button class="delete-btn"
+                        onclick='deleteCard({{ item.uid | tojson }})'>
+                    삭제
+                </button>
+
+            </div>
+        </div>
+
+        {% endif %}
         {% endfor %}
 
+    </div>
+
+    {% endfor %}
 
     {% else %}
 
-        <div class="empty">
-            조건에 맞는 추천 일정이 없습니다.<br>
-            다른 조건으로 다시 생성해보세요.
-        </div>
+    <div class="empty">
+        조건에 맞는 추천 일정이 없습니다.<br>
+        다른 조건으로 다시 생성해보세요.
+    </div>
 
     {% endif %}
-
 
     <!-- 일정 직접 추가 -->
     <div class="pattern-box">
@@ -597,24 +562,43 @@
             id="add-day"
             type="number"
             min="1"
-            max="3"
+            max="{{ 3 if travel_period == '2박3일' else 2 if travel_period == '1박2일' else 1 }}"
             placeholder="일차 예: 1">
 
-        <input
-            id="add-start"
-            type="time">
+        <input id="add-start" type="time">
+        <input id="add-end" type="time">
 
-        <input
-            id="add-end"
-            type="time">
+        <!-- 장소 검색 -->
+        <div class="place-search-row">
 
-        <!-- 주소 입력 없음 -->
-        <input
-            id="add-name"
-            placeholder="장소명 예: 제주신화월드">
+            <input
+                id="add-name"
+                type="text"
+                placeholder="제주 장소 검색 (예: 함덕해수욕장)"
+                autocomplete="off">
+
+            <button
+                type="button"
+                class="place-search-button"
+                onclick="searchPlaceForAI()">
+                검색
+            </button>
+
+        </div>
+
+        <!-- 검색 결과 -->
+        <div id="ai-place-search-results"
+             class="place-search-results"></div>
+
+        <!-- 선택한 장소 -->
+        <div id="ai-selected-place"
+             class="selected-place-hint"
+             style="display:none"></div>
 
         <div class="address-notice">
-            장소명만 입력하면 주소와 지도 위치를 자동으로 찾습니다.
+            검색 결과에서 원하는 장소를 선택해주세요.
+            장소명만 입력하면 기존 자동 위치 검색을 사용합니다.
+            직접 추가한 장소는 반려견 동반 여부를 확인해주세요.
         </div>
 
         <input
@@ -624,147 +608,80 @@
         <input
             id="add-stay"
             type="number"
+            min="1"
             placeholder="체류시간 예: 60">
 
         <textarea
             id="add-reason"
-            placeholder="추천 이유"></textarea>
+            placeholder="방문 이유 또는 메모"></textarea>
 
-        <button
-            class="add-btn"
-            onclick="addSchedule()">
+        <button class="add-btn"
+                type="button"
+                onclick="addSchedule()">
             일정 추가
         </button>
 
     </div>
 
+    <!-- 여행 저장 -->
     {% if saved_trip %}
 
-        <a
-            href="/trips"
-            class="back-btn"
-        >
-            내 여행 목록으로
-        </a>
+    <a href="/trips" class="back-btn">
+        내 여행 목록으로
+    </a>
 
     {% else %}
 
-        <form
-            method="POST"
-            action="/trip/save-ai"
-        >
-            <button
-                type="submit"
-                class="save-trip-btn"
-            >
-                내 여행에 저장하기
-            </button>
-        </form>
+    <form method="POST" action="/trip/save-ai">
+        <button type="submit" class="save-trip-btn">
+            내 여행에 저장하기
+        </button>
+    </form>
 
-        <form
-            method="POST"
-            action="/ai-schedule/regenerate"
-        >
-            <button
-                type="submit"
+    <form method="POST" action="/ai-schedule/regenerate">
+        <button type="submit"
                 class="back-btn"
-                style="width:100%; border:none; cursor:pointer;"
-            >
-                다시 만들기
-            </button>
-        </form>
+                style="width:100%; border:none; cursor:pointer;">
+            다시 만들기
+        </button>
+    </form>
 
     {% endif %}
 
 </div>
 
-
-<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-
 <script>
+    // Flask 일정 데이터를 JavaScript로 전달
+    const allSchedule = {{ schedule | tojson }};
 
-    /*
-        Flask가 전달한 일정 데이터를
-        지도에 사용할 JavaScript 객체로 변환
-    */
-    const scheduleData = {
+    const scheduleData = {1: [], 2: [], 3: []};
 
-        1: [
+    allSchedule.forEach(function(item) {
+        if (!scheduleData[item.day]) {
+            scheduleData[item.day] = [];
+        }
 
-            {% for item in schedule %}
-
-                {% if item.day == 1 %}
-
-                {
-                    name: {{ item.place.name | tojson }},
-                    lat: {{ item.place.latitude | tojson }},
-                    lng: {{ item.place.longitude | tojson }}
-                },
-
-                {% endif %}
-
-            {% endfor %}
-
-        ],
-
-
-        2: [
-
-            {% for item in schedule %}
-
-                {% if item.day == 2 %}
-
-                {
-                    name: {{ item.place.name | tojson }},
-                    lat: {{ item.place.latitude | tojson }},
-                    lng: {{ item.place.longitude | tojson }}
-                },
-
-                {% endif %}
-
-            {% endfor %}
-
-        ],
-
-
-        3: [
-
-            {% for item in schedule %}
-
-                {% if item.day == 3 %}
-
-                {
-                    name: {{ item.place.name | tojson }},
-                    lat: {{ item.place.latitude | tojson }},
-                    lng: {{ item.place.longitude | tojson }}
-                },
-
-                {% endif %}
-
-            {% endfor %}
-
-        ]
-
-    };
-
+        scheduleData[item.day].push({
+            name: item.place.name,
+            lat: item.place.latitude,
+            lng: item.place.longitude
+        });
+    });
 
     let map = null;
     let markers = [];
     let routeLine = null;
 
-
-    /*
-        지도 초기화
-    */
+    // 지도 생성
     function initMap() {
+        const mapElement = document.getElementById("map");
+        if (!mapElement) return;
 
-        map = L.map("map")
-            .setView(
-                [33.3617, 126.5292],
-                10
-            );
+        map = L.map("map").setView(
+            [33.3617, 126.5292], 10
+        );
 
         L.tileLayer(
             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -776,801 +693,485 @@
         renderMap(1);
     }
 
-
-    /*
-        기존 지도 마커/이동선 제거
-    */
+    // 기존 마커, 경로 제거
     function clearMap() {
+        if (!map) return;
 
-        markers.forEach(marker => {
+        markers.forEach(function(marker) {
             map.removeLayer(marker);
         });
 
         markers = [];
 
-
         if (routeLine) {
-
             map.removeLayer(routeLine);
             routeLine = null;
-
         }
     }
 
-
-    /*
-        특정 일차의 장소를 지도에 표시
-    */
+    // 일차별 지도
     function renderMap(day) {
-
-        if (!map) {
-            return;
-        }
+        if (!map) return;
 
         clearMap();
 
+        const places = scheduleData[day] || [];
 
-        const places =
-            scheduleData[day];
-
-
-        if (!places
-            || places.length === 0) {
-
-            map.setView(
-                [33.3617, 126.5292],
-                10
-            );
-
+        if (places.length === 0) {
+            map.setView([33.3617, 126.5292], 10);
             return;
         }
 
-
         const routePoints = [];
 
-
-        places.forEach(
-            (place, index) => {
-
-                /*
-                    좌표가 없는 데이터 방지
-                */
-                if (place.lat == null
-                    || place.lng == null) {
-
-                    return;
-                }
-
-
-                const point = [
-                    Number(place.lat),
-                    Number(place.lng)
-                ];
-
-
-                routePoints.push(point);
-
-
-                const numberIcon =
-                    L.divIcon({
-
-                        className:
-                            "marker-number",
-
-                        html:
-                            index + 1,
-
-                        iconSize:
-                            [28, 28],
-
-                        iconAnchor:
-                            [14, 14]
-
-                    });
-
-
-                const marker =
-                    L.marker(
-                        point,
-                        {
-                            icon:
-                                numberIcon
-                        }
-                    )
-                    .addTo(map)
-                    .bindPopup(
-                        (index + 1)
-                        + ". "
-                        + place.name
-                    );
-
-
-                markers.push(marker);
-
+        places.forEach(function(place, index) {
+            if (place.lat == null || place.lng == null) {
+                return;
             }
-        );
 
+            const lat = Number(place.lat);
+            const lng = Number(place.lng);
 
-        /*
-            이동선 표시
-        */
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                return;
+            }
+
+            const point = [lat, lng];
+            routePoints.push(point);
+
+            const numberIcon = L.divIcon({
+                className: "marker-number",
+                html: '<div style="background:#4caf50;color:white;' +
+                      'width:28px;height:28px;border-radius:50%;' +
+                      'text-align:center;line-height:28px;' +
+                      'font-weight:bold;border:2px solid white;">' +
+                      routePoints.length + '</div>',
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+
+            const marker = L.marker(point, {
+                icon: numberIcon
+            }).addTo(map);
+
+            marker.bindPopup(
+                String(routePoints.length) + ". " + place.name
+            );
+
+            markers.push(marker);
+        });
+
         if (routePoints.length >= 2) {
+            routeLine = L.polyline(routePoints, {
+                color: "#4caf50",
+                weight: 5,
+                opacity: 0.8
+            }).addTo(map);
 
-            routeLine =
-                L.polyline(
-                    routePoints,
-                    {
-                        color:
-                            "#4caf50",
+            map.fitBounds(routeLine.getBounds(), {
+                padding: [30, 30]
+            });
 
-                        weight:
-                            5,
-
-                        opacity:
-                            0.8
-                    }
-                )
-                .addTo(map);
-
-
-            map.fitBounds(
-                routeLine.getBounds(),
-                {
-                    padding:
-                        [30, 30]
-                }
-            );
-
+        } else if (routePoints.length === 1) {
+            map.setView(routePoints[0], 12);
         }
 
-        else if (
-            routePoints.length === 1
-        ) {
-
-            map.setView(
-                routePoints[0],
-                12
-            );
-
-        }
-
-
-        setTimeout(
-            () => {
-                map.invalidateSize();
-            },
-            100
-        );
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 100);
     }
 
+    // 일차 탭 변경
+    function showDay(day, button) {
+        document.querySelectorAll(".day-content")
+            .forEach(function(content) {
+                content.classList.remove("active");
+            });
 
-    /*
-        Day 탭 변경
-    */
-    function showDay(
-        day,
-        button
-    ) {
+        document.querySelectorAll(".tab-btn")
+            .forEach(function(btn) {
+                btn.classList.remove("active");
+            });
 
-        const contents =
-            document.querySelectorAll(
-                ".day-content"
-            );
-
-
-        contents.forEach(
-            content => {
-
-                content.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-        const buttons =
-            document.querySelectorAll(
-                ".tab-btn"
-            );
-
-
-        buttons.forEach(
-            btn => {
-
-                btn.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-        const target =
-            document.getElementById(
-                "day-" + day
-            );
-
+        const target = document.getElementById("day-" + day);
 
         if (target) {
-
-            target.classList.add(
-                "active"
-            );
-
+            target.classList.add("active");
         }
 
-
-        button.classList.add(
-            "active"
-        );
-
+        button.classList.add("active");
 
         renderMap(day);
     }
 
-
-    /*
-        카드 수정 모드
-    */
+    // 일정 수정
     function editCard(button) {
+        const card = button.closest(".schedule-card");
 
-        const card =
-            button.closest(
-                ".schedule-card"
-            );
+        const timeText = card.querySelector(".time")
+            .innerText.split("~");
 
+        const name = card.querySelector(".place-name")
+            .innerText.trim();
 
-        const timeText =
-            card.querySelector(
-                ".time"
-            )
-            .innerText
-            .split(" ~ ");
+        const infoList = card.querySelectorAll(".info > div");
 
+        const address = infoList[0].innerText
+            .replace("📍", "").trim();
 
-        const name =
-            card.querySelector(
-                ".place-name"
-            )
-            .innerText
-            .trim();
+        const category = infoList[1].innerText
+            .replace("🏷️", "").trim();
 
+        const stay = infoList[3].innerText
+            .replace("⏱️ 평균 체류시간", "")
+            .replace("분", "").trim();
 
-        const infoList =
-            card.querySelectorAll(
-                ".info div"
-            );
+        const reason = card.querySelector(".reason")
+            .innerText.trim();
 
+        // 기존 값 보존
+        const originalInfoHTML = card.querySelector(".info").innerHTML;
+        card.dataset.originalInfo = originalInfoHTML;
 
-        /*
-            주소는 수정하지 않고
-            기존 값을 화면에 표시만 함
-        */
-        const address =
-            infoList[0]
-            .innerText
-            .replace("📍", "")
-            .trim();
+        const timeBox = card.querySelector(".time");
+        timeBox.replaceChildren();
 
+        const startInput = document.createElement("input");
+        startInput.type = "time";
+        startInput.className = "edit-start inline-input";
+        startInput.value = timeText[0].trim();
 
-        const category =
-            infoList[1]
-            .innerText
-            .replace("🏷️", "")
-            .trim();
+        const endInput = document.createElement("input");
+        endInput.type = "time";
+        endInput.className = "edit-end inline-input";
+        endInput.value = timeText[1].trim();
 
+        timeBox.append(startInput, " ~ ", endInput);
 
-        const stay =
-            infoList[3]
-            .innerText
-            .replace(
-                "⏱️ 평균 체류시간",
-                ""
-            )
-            .replace(
-                "분",
-                ""
-            )
-            .trim();
+        const nameBox = card.querySelector(".place-name");
+        nameBox.replaceChildren();
 
+        const nameInput = document.createElement("input");
+        nameInput.className = "edit-name";
+        nameInput.value = name;
+        nameBox.appendChild(nameInput);
 
-        const reason =
-            card.querySelector(
-                ".reason"
-            )
-            .innerText;
+        const infoBox = card.querySelector(".info");
+        infoBox.replaceChildren();
 
+        const addressDiv = document.createElement("div");
+        addressDiv.textContent = "📍 " + address;
+        infoBox.appendChild(addressDiv);
 
-        card.querySelector(
-            ".time"
-        ).innerHTML = `
+        const categoryDiv = document.createElement("div");
+        categoryDiv.textContent = "🏷️ ";
+        const categoryInput = document.createElement("input");
+        categoryInput.className = "edit-category";
+        categoryInput.value = category;
+        categoryDiv.appendChild(categoryInput);
+        infoBox.appendChild(categoryDiv);
 
-            <input
-                class="edit-start inline-input"
-                type="time"
-                value="${timeText[0].trim()}">
+        const dogDiv = document.createElement("div");
+        dogDiv.textContent = originalInfoHTML.includes("미확인")
+            ? "🐶 반려견 동반 여부 미확인"
+            : "🐶 반려견 동반 가능";
+        infoBox.appendChild(dogDiv);
 
-            ~
+        const stayDiv = document.createElement("div");
+        stayDiv.textContent = "⏱️ 평균 체류시간 ";
 
-            <input
-                class="edit-end inline-input"
-                type="time"
-                value="${timeText[1].trim()}">
+        const stayInput = document.createElement("input");
+        stayInput.className = "edit-stay inline-input";
+        stayInput.type = "number";
+        stayInput.value = stay;
+        stayDiv.append(stayInput, "분");
+        infoBox.appendChild(stayDiv);
 
-        `;
+        const reasonBox = card.querySelector(".reason");
+        reasonBox.replaceChildren();
 
+        const reasonInput = document.createElement("textarea");
+        reasonInput.className = "edit-reason";
+        reasonInput.value = reason;
+        reasonBox.appendChild(reasonInput);
 
-        card.querySelector(
-            ".place-name"
-        ).innerHTML = `
+        button.style.display = "none";
 
-            <input
-                class="edit-name"
-                value="${name}">
-
-        `;
-
-
-        /*
-            주소 입력칸은 없음.
-            장소명을 바꾸면 백엔드에서
-            주소/좌표를 다시 검색한다.
-        */
-        card.querySelector(
-            ".info"
-        ).innerHTML = `
-
-            <div>
-                📍 ${address}
-            </div>
-
-            <div>
-                🏷️
-                <input
-                    class="edit-category"
-                    value="${category}">
-            </div>
-
-            <div>
-                🐶 반려견 동반 가능
-            </div>
-
-            <div>
-                ⏱️ 평균 체류시간
-
-                <input
-                    class="edit-stay inline-input"
-                    value="${stay}">
-
-                분
-            </div>
-
-        `;
-
-
-        card.querySelector(
-            ".reason"
-        ).innerHTML = `
-
-            <textarea
-                class="edit-reason">${reason}</textarea>
-
-        `;
-
-
-        button.style.display =
-            "none";
-
-
-        button.nextElementSibling
-            .style.display =
+        card.querySelector(".save-btn").style.display =
             "inline-block";
     }
 
+    // 수정 저장
+    async function saveCard(button) {
+        const card = button.closest(".schedule-card");
+        const dayContent = card.closest(".day-content");
 
-    /*
-        수정 내용 저장
-    */
-    function saveCard(button) {
-
-        const card =
-            button.closest(
-                ".schedule-card"
-            );
-
-
-        const uid =
-            card.dataset.uid;
-
-
-        const dayContent =
-            card.closest(
-                ".day-content"
-            );
-
-
-        const day =
-            dayContent.id.replace(
-                "day-",
-                ""
-            );
-
-
-        const name =
-            card.querySelector(
-                ".edit-name"
-            )
-            .value
-            .trim();
-
+        const name = card.querySelector(".edit-name")
+            .value.trim();
 
         if (!name) {
+            alert("장소명을 입력해주세요.");
+            return;
+        }
 
-            alert(
-                "장소명을 입력해주세요."
+        const payload = {
+            uid: card.dataset.uid,
+            day: Number(dayContent.id.replace("day-", "")),
+            start_time: card.querySelector(".edit-start").value,
+            end_time: card.querySelector(".edit-end").value,
+            name: name,
+            category: card.querySelector(".edit-category").value,
+            avg_stay_minutes:
+                card.querySelector(".edit-stay").value,
+            reason: card.querySelector(".edit-reason").value
+        };
+
+        try {
+            const response = await fetch("/schedule/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                location.href = "/ai-schedule/edited";
+            } else {
+                alert(data.message || "수정에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("수정 중 오류가 발생했습니다.");
+        }
+    }
+
+    // 일정 삭제
+    async function deleteCard(uid) {
+        if (!confirm("이 일정을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch("/schedule/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({uid: uid})
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                location.href = "/ai-schedule/edited";
+            } else {
+                alert(data.message || "삭제에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("삭제 중 오류가 발생했습니다.");
+        }
+    }
+
+    /*
+      카카오 장소 검색
+      기존 직접 일정 생성의 API를 재사용
+    */
+
+    let selectedAIPlace = null;
+    let searchSerial = 0;
+
+    const placeInput = document.getElementById("add-name");
+    const resultsBox = document.getElementById(
+        "ai-place-search-results"
+    );
+    const selectedBox = document.getElementById(
+        "ai-selected-place"
+    );
+
+    // 사용자가 장소명을 변경하면 선택 초기화
+    placeInput.addEventListener("input", function() {
+        selectedAIPlace = null;
+        searchSerial++;
+        resultsBox.replaceChildren();
+        selectedBox.style.display = "none";
+    });
+
+    // 엔터키로 검색
+    placeInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            searchPlaceForAI();
+        }
+    });
+
+    async function searchPlaceForAI() {
+        const keyword = placeInput.value.trim();
+
+        if (!keyword) {
+            alert("검색할 장소명을 입력해주세요.");
+            return;
+        }
+
+        selectedAIPlace = null;
+        selectedBox.style.display = "none";
+
+        const currentSearch = ++searchSerial;
+
+        resultsBox.textContent = "검색 중...";
+
+        try {
+            const response = await fetch(
+                "/trip/manual/place/search?q=" +
+                encodeURIComponent(keyword)
             );
 
-            return;
+            const result = await response.json();
+
+            if (currentSearch !== searchSerial) return;
+
+            resultsBox.replaceChildren();
+
+            if (!response.ok || !result.success) {
+                resultsBox.textContent =
+                    result.message || "검색에 실패했습니다.";
+                return;
+            }
+
+            if (!result.places || result.places.length === 0) {
+                resultsBox.textContent = "검색 결과가 없습니다.";
+                return;
+            }
+
+            result.places.forEach(function(place) {
+                const button = document.createElement("button");
+
+                button.type = "button";
+                button.className = "place-search-item";
+
+                const name = document.createElement("div");
+                name.className = "place-search-name";
+                name.textContent = place.name;
+
+                const address = document.createElement("div");
+                address.className = "place-search-sub";
+                address.textContent = place.address || "";
+
+                const category = document.createElement("div");
+                category.className = "place-search-sub";
+                category.textContent = place.category || "";
+
+                button.appendChild(name);
+                button.appendChild(address);
+                button.appendChild(category);
+
+                button.addEventListener("click", function() {
+                    selectedAIPlace = place;
+
+                    placeInput.value = place.name;
+
+                    document.getElementById(
+                        "add-category"
+                    ).value = place.category || "";
+
+                    selectedBox.textContent =
+                        "선택한 장소: " + place.name +
+                        " / " + (place.address || "");
+
+                    selectedBox.style.display = "block";
+                    resultsBox.replaceChildren();
+                });
+
+                resultsBox.appendChild(button);
+            });
+
+        } catch (error) {
+            if (currentSearch !== searchSerial) return;
+            console.error(error);
+            resultsBox.textContent =
+                "장소 검색 중 오류가 발생했습니다.";
         }
-
-
-        fetch(
-            "/schedule/update",
-            {
-                method:
-                    "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify({
-
-                        uid:
-                            uid,
-
-                        day:
-                            day,
-
-                        start_time:
-                            card
-                            .querySelector(
-                                ".edit-start"
-                            )
-                            .value,
-
-                        end_time:
-                            card
-                            .querySelector(
-                                ".edit-end"
-                            )
-                            .value,
-
-                        name:
-                            name,
-
-                        category:
-                            card
-                            .querySelector(
-                                ".edit-category"
-                            )
-                            .value,
-
-                        avg_stay_minutes:
-                            card
-                            .querySelector(
-                                ".edit-stay"
-                            )
-                            .value,
-
-                        reason:
-                            card
-                            .querySelector(
-                                ".edit-reason"
-                            )
-                            .value
-
-                    })
-            }
-        )
-
-        .then(
-            response =>
-                response.json()
-        )
-
-        .then(
-            data => {
-
-                if (
-                    data.success
-                ) {
-
-                    location.href =
-                        "/ai-schedule/edited";
-
-                }
-
-                else {
-
-                    alert(
-                        data.message
-                        || "수정에 실패했습니다."
-                    );
-
-                }
-
-            }
-        )
-
-        .catch(
-            error => {
-
-                console.error(
-                    error
-                );
-
-                alert(
-                    "수정 중 오류가 발생했습니다."
-                );
-
-            }
-        );
     }
 
-
     /*
-        일정 삭제
+      AI 추천 일정에 장소 추가
     */
-    function deleteCard(uid) {
+    async function addSchedule() {
+        const day = document.getElementById("add-day").value;
+        const start = document.getElementById("add-start").value;
+        const end = document.getElementById("add-end").value;
 
-        if (
-            !confirm(
-                "이 일정을 삭제하시겠습니까?"
-            )
-        ) {
+        const name = document.getElementById("add-name")
+            .value.trim();
 
-            return;
+        const category = document.getElementById("add-category")
+            .value.trim();
 
-        }
+        const stay = document.getElementById("add-stay").value;
+        const reason = document.getElementById("add-reason").value;
 
-
-        fetch(
-            "/schedule/delete",
-            {
-                method:
-                    "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify({
-                        uid:
-                            uid
-                    })
-            }
-        )
-
-        .then(
-            response =>
-                response.json()
-        )
-
-        .then(
-            data => {
-
-                if (
-                    data.success
-                ) {
-
-                    location.href =
-                        "/ai-schedule/edited";
-
-                }
-
-                else {
-
-                    alert(
-                        "삭제에 실패했습니다."
-                    );
-
-                }
-
-            }
-        )
-
-        .catch(
-            error => {
-
-                console.error(
-                    error
-                );
-
-                alert(
-                    "삭제 중 오류가 발생했습니다."
-                );
-
-            }
-        );
-    }
-
-
-    /*
-        일정 직접 추가
-    */
-    function addSchedule() {
-
-        const day =
-            document.getElementById(
-                "add-day"
-            ).value;
-
-
-        const start =
-            document.getElementById(
-                "add-start"
-            ).value;
-
-
-        const end =
-            document.getElementById(
-                "add-end"
-            ).value;
-
-
-        const name =
-            document.getElementById(
-                "add-name"
-            )
-            .value
-            .trim();
-
-
-        const category =
-            document.getElementById(
-                "add-category"
-            )
-            .value
-            .trim();
-
-
-        const stay =
-            document.getElementById(
-                "add-stay"
-            ).value;
-
-
-        const reason =
-            document.getElementById(
-                "add-reason"
-            ).value;
-
-
-        if (
-            !day
-            || !start
-            || !end
-            || !name
-        ) {
-
+        if (!day || !start || !end || !name) {
             alert(
                 "일차, 시작 시간, 종료 시간, 장소명은 꼭 입력해주세요."
             );
-
             return;
         }
 
-
-        fetch(
-            "/schedule/add",
-            {
-                method:
-                    "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                /*
-                    주소/위도/경도를 보내지 않는다.
-                    백엔드에서 장소명으로 자동 검색한다.
-                */
-                body:
-                    JSON.stringify({
-
-                        day:
-                            day,
-
-                        start_time:
-                            start,
-
-                        end_time:
-                            end,
-
-                        name:
-                            name,
-
-                        category:
-                            category,
-
-                        avg_stay_minutes:
-                            stay,
-
-                        reason:
-                            reason
-
-                    })
-            }
-        )
-
-        .then(
-            response =>
-                response.json()
-        )
-
-        .then(
-            data => {
-
-                if (
-                    data.success
-                ) {
-
-                    location.href =
-                        "/ai-schedule/edited";
-
-                }
-
-                else {
-
-                    alert(
-                        data.message
-                        || "추가에 실패했습니다."
-                    );
-
-                }
-
-            }
-        )
-
-        .catch(
-            error => {
-
-                console.error(
-                    error
-                );
-
-                alert(
-                    "일정 추가 중 오류가 발생했습니다."
-                );
-
-            }
+        const maxDay = Number(
+            document.getElementById("add-day").max
         );
+
+        if (Number(day) < 1 || Number(day) > maxDay) {
+            alert("여행 기간에 맞는 일차를 입력해주세요.");
+            return;
+        }
+
+        if (start >= end) {
+            alert("종료 시간은 시작 시간보다 늦어야 합니다.");
+            return;
+        }
+
+        const payload = {
+            day: Number(day),
+            start_time: start,
+            end_time: end,
+            name: name,
+            category: category,
+            avg_stay_minutes: stay,
+            reason: reason,
+            selected_place: selectedAIPlace
+        };
+
+        try {
+            const response = await fetch("/schedule/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                location.href = "/ai-schedule/edited";
+            } else {
+                alert(data.message || "일정 추가에 실패했습니다.");
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("일정 추가 중 오류가 발생했습니다.");
+        }
     }
 
-
-    /*
-        페이지 로드 시 지도 실행
-    */
-    document.addEventListener(
-        "DOMContentLoaded",
-        function() {
-
-            {% if schedule %}
-
-                initMap();
-
-            {% endif %}
-
-        }
-    );
-
+    // 페이지 로드 시 지도 생성
+    document.addEventListener("DOMContentLoaded", function() {
+        initMap();
+    });
 </script>
 
 </body>

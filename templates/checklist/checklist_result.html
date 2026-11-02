@@ -166,15 +166,80 @@
             text-decoration: none;
             font-size: 14px;
         }
-    </style>
+    
+/* PinkSole UI redesign — presentation-only overrides. Existing JS and Flask hooks preserved. */
+:root{--ps-cyan:#04dbe8;--ps-cyan-soft:#ddfbfc;--ps-orange:#ff9808;--ps-peach:#ffe2ba;--ps-pink:#f67bd3;--ps-ink:#20252d;--ps-muted:#707780;--ps-border:#e6eaec;--ps-radius:22px}
+html{scroll-behavior:smooth}
+body{background:#eaf1f2!important;color:var(--ps-ink)!important;font-family: 'Pretendard','Noto Sans KR',Arial,sans-serif!important}
+.app{background:#fff!important;max-width:460px!important;min-height:100vh!important;padding-bottom:100px!important;box-shadow:0 0 36px rgba(0,36,48,.06)}
+.page{background:#eaf1f2!important}
+.login-container,.register-container{border:1px solid var(--ps-border);box-shadow:0 10px 28px rgba(0,34,42,.07)!important}
+h1,h2,h3{letter-spacing:-.045em;color:var(--ps-ink)}
+button,.button,.back-btn,.submit-btn,.create-btn,.add-btn,.history-btn,.nav-btn,.activity-button,.history-button{transition:transform .18s,filter .18s;touch-action:manipulation}
+button:not(:disabled):active,.button:active,.back-btn:active{transform:scale(.98)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ps-pink)!important;outline-offset:2px}
+input,select,textarea{max-width:100%;accent-color:var(--ps-orange)}
+input:not([type=checkbox]):not([type=radio]),select,textarea{border-radius:14px!important}
+#startBtn,.create-btn,.submit-btn,.add-btn,.activity-button,.history-btn{background:var(--ps-cyan)!important;color:#123136!important}
+#stopBtn{background:var(--ps-orange)!important;color:#272018!important}
+button:disabled{background:#c9cfd1!important;color:#6d7376!important}
+.login-button,.register-button{background:var(--ps-orange)!important;color:#211b12!important}
+.info-card,.score-box,.dog-card{background:var(--ps-peach)!important;border-radius:20px!important}
+.summary-card,.stat,.record-card,.checklist-card,.item,.detail-box{border-color:var(--ps-border)!important;border-radius:18px!important}
+.score,.progress{color:#008b95!important}
+#map{border:3px solid #e1f9fa!important;border-radius:20px!important}
+.ps-topbar{max-width:460px;margin:0 auto;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:16px 20px 5px;gap:12px}
+.ps-brand{font-size:16px;font-weight:900;text-decoration:none;color:#192a32;letter-spacing:-.04em}
+.ps-brand span{color:#00b6c4}
+.ps-topbar-link{font-size:12px;color:#6c7379;text-decoration:none}
+.ps-bottomnav{position:sticky;bottom:0;z-index:500;max-width:460px;margin:-66px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;background:#fff;border-top:1px solid #e7edf0;box-shadow:0 -7px 24px rgba(0,0,0,.035);min-height:66px;padding:8px 4px max(8px,env(safe-area-inset-bottom))}
+.ps-bottomnav a{text-decoration:none;color:#717980;text-align:center;font-size:11px;font-weight:700;display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0}
+.ps-bottomnav a .ps-navicon{font-size:20px;line-height:1.1}
+.ps-bottomnav a[aria-current=page]{color:#00aeb9}
+.ps-chip{background:var(--ps-cyan-soft);color:#006f79;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;display:inline-block}
+.ps-homehero{background:var(--ps-cyan);border-radius:25px;padding:25px 22px;margin:18px 0 20px;position:relative;overflow:hidden}
+.ps-homehero:after{content:none;position:absolute;right:15px;top:-15px;font-size:83px;color:rgba(255,255,255,.4)}
+.ps-homehero h1{font-size:30px;line-height:1.32;margin:17px 0 8px}
+.ps-homehero p{font-size:14px;line-height:1.6;margin:0;color:#24545b}
+.ps-hero-kicker{background:#fff;border-radius:99px;font-size:12px;font-weight:800;padding:7px 12px;display:inline-block}
+.ps-home-title{font-size:18px;font-weight:900;margin:23px 0 12px;letter-spacing:-.05em}
+.ps-homegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ps-homegrid .card{min-height:142px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;border:1.5px solid #e8edef;border-radius:21px;background:#fff;box-shadow:none;padding:17px;cursor:pointer}
+.ps-homegrid .card:first-child{background:var(--ps-orange);border-color:var(--ps-orange);grid-row:span 2;min-height:294px;justify-content:center}
+.ps-homegrid .card:first-child .icon{font-size:46px}
+.ps-homegrid .card:first-child .card-title{font-size:23px}
+.ps-homegrid .card .icon{width:45px;height:45px;background:rgba(255,255,255,.72);border-radius:13px;font-size:24px}
+.ps-homegrid .card-text{text-align:left}
+.ps-homegrid .card-title{font-size:16px;margin-bottom:6px}
+.ps-homegrid .card-description{font-size:12px;line-height:1.45;color:#536068}
+.ps-homegrid .card:hover{transform:translateY(-2px)}
+.ps-homegrid .card:nth-child(4){background:#eafcff}
+.ps-homegrid .card:nth-child(3){background:#fff2df}
+.ps-decoration{color:var(--ps-pink);font-size:15px;font-weight:900;letter-spacing:.04em}
+@media(max-width:480px){.app{padding-left:17px!important;padding-right:17px!important}.ps-homehero h1{font-size:27px}.ps-homegrid{gap:10px}.ps-homegrid .card{padding:14px}.ps-topbar{padding:13px 17px 5px}}
+
+</style>
+<style>
+/* PinkSole: 일관된 앱 로고 및 벡터 아이콘 */
+.ps-brand span{color:#f67bd3!important}
+.ps-brand{display:inline-flex;align-items:center;gap:3px}
+.ps-brand .ps-paw{width:18px;height:18px;fill:#f67bd3;flex:none;margin-left:3px}
+.ps-navicon{display:inline-flex;align-items:center;justify-content:center}
+.ps-navicon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ps-login-paw{display:flex;align-items:center;justify-content:center;gap:3px;margin:0 auto 12px}
+.ps-login-paw .ps-paw{width:31px;height:31px;fill:#f67bd3}
+.ps-login-paw .ps-paw:last-child{transform:translateY(10px) rotate(12deg);width:25px;height:25px}
+</style>
 </head>
 
 <body>
+<div class="ps-topbar"><a href="/" class="ps-brand">pink<span>sole</span> <svg class="ps-paw" viewBox="0 0 48 48" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="16" rx="4.1" ry="6" transform="rotate(-25 10 16)"/><ellipse cx="20" cy="9" rx="4.2" ry="6" transform="rotate(-8 20 9)"/><ellipse cx="30" cy="10" rx="4.2" ry="6" transform="rotate(12 30 10)"/><ellipse cx="39" cy="19" rx="4" ry="5.7" transform="rotate(26 39 19)"/><path d="M24 21c-5.1 0-7.2 5.4-10.2 8.7-2.6 2.7-2.5 7.4.1 9.3 3.4 2.4 6.5-.3 10.1-.3s6.7 2.7 10.1.3c2.6-1.9 2.7-6.6.1-9.3C31.2 26.4 29.1 21 24 21Z"/></svg></a><a href="/" class="ps-topbar-link">홈으로 ↗</a></div>
+
 
 <div class="app">
 
     <div class="header">
-        <h2>🎒 {{ checklist.title }}</h2>
+        <h2> {{ checklist.title }}</h2>
 
         <div class="description">
             여행 전에 하나씩 체크해보세요.
@@ -402,5 +467,6 @@
 
 </script>
 
+<nav class="ps-bottomnav" aria-label="하단 메뉴"><a href="/"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z"/></svg></span><span>홈</span></a><a href="/trips"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 9 3l6 2.5L21 3v15.5L15 21l-6-2.5L3 21zM9 3v15.5M15 5.5V21"/></svg></span><span>여행</span></a><a href="/checklists" aria-current="page"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 12 3 3 5-6"/></svg></span><span>체크리스트</span></a><a href="/activity"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><span>활동</span></a></nav>
 </body>
 </html>

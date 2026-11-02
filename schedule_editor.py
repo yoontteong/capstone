@@ -182,7 +182,35 @@ def add_schedule():
     schedule = session.get("schedule", [])
 
     name = data.get("name")
-    place_info = get_place_info(name)
+    selected = data.get("selected_place")
+
+    if selected:
+        try:
+            lat = float(selected["latitude"])
+            lng = float(selected["longitude"])
+
+            if not (33.0 <= lat <= 34.0 and 126.0 <= lng <= 127.0):
+                raise ValueError("제주 지역 좌표가 아닙니다.")
+
+            place_info = {
+                "name": str(selected["name"]).strip(),
+                "address": str(selected["address"]).strip(),
+                "latitude": lat,
+                "longitude": lng,
+                "category": selected.get("category", "")
+            }
+
+            if not place_info["name"] or not place_info["address"]:
+                raise ValueError("장소 정보 누락")
+
+        except (KeyError, TypeError, ValueError):
+            return jsonify({
+                "success": False,
+                "message": "올바른 장소를 다시 선택해주세요."
+            }), 400
+
+    else:
+        place_info = get_place_info(name)
 
     if not place_info:
         return jsonify({
