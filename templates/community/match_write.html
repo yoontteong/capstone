@@ -1,635 +1,178 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>여행 메이트 모집</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여행 메이트 모집 | PINKSOLE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
     <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-        }
-
-
-        .app {
-            max-width: 500px;
-            margin: 0 auto;
-
-            min-height: 100vh;
-
-            background: white;
-
-            padding: 25px 20px 40px;
-        }
-
-
-        h1 {
-            margin-top: 0;
-            font-size: 25px;
-        }
-
-
-        .description {
-            color: #777;
-            font-size: 13px;
-            margin-bottom: 25px;
-        }
-
-
-        label {
-            display: block;
-
-            font-weight: bold;
-
-            margin: 18px 0 8px;
-        }
-
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-
-            padding: 13px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 12px;
-
-            font-size: 14px;
-
-            background: white;
-        }
-
-
-        textarea {
-            height: 130px;
-            resize: vertical;
-        }
-
-
-        .author-box {
-            padding: 13px;
-
-            border-radius: 12px;
-
-            background: #f7f7f7;
-
-            color: #555;
-
-            font-size: 14px;
-        }
-
-
-        .dog-preview {
-            display: none;
-
-            margin-top: 12px;
-
-            padding: 14px;
-
-            background: #f3f8f3;
-
-            border-radius: 13px;
-
-            color: #555;
-
-            font-size: 13px;
-
-            line-height: 1.7;
-        }
-
-
-        .dog-preview-title {
-            color: #2e7d32;
-
-            font-weight: bold;
-
-            margin-bottom: 5px;
-        }
-
-
-        .dog-preview-name {
-            font-size: 15px;
-
-            font-weight: bold;
-
-            color: #222;
-        }
-
-
-        .dog-empty {
-            padding: 16px;
-
-            background: #f7f7f7;
-
-            border-radius: 13px;
-
-            color: #777;
-
-            font-size: 13px;
-
-            line-height: 1.6;
-
-            text-align: center;
-        }
-
-
-        .dog-register-btn {
-            display: block;
-
-            margin-top: 10px;
-
-            padding: 12px;
-
-            border-radius: 12px;
-
-            background: #4caf50;
-
-            color: white;
-
-            text-align: center;
-
-            text-decoration: none;
-
-            font-weight: bold;
-        }
-
-
-        .submit-btn {
-            width: 100%;
-
-            margin-top: 25px;
-
-            padding: 14px;
-
-            border: none;
-
-            border-radius: 14px;
-
-            background: #4caf50;
-
-            color: white;
-
-            font-size: 15px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        .submit-btn:hover {
-            background: #43a047;
-        }
-
-
-        .back {
-            display: block;
-
-            text-align: center;
-
-            margin-top: 18px;
-
-            color: #666;
-
-            text-decoration: none;
-        }
-
+        :root { --primary:#49B9BF; --dark:#278D95; --light:#E7F7F7; --ink:#202B33; --muted:#7C8A93; --border:#E8EEF0; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:#F3F6F7; color:var(--ink); font-family:'Pretendard','Noto Sans KR',Arial,sans-serif; }
+        .app { max-width:460px; min-height:100vh; margin:0 auto; padding:24px 20px 125px; background:#fff; }
+        .topbar { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:34px; }
+        .back-icon { width:34px; height:34px; display:flex; align-items:center; justify-content:center; text-decoration:none; color:var(--ink); font-size:25px; }
+        .top-title { font-size:16px; font-weight:800; }
+        .brand { color:var(--dark); font-size:11px; font-weight:900; letter-spacing:.04em; }
+        .intro { margin-bottom:30px; }
+        .eyebrow { font-size:11px; letter-spacing:.12em; font-weight:900; color:var(--dark); margin-bottom:10px; }
+        h1 { font-size:27px; line-height:1.35; letter-spacing:-.045em; margin:0 0 12px; }
+        .desc { font-size:13px; line-height:1.7; color:var(--muted); margin:0; }
+        .section { margin-bottom:27px; }
+        .section label, .section-heading { display:block; font-size:16px; font-weight:800; margin-bottom:11px; }
+        .hint { margin:-3px 0 12px; font-size:12px; line-height:1.6; color:var(--muted); }
+        .required { color:var(--dark); }
+        input:not([type=hidden]), select, textarea { width:100%; padding:15px 16px; background:#fff; border:1.5px solid var(--border); border-radius:15px; font-size:14px; color:var(--ink); font-family:inherit; }
+        textarea { resize:vertical; min-height:155px; line-height:1.7; }
+        input:focus, textarea:focus, select:focus { outline:none; border-color:var(--primary); }
+        a:focus-visible, button:focus-visible { outline:3px solid var(--primary); outline-offset:2px; }
+        ::placeholder { color:#A0ADB3; }
+        .author-card { display:flex; align-items:center; gap:12px; padding:15px; background:#F8FBFB; border:1px solid var(--border); border-radius:17px; }
+        .icon-box { width:44px; height:44px; flex-shrink:0; background:var(--light); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+        .small-label { font-size:11px; color:var(--muted); margin-bottom:4px; }
+        .author-name { font-size:15px; font-weight:800; }
+        .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .dog-preview { display:none; margin-top:12px; padding:16px; border:1px solid #D4ECEC; background:#F3FAFA; border-radius:17px; }
+        .dog-preview-title { font-size:11px; color:var(--dark); font-weight:800; margin-bottom:9px; }
+        .dog-preview-name { font-size:15px; font-weight:800; margin-bottom:5px; }
+        .dog-preview-info { font-size:12px; color:#60757D; line-height:1.6; }
+        .note { display:flex; align-items:flex-start; gap:10px; padding:15px; margin:5px 0 22px; background:#F2F9F9; color:#60757D; font-size:12px; line-height:1.7; border-radius:16px; }
+        .note-mark { color:var(--dark); font-size:18px; }
+        .submit-btn, .register-btn { display:flex; align-items:center; justify-content:center; width:100%; padding:17px; border:0; background:var(--primary); color:#fff; border-radius:16px; font-size:15px; font-weight:800; font-family:inherit; text-decoration:none; cursor:pointer; box-shadow:0 6px 16px rgba(73,185,191,.15); }
+        .submit-btn:hover, .register-btn:hover { background:var(--dark); }
+        .submit-btn:disabled { opacity:.65; cursor:wait; }
+        .cancel { display:block; text-align:center; margin-top:17px; text-decoration:none; font-size:13px; color:var(--muted); }
+        .empty { padding:27px 18px; text-align:center; background:#FAFCFC; border:1px dashed #D9E6E8; border-radius:18px; margin-bottom:18px; }
+        .empty-icon { font-size:33px; margin-bottom:14px; }
+        .empty-title { font-weight:800; font-size:16px; margin-bottom:8px; }
+        .empty-text { font-size:12px; line-height:1.7; color:var(--muted); }
+        @media(max-width:360px) { .app { padding-left:16px; padding-right:16px; } .two-col { gap:8px; } }
     </style>
 </head>
-
-
 <body>
-
-
 <div class="app">
+    <header class="topbar">
+        <a class="back-icon" href="/matches" aria-label="여행 메이트 목록으로 돌아가기">←</a>
+        <div class="top-title">여행 메이트 모집</div>
+        <div class="brand">PINKSOLE</div>
+    </header>
 
-
-    <h1>
-        🐾 여행 메이트 모집
-    </h1>
-
-
-    <div class="description">
-        제주에서 반려견과 함께할 여행 메이트를 찾아보세요.
-    </div>
-
+    <section class="intro">
+        <div class="eyebrow">FIND YOUR TRAVEL MATE</div>
+        <h1>함께할 여행 친구를<br>찾아보세요</h1>
+        <p class="desc">여행 일정과 우리 강아지 정보를 등록하고<br>함께 제주를 여행할 메이트를 모집해 보세요.</p>
+    </section>
 
     {% if dogs %}
-
-
-        <form method="POST">
-
-
-            <!-- =========================
-                 작성자
-            ========================== -->
-
-            <label>
-                작성자
-            </label>
-
-
-            <div class="author-box">
-
-                {{ session.get("nickname") or "사용자" }}
-
-            </div>
-
-
-
-            <!-- =========================
-                 제목
-            ========================== -->
-
-            <label>
-                제목
-            </label>
-
-
-            <input
-                type="text"
-
-                name="title"
-
-                placeholder="예: 애월 같이 산책하실 분!"
-
-                required
-            >
-
-
-
-            <!-- =========================
-                 여행 날짜
-            ========================== -->
-
-            <label>
-                여행 날짜
-            </label>
-
-
-            <input
-                type="date"
-
-                name="travel_date"
-
-                required
-            >
-
-
-
-            <!-- =========================
-                 지역
-            ========================== -->
-
-            <label>
-                지역
-            </label>
-
-
-            <select
-                name="region"
-                required
-            >
-
-                <option value="">
-                    지역을 선택해주세요
-                </option>
-
-                <option value="제주시">
-                    제주시
-                </option>
-
-                <option value="애월">
-                    애월
-                </option>
-
-                <option value="한림">
-                    한림
-                </option>
-
-                <option value="조천">
-                    조천
-                </option>
-
-                <option value="구좌">
-                    구좌
-                </option>
-
-                <option value="성산">
-                    성산
-                </option>
-
-                <option value="서귀포">
-                    서귀포
-                </option>
-
-                <option value="중문">
-                    중문
-                </option>
-
-            </select>
-
-
-
-            <!-- =========================
-                 반려견 선택
-            ========================== -->
-
-            <label>
-                함께할 반려견
-            </label>
-
-
-            <select
-                name="dog_id"
-
-                id="dogSelect"
-
-                required
-            >
-
-                <option value="">
-                    반려견을 선택해주세요
-                </option>
-
-
-                {% for dog in dogs %}
-
-                    <option
-                        value="{{ dog.id }}"
-
-                        data-name="{{ dog.name }}"
-
-                        data-breed="{{ dog.breed or '' }}"
-
-                        data-size="{{ dog.size_category }}"
-
-                        data-personality="{{ dog.personality or '' }}"
-                    >
-
-                        🐶 {{ dog.name }}
-
-                        {% if dog.breed %}
-                            · {{ dog.breed }}
-                        {% endif %}
-
-                        · {{ dog.size_category }}
-
-                        {% if dog.personality %}
-                            · {{ dog.personality }}
-                        {% endif %}
-
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
-
-
-            <!-- 선택한 반려견 미리보기 -->
-
-            <div
-                class="dog-preview"
-
-                id="dogPreview"
-            >
-
-                <div class="dog-preview-title">
-                    선택한 반려견
+    <form method="POST" id="matchForm">
+        <section class="section">
+            <div class="section-heading">작성자</div>
+            <div class="author-card">
+                <div class="icon-box" aria-hidden="true">👤</div>
+                <div>
+                    <div class="small-label">모집글 작성자</div>
+                    <div class="author-name">{{ session.get("nickname") or "사용자" }}</div>
                 </div>
-
-
-                <div
-                    class="dog-preview-name"
-
-                    id="dogPreviewName"
-                ></div>
-
-
-                <div
-                    id="dogPreviewInfo"
-                ></div>
-
             </div>
+        </section>
 
+        <section class="section">
+            <label for="title">모집 제목 <span class="required">*</span></label>
+            <input id="title" type="text" name="title" maxlength="200" placeholder="예: 애월에서 같이 산책하실 분!" required>
+        </section>
 
-
-            <!-- =========================
-                 모집 인원
-            ========================== -->
-
-            <label>
-                총 모집 인원
-            </label>
-
-
-            <input
-                type="number"
-
-                name="max_people"
-
-                value="2"
-
-                min="2"
-
-                max="10"
-
-                required
-            >
-
-
-
-            <!-- =========================
-                 내용
-            ========================== -->
-
-            <label>
-                내용
-            </label>
-
-
-            <textarea
-                name="content"
-
-                placeholder="어떤 여행을 함께하고 싶은지 적어주세요."
-
-                required
-            ></textarea>
-
-
-
-            <button
-                type="submit"
-
-                class="submit-btn"
-            >
-                모집글 등록
-            </button>
-
-
-        </form>
-
-
-
-    {% else %}
-
-
-        <div class="dog-empty">
-
-            등록된 반려견이 없습니다.<br>
-
-            여행 메이트를 모집하려면
-            먼저 반려견을 등록해주세요.
-
+        <div class="two-col">
+            <section class="section">
+                <label for="travelDate">여행 날짜 <span class="required">*</span></label>
+                <input id="travelDate" type="date" name="travel_date" required>
+            </section>
+            <section class="section">
+                <label for="region">여행 지역 <span class="required">*</span></label>
+                <select id="region" name="region" required>
+                    <option value="">지역 선택</option>
+                    <option value="제주시">제주시</option>
+                    <option value="애월">애월</option>
+                    <option value="한림">한림</option>
+                    <option value="조천">조천</option>
+                    <option value="구좌">구좌</option>
+                    <option value="성산">성산</option>
+                    <option value="서귀포">서귀포</option>
+                    <option value="중문">중문</option>
+                </select>
+            </section>
         </div>
 
+        <section class="section">
+            <label for="dogSelect">함께할 반려견 <span class="required">*</span></label>
+            <p class="hint">메이트에게 소개할 반려견을 선택해 주세요.</p>
+            <select name="dog_id" id="dogSelect" required>
+                <option value="">반려견 선택</option>
+                {% for dog in dogs %}
+                <option value="{{ dog.id }}" data-name="{{ dog.name }}" data-breed="{{ dog.breed or '' }}" data-size="{{ dog.size_category }}" data-personality="{{ dog.personality or '' }}">
+                    🐶 {{ dog.name }}{% if dog.breed %} · {{ dog.breed }}{% endif %} · {{ dog.size_category }}{% if dog.personality %} · {{ dog.personality }}{% endif %}
+                </option>
+                {% endfor %}
+            </select>
+            <div class="dog-preview" id="dogPreview">
+                <div class="dog-preview-title">선택한 반려견</div>
+                <div class="dog-preview-name" id="dogPreviewName"></div>
+                <div class="dog-preview-info" id="dogPreviewInfo"></div>
+            </div>
+        </section>
 
-        <a
-            href="/dog/register"
+        <section class="section">
+            <label for="maxPeople">총 모집 인원 <span class="required">*</span></label>
+            <p class="hint">본인을 포함한 전체 인원을 입력해 주세요. (2~10명)</p>
+            <input id="maxPeople" type="number" name="max_people" value="2" min="2" max="10" required>
+        </section>
 
-            class="dog-register-btn"
-        >
-            반려견 등록하기
-        </a>
+        <section class="section">
+            <label for="content">모집 소개 <span class="required">*</span></label>
+            <p class="hint">여행 계획과 원하는 메이트에 대해 적어 주세요.</p>
+            <textarea id="content" name="content" placeholder="어떤 여행을 함께하고 싶은지, 방문하고 싶은 장소와 반려견 성향 등을 적어 주세요." required></textarea>
+        </section>
 
-
+        <div class="note"><span class="note-mark">✦</span><span>여행 일정과 반려견 정보를 정확히 작성하면 서로에게 맞는 메이트를 찾는 데 도움이 돼요.</span></div>
+        <button type="submit" class="submit-btn" id="submitBtn">모집글 등록하기 &nbsp; →</button>
+    </form>
+    {% else %}
+    <div class="empty">
+        <div class="empty-icon">🐶</div>
+        <div class="empty-title">등록된 반려견이 없어요</div>
+        <div class="empty-text">여행 메이트를 모집하려면<br>먼저 함께할 반려견을 등록해 주세요.</div>
+    </div>
+    <a href="/dog/register" class="register-btn">반려견 등록하기 &nbsp; →</a>
     {% endif %}
-
-
-
-    <a
-        href="/matches"
-
-        class="back"
-    >
-        취소
-    </a>
-
-
+    <a href="/matches" class="cancel">취소하고 목록으로 돌아가기</a>
 </div>
 
-
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
 
 <script>
-
-    const dogSelect =
-        document.getElementById(
-            "dogSelect"
-        );
-
-
+    const dogSelect = document.getElementById('dogSelect');
     if (dogSelect) {
-
-
-        dogSelect.addEventListener(
-            "change",
-            function() {
-
-
-                const option =
-                    this.options[
-                        this.selectedIndex
-                    ];
-
-
-                const preview =
-                    document.getElementById(
-                        "dogPreview"
-                    );
-
-
-                if (!this.value) {
-
-                    preview.style.display =
-                        "none";
-
-                    return;
-
-                }
-
-
-                const name =
-                    option.dataset.name || "";
-
-
-                const breed =
-                    option.dataset.breed || "";
-
-
-                const size =
-                    option.dataset.size || "";
-
-
-                const personality =
-                    option.dataset.personality || "";
-
-
-                document.getElementById(
-                    "dogPreviewName"
-                ).textContent =
-                    "🐶 " + name;
-
-
-                const infos = [];
-
-
-                if (breed) {
-                    infos.push(
-                        breed
-                    );
-                }
-
-
-                if (size) {
-                    infos.push(
-                        size
-                    );
-                }
-
-
-                if (personality) {
-                    infos.push(
-                        personality
-                    );
-                }
-
-
-                document.getElementById(
-                    "dogPreviewInfo"
-                ).textContent =
-                    infos.join(
-                        " · "
-                    );
-
-
-                preview.style.display =
-                    "block";
-
+        dogSelect.addEventListener('change', function () {
+            const option = this.options[this.selectedIndex];
+            const preview = document.getElementById('dogPreview');
+            if (!this.value) {
+                preview.style.display = 'none';
+                return;
             }
-        );
-
+            const infos = [option.dataset.breed, option.dataset.size, option.dataset.personality].filter(Boolean);
+            document.getElementById('dogPreviewName').textContent = '🐶 ' + (option.dataset.name || '');
+            document.getElementById('dogPreviewInfo').textContent = infos.join(' · ');
+            preview.style.display = 'block';
+        });
     }
-
+    const matchForm = document.getElementById('matchForm');
+    if (matchForm) {
+        matchForm.addEventListener('submit', function () {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '모집글 등록 중...';
+        });
+    }
 </script>
-
-
 </body>
-
 </html>

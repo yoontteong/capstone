@@ -1,95 +1,391 @@
+
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>장소 후기</title>
+    <title>장소 후기 | PINKSOLE</title>
+
+    <!-- 공통 하단 내비게이션 -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/bottomnav.css') }}">
 
     <style>
+        :root {
+            --primary: #49B9BF;
+            --primary-dark: #278D95;
+            --primary-light: #E7F7F7;
+            --ink: #202B33;
+            --muted: #7C8A93;
+            --border: #E8EEF0;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
+            background: #F3F6F7;
+            color: var(--ink);
+            font-family: 'Pretendard', 'Noto Sans KR',
+                         Arial, sans-serif;
         }
 
         .app {
-            max-width: 600px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 460px;
             min-height: 100vh;
-            background: white;
-            padding: 25px 20px;
+            margin: 0 auto;
+            padding: 24px 20px 125px;
+            background: #FFFFFF;
         }
 
-        .write-btn {
-            display: block;
-            text-align: center;
+        /* 상단 */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 35px;
+        }
+
+        .back-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 34px;
+            height: 34px;
+            color: var(--ink);
             text-decoration: none;
+        }
 
-            padding: 14px;
-            margin: 20px 0;
+        .back-btn svg {
+            width: 23px;
+            height: 23px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
 
-            background: #4caf50;
+        .top-title {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .brand {
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .04em;
+        }
+
+        /* 페이지 소개 */
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .header h1 {
+            margin: 0 0 12px;
+            font-size: 27px;
+            line-height: 1.35;
+            font-weight: 800;
+            letter-spacing: -.05em;
+        }
+
+        .description {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* 후기 목록 헤더 */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .review-count {
+            color: var(--primary-dark);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        /* 후기 작성 버튼 */
+        .write-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-shrink: 0;
+
+            padding: 10px 13px;
+            border: none;
+            border-radius: 12px;
+
+            background: var(--primary);
             color: white;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            transition: background .2s;
+        }
 
+        .write-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .write-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        /* 후기 카드 */
+        .review-card {
+            margin-bottom: 16px;
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 21px;
+            background: #FFFFFF;
+            box-shadow: 0 5px 18px rgba(20, 50, 60, .04);
+        }
+
+        .review-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin-bottom: 15px;
+        }
+
+        .place-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+
+            width: 43px;
+            height: 43px;
             border-radius: 14px;
-            font-weight: bold;
+            background: var(--primary-light);
+            color: var(--primary-dark);
         }
 
-        .review {
-            padding: 20px 0;
-            border-bottom: 1px solid #eee;
+        .place-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        .place {
+        .place-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .place-label {
+            margin-bottom: 4px;
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .place-name {
+            color: var(--ink);
+            font-size: 17px;
+            font-weight: 800;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        /* 별점 */
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 12px;
+        }
+
+        .rating-stars {
+            color: #F2AF46;
             font-size: 18px;
-            font-weight: bold;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
-        .rating {
-            margin: 7px 0;
-            font-weight: bold;
+        .rating-value {
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 800;
         }
 
-        .info {
-            color: #777;
+        .rating-total {
+            color: var(--muted);
             font-size: 12px;
         }
 
-        .content {
-            margin-top: 12px;
-            line-height: 1.6;
+        /* 후기 내용 */
+        .review-content {
+            margin: 0;
+            color: #4A5961;
+            font-size: 14px;
+            line-height: 1.8;
             white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* 후기 사진 */
+        .review-image-box {
+            margin-top: 15px;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #F4F7F8;
         }
 
         .review-image {
+            display: block;
             width: 100%;
             max-height: 350px;
-            object-fit: cover;
-
-            border-radius: 14px;
-            margin-top: 14px;
+            object-fit: contain;
         }
 
+        /* 작성자 정보 */
+        .review-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+
+            padding-top: 15px;
+            margin-top: 17px;
+            border-top: 1px solid var(--border);
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .author-avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 29px;
+            height: 29px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .author-avatar svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+        }
+
+        .author-name {
+            color: #52636B;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .review-date {
+            color: #94A1A8;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* 후기 없음 */
         .empty {
+            padding: 55px 15px;
+            border: 1px dashed #D9E6E8;
+            border-radius: 20px;
+            background: #FAFCFC;
             text-align: center;
-            color: #888;
-            padding: 50px 0;
         }
 
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
+        .empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            font-size: 30px;
+        }
+
+        .empty-title {
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .empty-description {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .empty-write {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 19px;
+            padding: 12px 18px;
+            border-radius: 13px;
+            background: var(--primary);
+            color: white;
             text-decoration: none;
-            color: #666;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 360px) {
+            .app {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .review-card {
+                padding: 15px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -98,68 +394,196 @@
 
 <div class="app">
 
-    <h1>🐾 반려견 동반 장소 후기</h1>
+    <!-- 상단 헤더 -->
+    <header class="topbar">
 
-    <a href="/reviews/write" class="write-btn">
-        후기 작성하기
-    </a>
+        <a href="/community/home"
+           class="back-btn"
+           aria-label="커뮤니티로 돌아가기">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"></path>
+                <path d="M12 19L5 12L12 5"></path>
+            </svg>
+        </a>
 
+        <div class="top-title">장소 후기</div>
 
-    {% if reviews %}
+        <div class="brand">PINKSOLE</div>
 
-        {% for review in reviews %}
+    </header>
 
-            <div class="review">
+    <!-- 소개 -->
+    <section class="header">
 
-                <div class="place">
-                    📍 {{ review.place_name }}
+        <div class="eyebrow">PLACE REVIEWS</div>
+
+        <h1>
+            반려견과 함께한<br>
+            특별한 장소들
+        </h1>
+
+        <p class="description">
+            반려견과 방문한 제주 장소의 후기를<br>
+            확인하고 경험을 공유해 보세요.
+        </p>
+
+    </section>
+
+    <!-- 후기 목록 -->
+    <section class="review-section">
+
+        <div class="section-header">
+
+            <div>
+                <div class="section-title">
+                    장소 후기
+                    <span class="review-count">
+                        {{ reviews|length }}
+                    </span>
+                </div>
+            </div>
+
+            <a href="/reviews/write" class="write-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5V19"></path>
+                    <path d="M5 12H19"></path>
+                </svg>
+                후기 작성
+            </a>
+
+        </div>
+
+        {% if reviews %}
+
+            {% for review in reviews %}
+
+                <article class="review-card">
+
+                    <!-- 장소 이름 -->
+                    <div class="review-top">
+
+                        <div class="place-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20 10C20 15 12 21 12 21S4 15 4 10A8 8 0 0 1 20 10Z"></path>
+                                <circle cx="12" cy="10" r="2.5"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="place-info">
+
+                            <div class="place-label">
+                                VISITED PLACE
+                            </div>
+
+                            <div class="place-name">
+                                {{ review.place_name }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- 별점 -->
+                    <div class="rating-row">
+
+                        <div class="rating-stars"
+                             aria-label="평점 {{ review.rating }}점">
+                            {% set star_count = review.rating|int %}
+                            {% for i in range(5) %}
+                                {% if i < star_count %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            <span class="rating-value">
+                                {{ review.rating }}
+                            </span>
+                            <span class="rating-total">/ 5</span>
+                        </div>
+
+                    </div>
+
+                    <!-- 후기 내용 -->
+                    <div class="review-content">{{ review.content }}</div>
+
+                    <!-- 사진 -->
+                    {% if review.image_path %}
+
+                        <div class="review-image-box">
+
+                            <img
+                                class="review-image"
+                                src="{{ url_for('static', filename=review.image_path) }}"
+                                alt="{{ review.place_name }} 후기 사진"
+                                loading="lazy">
+
+                        </div>
+
+                    {% endif %}
+
+                    <!-- 작성자 -->
+                    <div class="review-footer">
+
+                        <div class="author">
+
+                            <div class="author-avatar">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21C4 16 7 14 12 14S20 16 20 21"></path>
+                                </svg>
+                            </div>
+
+                            <span class="author-name">
+                                {{ review.author }}
+                            </span>
+
+                        </div>
+
+                        <div class="review-date">
+                            {{ review.created_at }}
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <!-- 빈 목록 -->
+            <div class="empty">
+
+                <div class="empty-icon">🐾</div>
+
+                <div class="empty-title">
+                    아직 등록된 후기가 없어요
                 </div>
 
-                <div class="rating">
-                    ⭐ {{ review.rating }} / 5
+                <div class="empty-description">
+                    반려견과 방문한 특별한 장소를<br>
+                    첫 번째로 소개해 주세요.
                 </div>
 
-                <div class="info">
-                    {{ review.author }}
-                    ·
-                    {{ review.created_at }}
-                </div>
-
-                <div class="content">
-                    {{ review.content }}
-                </div>
-
-                {% if review.image_path %}
-
-                    <img
-                        class="review-image"
-                        src="{{ url_for(
-                            'static',
-                            filename=review.image_path
-                        ) }}"
-                        alt="후기 사진"
-                    >
-
-                {% endif %}
+                <a href="/reviews/write" class="empty-write">
+                    첫 후기 작성하기
+                </a>
 
             </div>
 
-        {% endfor %}
+        {% endif %}
 
-    {% else %}
-
-        <div class="empty">
-            아직 등록된 후기가 없습니다.
-        </div>
-
-    {% endif %}
-
-
-    <a href="/community" class="back">
-        커뮤니티로 돌아가기
-    </a>
+    </section>
 
 </div>
+
+<!-- 공통 하단 내비게이션 -->
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
 
 </body>
 </html>

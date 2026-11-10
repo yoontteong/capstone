@@ -1,387 +1,147 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>메이트 평가</title>
-
+    <title>메이트 평가 | PINKSOLE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-        }
-
-        .app {
-            max-width: 550px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding: 25px 20px 40px;
-        }
-
-        .header {
-            margin-bottom: 28px;
-        }
-
-        .header h1 {
-            margin: 0 0 8px;
-            font-size: 24px;
-        }
-
-        .header p {
-            margin: 0;
-            color: #777;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .mate-card {
-            padding: 18px;
-            border-radius: 15px;
-            background: #f3f8f3;
-            margin-bottom: 30px;
-        }
-
-        .mate-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #222;
-        }
-
-        .trip-title {
-            margin-top: 7px;
-            color: #666;
-            font-size: 13px;
-        }
-
-        .section {
-            margin-top: 28px;
-        }
-
-        .section-title {
-            margin-bottom: 6px;
-            font-size: 17px;
-            font-weight: bold;
-        }
-
-        .section-description {
-            margin-bottom: 15px;
-            color: #888;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .rating-item {
-            padding: 17px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .rating-item:last-child {
-            border-bottom: none;
-        }
-
-        .rating-title {
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .rating-description {
-            color: #999;
-            font-size: 12px;
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .rating input {
-            position: absolute;
-            opacity: 0;
-            width: 1px;
-            height: 1px;
-        }
-
-        .rating label {
-            font-size: 35px;
-            color: #ddd;
-            cursor: pointer;
-            transition: color 0.15s;
-            user-select: none;
-        }
-
-        .rating label.active {
-            color: #ffc107;
-        }
-
-        .rating input:focus-visible + label {
-            outline: 2px solid #4caf50;
-            outline-offset: 3px;
-            border-radius: 4px;
-        }
-
-        .score-text {
-            margin-left: 6px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #4caf50;
-        }
-
-        .dog-section {
-            background: #f8faf8;
-            border-radius: 14px;
-            padding: 18px;
-            margin-top: 28px;
-        }
-
-        .dog-section .rating-item {
-            padding-bottom: 0;
-        }
-
-        textarea {
-            width: 100%;
-            height: 110px;
-            padding: 13px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            resize: vertical;
-            font-family: inherit;
-            font-size: 14px;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #4caf50;
-        }
-
-        .notice {
-            margin-top: 22px;
-            padding: 14px;
-            border-radius: 12px;
-            background: #f6f7f9;
-            color: #777;
-            font-size: 12px;
-            line-height: 1.7;
-        }
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 25px;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: #4caf50;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background: #43a047;
-        }
-
-        .back {
-            display: block;
-            margin-top: 18px;
-            text-align: center;
-            color: #777;
-            text-decoration: none;
-            font-size: 14px;
-        }
+        :root { --primary:#49B9BF; --dark:#278D95; --pale:#E7F7F7; --ink:#202B33; --muted:#7C8A93; --border:#E8EEF0; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:#F3F6F7; color:var(--ink); font-family:'Pretendard','Noto Sans KR',Arial,sans-serif; }
+        .app { width:100%; max-width:460px; min-height:100vh; margin:auto; padding:24px 20px 125px; background:#fff; }
+        .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:34px; }
+        .back-arrow { width:34px; height:34px; display:grid; place-items:center; color:var(--ink); text-decoration:none; font-size:25px; }
+        .top-title { font-size:16px; font-weight:800; }
+        .brand { color:var(--dark); font-size:11px; font-weight:900; letter-spacing:.04em; }
+        .eyebrow { color:var(--dark); font-size:11px; font-weight:900; letter-spacing:.12em; margin-bottom:10px; }
+        h1 { font-size:27px; letter-spacing:-.05em; line-height:1.35; margin:0 0 11px; }
+        .description { color:var(--muted); font-size:13px; line-height:1.7; margin:0; }
+        .intro { margin-bottom:26px; }
+        .mate-card { display:flex; align-items:center; gap:13px; border:1px solid var(--border); border-radius:19px; background:#F8FBFB; padding:17px; margin-bottom:31px; }
+        .avatar { flex-shrink:0; display:grid; place-items:center; width:50px; height:50px; border-radius:16px; background:var(--pale); font-size:24px; }
+        .mate-name { font-weight:800; font-size:16px; margin-bottom:6px; }
+        .trip-name { color:var(--muted); font-size:12px; line-height:1.6; overflow-wrap:anywhere; }
+        .section { margin-bottom:28px; }
+        .section-title { font-weight:800; font-size:17px; letter-spacing:-.035em; margin-bottom:8px; }
+        .section-desc { color:var(--muted); font-size:12px; line-height:1.7; margin-bottom:12px; }
+        .rating-card { border:1px solid var(--border); border-radius:17px; padding:17px 15px 15px; margin-bottom:11px; }
+        .rating-title { font-size:15px; font-weight:800; margin-bottom:5px; }
+        .rating-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+        .rating { display:flex; align-items:center; gap:5px; margin-top:12px; flex-wrap:wrap; }
+        .rating input { position:absolute; opacity:0; width:1px; height:1px; }
+        .rating label { display:grid; place-items:center; width:36px; height:39px; color:#D5DEE0; cursor:pointer; font-size:32px; line-height:1; user-select:none; transition:color .15s,transform .15s; }
+        .rating label.active { color:#F0AE45; }
+        .rating label:hover { transform:scale(1.08); }
+        .rating input:focus-visible + label { outline:2px solid var(--dark); outline-offset:2px; border-radius:5px; }
+        .score-text { margin-left:5px; font-size:12px; font-weight:800; color:var(--dark); }
+        .dog-section { background:#F5FAFA; border:1px solid #DDEEEF; border-radius:19px; padding:18px 15px; margin-bottom:29px; }
+        .dog-section .rating-card { background:white; margin:15px 0 10px; }
+        .optional-note { color:var(--muted); font-size:12px; line-height:1.6; }
+        textarea { display:block; width:100%; min-height:125px; padding:15px; border:1.5px solid var(--border); border-radius:16px; font:14px/1.65 inherit; font-family:inherit; resize:vertical; }
+        textarea:focus { outline:none; border-color:var(--primary); }
+        textarea::placeholder { color:#A0ADB3; }
+        .char-count { color:var(--muted); text-align:right; font-size:11px; margin-top:7px; }
+        .notice { padding:15px 16px; background:#F2F9F9; border-radius:16px; font-size:12px; line-height:1.85; color:#60757D; margin:26px 0 22px; }
+        .submit-btn { width:100%; padding:18px; background:var(--primary); color:#fff; font:800 16px inherit; font-family:inherit; font-size:16px; font-weight:800; border:0; border-radius:17px; cursor:pointer; box-shadow:0 6px 16px rgba(73,185,191,.18); }
+        .submit-btn:hover { background:var(--dark); }
+        .submit-btn:disabled { opacity:.65; cursor:wait; }
+        .cancel { display:block; text-align:center; text-decoration:none; margin-top:18px; color:var(--muted); font-size:13px; }
+        @media(max-width:360px){ .app{padding-left:16px;padding-right:16px} .rating label{width:32px;font-size:29px} }
     </style>
 </head>
-
 <body>
 <div class="app">
-
-    <div class="header">
-        <h1>🐾 메이트 평가</h1>
-        <p>
-            함께 여행한 메이트는 어떠셨나요?<br>
-            남겨주신 평가는 메이트 신뢰도에 반영됩니다.
-        </p>
-    </div>
-
+    <header class="topbar">
+        <a class="back-arrow" href="/matches/{{ match_request.match_id }}" aria-label="모집글로 돌아가기">←</a>
+        <div class="top-title">메이트 평가</div>
+        <div class="brand">PINKSOLE</div>
+    </header>
+    <section class="intro">
+        <div class="eyebrow">TRAVEL MATE REVIEW</div>
+        <h1>함께한 여행은<br>어떠셨나요?</h1>
+        <p class="description">여행 경험을 바탕으로 메이트를 평가해 주세요.<br>보호자 평가는 메이트 신뢰도에 반영됩니다.</p>
+    </section>
     <div class="mate-card">
-        <div class="mate-name">
-            🐶 {{ reviewed_user_name }}님
-        </div>
-        <div class="trip-title">
-            {{ match_request.title }}
-            · {{ match_request.travel_date }}
+        <div class="avatar" aria-hidden="true">🐶</div>
+        <div>
+            <div class="mate-name">{{ reviewed_user_name }}님</div>
+            <div class="trip-name">{{ match_request.title }} · {{ match_request.travel_date }}</div>
         </div>
     </div>
-
-    <form
-        method="POST"
-        action="/matches/reviews/{{ match_request.request_id }}"
-        id="reviewForm"
-    >
-
-        <div class="section">
-            <div class="section-title">
-                메이트를 평가해주세요
-            </div>
-            <div class="section-description">
-                각 항목을 1점부터 5점까지 평가해주세요.
-                평가 결과는 메이트 신뢰도에 반영됩니다.
-            </div>
-
+    <form action="/matches/reviews/{{ match_request.request_id }}" method="POST" id="reviewForm">
+        <section class="section">
+            <div class="section-title">메이트 평가</div>
+            <div class="section-desc">각 항목을 1점부터 5점까지 선택해 주세요. (필수)</div>
             {% set rating_items = [
-                ('punctuality_score', '⏰ 약속 이행',
-                 '약속 시간과 일정을 잘 지켰나요?'),
-
-                ('kindness_score', '💚 친절 및 배려',
-                 '상대방을 존중하고 배려했나요?'),
-
-                ('communication_score', '💬 의사소통',
-                 '연락과 의견 조율이 원활했나요?'),
-
-                ('dog_care_score', '🐕 반려견 관리',
-                 '반려견을 책임감 있게 관리했나요?')
+                ('punctuality_score', '⏰ 약속 이행', '약속 시간과 일정을 잘 지켰나요?'),
+                ('kindness_score', '💚 친절 및 배려', '상대방을 존중하고 배려했나요?'),
+                ('communication_score', '💬 의사소통', '연락과 의견 조율이 원활했나요?'),
+                ('dog_care_score', '🐕 반려견 관리', '반려견을 책임감 있게 관리했나요?')
             ] %}
-
             {% for name, title, description in rating_items %}
-
-            <div class="rating-item">
-                <div class="rating-title">
-                    {{ title }}
-                </div>
-
-                <div class="rating-description">
-                    {{ description }}
-                </div>
-
-                <div class="rating" data-rating="{{ name }}">
+            <div class="rating-card">
+                <div class="rating-title">{{ title }}</div>
+                <div class="rating-desc">{{ description }}</div>
+                <div class="rating" data-rating="{{ name }}" role="group" aria-label="{{ title }}">
                     {% for score in range(1, 6) %}
-                    <input
-                        type="radio"
-                        name="{{ name }}"
-                        id="{{ name }}_{{ score }}"
-                        value="{{ score }}"
-                        {% if score == 1 %}required{% endif %}
-                    >
-                    <label
-                        for="{{ name }}_{{ score }}"
-                        data-score="{{ score }}"
-                    >★</label>
+                    <input type="radio" name="{{ name }}" id="{{ name }}_{{ score }}" value="{{ score }}" {% if score == 1 %}required{% endif %}>
+                    <label for="{{ name }}_{{ score }}" data-score="{{ score }}" aria-label="{{ score }}점">★</label>
                     {% endfor %}
-
-                    <span class="score-text">미선택</span>
+                    <span class="score-text" aria-live="polite">미선택</span>
                 </div>
             </div>
-
             {% endfor %}
-        </div>
-
-        <div class="dog-section">
-            <div class="section-title">
-                🐾 반려견 사교성
-            </div>
-
-            <div class="section-description">
-                함께 여행한 반려견은 다른 사람이나
-                반려견과 잘 어울렸나요?<br>
-                이 항목은 보호자 신뢰도에 포함되지 않습니다.
-            </div>
-
-            <div class="rating-item">
-                <div class="rating"
-                     data-rating="dog_sociability_score">
-
+        </section>
+        <section class="dog-section">
+            <div class="section-title">🐾 반려견 사교성</div>
+            <div class="section-desc">함께한 반려견이 다른 사람이나 반려견과 잘 어울렸나요?<br>보호자 신뢰도에는 포함되지 않는 별도 평가예요.</div>
+            <div class="rating-card">
+                <div class="rating" data-rating="dog_sociability_score" role="group" aria-label="반려견 사교성">
                     {% for score in range(1, 6) %}
-                    <input
-                        type="radio"
-                        name="dog_sociability_score"
-                        id="dog_sociability_{{ score }}"
-                        value="{{ score }}"
-                    >
-                    <label
-                        for="dog_sociability_{{ score }}"
-                        data-score="{{ score }}"
-                    >★</label>
+                    <input type="radio" name="dog_sociability_score" id="dog_sociability_{{ score }}" value="{{ score }}">
+                    <label for="dog_sociability_{{ score }}" data-score="{{ score }}" aria-label="{{ score }}점">★</label>
                     {% endfor %}
-
-                    <span class="score-text">미선택</span>
+                    <span class="score-text" aria-live="polite">미선택</span>
                 </div>
             </div>
-
-            <div class="rating-description"
-                 style="margin-top: 12px;">
-                반려견과 충분히 교류하지 못했다면
-                선택하지 않아도 됩니다.
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">
-                한 줄 후기를 남겨주세요
-            </div>
-            <div class="section-description">
-                선택사항입니다.
-            </div>
-
-            <textarea
-                name="content"
-                maxlength="500"
-                placeholder="함께한 여행에 대한 후기를 남겨주세요."
-            ></textarea>
-        </div>
-
-        <div class="notice">
-            ※ 평가는 여행 경험을 바탕으로 작성해주세요.<br>
-            ※ 반려견 사교성은 보호자 신뢰도와 별도로 관리됩니다.<br>
-            ※ 노쇼 등 약속 위반 신고는 별도 확인 절차를 거쳐 처리됩니다.
-        </div>
-
-        <button type="submit" class="submit-btn">
-            평가 완료하기
-        </button>
-
+            <div class="optional-note">충분히 교류하지 못했다면 선택하지 않아도 돼요.</div>
+        </section>
+        <section class="section">
+            <div class="section-title">한 줄 후기 <span style="color:var(--muted);font-size:12px;font-weight:500">(선택)</span></div>
+            <div class="section-desc">함께한 여행에서 기억에 남는 점을 남겨 주세요.</div>
+            <textarea name="content" id="reviewContent" maxlength="500" placeholder="함께한 여행에 대한 후기를 남겨 주세요."></textarea>
+            <div class="char-count"><span id="charCount">0</span> / 500</div>
+        </section>
+        <div class="notice">✦ 실제 여행 경험을 바탕으로 평가해 주세요.<br>✦ 반려견 사교성은 보호자 신뢰도와 별도 관리돼요.<br>✦ 노쇼 등 약속 위반 신고는 별도 확인 절차를 거쳐 처리돼요.</div>
+        <button type="submit" class="submit-btn" id="submitBtn">평가 완료하기 →</button>
+        <a href="/matches/{{ match_request.match_id }}" class="cancel">취소하고 돌아가기</a>
     </form>
-
-    <a
-        href="/matches/{{ match_request.match_id }}"
-        class="back"
-    >
-        돌아가기
-    </a>
-
 </div>
-
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
 <script>
     document.querySelectorAll('.rating').forEach(group => {
-        const inputs = group.querySelectorAll('input');
+        const inputs = group.querySelectorAll('input[type="radio"]');
         const labels = group.querySelectorAll('label');
         const scoreText = group.querySelector('.score-text');
-
-        inputs.forEach(input => {
-            input.addEventListener('change', function () {
-                const selectedScore = Number(this.value);
-
-                labels.forEach(label => {
-                    const score = Number(label.dataset.score);
-                    label.classList.toggle(
-                        'active',
-                        score <= selectedScore
-                    );
-                });
-
-                scoreText.textContent = selectedScore + '점';
-            });
-        });
+        const update = () => {
+            const chosen = group.querySelector('input:checked');
+            const value = chosen ? Number(chosen.value) : 0;
+            labels.forEach(label => label.classList.toggle('active', Number(label.dataset.score) <= value));
+            scoreText.textContent = value ? value + '점' : '미선택';
+        };
+        inputs.forEach(input => input.addEventListener('change', update));
+        update();
+    });
+    const reviewContent = document.getElementById('reviewContent');
+    const charCount = document.getElementById('charCount');
+    reviewContent.addEventListener('input', () => { charCount.textContent = reviewContent.value.length; });
+    document.getElementById('reviewForm').addEventListener('submit', () => {
+        const submit = document.getElementById('submitBtn');
+        submit.disabled = true;
+        submit.textContent = '평가 등록 중...';
     });
 </script>
-
 </body>
 </html>

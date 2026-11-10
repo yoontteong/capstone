@@ -1,85 +1,283 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>게시글 수정</title>
+    <title>게시글 수정 | PINKSOLE</title>
+
+    <!-- 공통 하단 내비게이션 -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/bottomnav.css') }}">
 
     <style>
+        :root {
+            --primary: #49B9BF;
+            --primary-dark: #278D95;
+            --primary-light: #E7F7F7;
+            --ink: #202B33;
+            --muted: #7C8A93;
+            --border: #E8EEF0;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-            color: #222;
+            background: #F3F6F7;
+            color: var(--ink);
+            font-family: 'Pretendard', 'Noto Sans KR',
+                         Arial, sans-serif;
         }
 
         .app {
-            max-width: 430px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 460px;
             min-height: 100vh;
-            background: white;
-            padding: 24px 20px 40px;
+            margin: 0 auto;
+            padding: 24px 20px 125px;
+            background: #FFFFFF;
+        }
+
+        /* 상단 */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .back-btn svg {
+            width: 23px;
+            height: 23px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .top-title {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .brand {
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .04em;
+        }
+
+        /* 페이지 소개 */
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .12em;
         }
 
         h1 {
-            font-size: 24px;
-            margin: 0 0 24px;
+            margin: 0 0 12px;
+            font-size: 27px;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -.05em;
         }
 
-        label {
-            display: block;
-            margin: 18px 0 8px;
-            font-size: 14px;
-            font-weight: bold;
+        .description {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
         }
 
-        input,
-        textarea {
-            width: 100%;
-            border: 1px solid #ddd;
+        /* 작성자 */
+        .author-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: #F8FBFB;
+        }
+
+        .author-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
             border-radius: 14px;
-            padding: 13px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .author-icon svg {
+            width: 23px;
+            height: 23px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .author-label {
+            margin-bottom: 5px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .author-name {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        /* 입력 영역 */
+        .section {
+            margin-bottom: 29px;
+        }
+
+        .section-title {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .required {
+            color: var(--primary-dark);
+        }
+
+        input[type="text"],
+        textarea {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            background: #FFFFFF;
+            color: var(--ink);
+            font-family: inherit;
             font-size: 14px;
+            line-height: 1.7;
+            transition: border-color .2s;
         }
 
         input:focus,
         textarea:focus {
             outline: none;
-            border-color: #4caf50;
+            border-color: var(--primary);
+        }
+
+        input:focus-visible,
+        textarea:focus-visible,
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--primary-dark);
+            outline-offset: 3px;
         }
 
         textarea {
-            height: 220px;
+            min-height: 250px;
             resize: vertical;
         }
 
-        .save-btn {
-            width: 100%;
-            border: none;
+        .input-help {
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* 안내 */
+        .notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding: 15px;
             border-radius: 16px;
-            padding: 14px;
-            margin-top: 24px;
+            background: #F2F9F9;
+            color: #60757D;
+            font-size: 12px;
+            line-height: 1.7;
+        }
 
-            background: #4caf50;
-            color: white;
+        .notice-icon {
+            flex-shrink: 0;
+            color: var(--primary-dark);
+            font-size: 17px;
+        }
 
-            font-size: 15px;
-            font-weight: bold;
+        /* 저장 버튼 */
+        .save-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 17px;
+            background: var(--primary);
+            color: #FFFFFF;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 800;
             cursor: pointer;
+            box-shadow: 0 6px 16px
+                        rgba(73, 185, 191, .18);
+            transition: background .2s;
+        }
+
+        .save-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .save-btn:disabled {
+            opacity: .65;
+            cursor: wait;
         }
 
         .cancel-btn {
             display: block;
+            margin-top: 18px;
+            color: var(--muted);
             text-align: center;
             text-decoration: none;
-            margin-top: 16px;
-            color: #666;
-            font-size: 14px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 360px) {
+            .app {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
         }
     </style>
 </head>
@@ -88,64 +286,156 @@
 
 <div class="app">
 
-    <h1>✏️ 게시글 수정</h1>
+    <!-- 상단 헤더 -->
+    <header class="topbar">
 
-    <form method="POST">
+        <a href="/community/{{ post.id }}"
+           class="back-btn"
+           aria-label="게시글로 돌아가기">
 
-        <label for="author">
-            작성자
-        </label>
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"></path>
+                <path d="M12 19L5 12L12 5"></path>
+            </svg>
+        </a>
 
-        <input
-            id="author"
-            name="author"
-            type="text"
-            maxlength="50"
-            value="{{ post.author }}"
-            required
-        >
+        <div class="top-title">게시글 수정</div>
 
+        <div class="brand">PINKSOLE</div>
+    </header>
 
-        <label for="title">
-            제목
-        </label>
+    <!-- 소개 -->
+    <section class="header">
 
-        <input
-            id="title"
-            name="title"
-            type="text"
-            maxlength="200"
-            value="{{ post.title }}"
-            required
-        >
+        <div class="eyebrow">
+            EDIT YOUR STORY
+        </div>
 
+        <h1>
+            여행 이야기를<br>
+            수정해 보세요
+        </h1>
 
-        <label for="content">
-            내용
-        </label>
+        <p class="description">
+            작성한 게시글의 제목과 내용을<br>
+            자유롭게 수정할 수 있어요.
+        </p>
 
-        <textarea
-            id="content"
-            name="content"
-            required>{{ post.content }}</textarea>
+    </section>
 
+    <!-- 게시글 수정 -->
+    <form method="POST"
+          action="/community/{{ post.id }}/edit"
+          id="editForm">
 
+        <!-- 작성자 정보 -->
+        <div class="author-card">
+
+            <div class="author-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="4"></circle>
+                    <path d="M4 21C4 16 7 14 12 14S20 16 20 21"></path>
+                </svg>
+            </div>
+
+            <div>
+                <div class="author-label">작성자</div>
+                <div class="author-name">
+                    {{ post.author }}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 기존 Flask 서버에서 요구하는 작성자 -->
+        <input type="hidden"
+               name="author"
+               value="{{ post.author }}">
+
+        <!-- 제목 -->
+        <section class="section">
+
+            <label for="title" class="section-title">
+                제목 <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="title"
+                name="title"
+                value="{{ post.title }}"
+                maxlength="200"
+                required>
+
+        </section>
+
+        <!-- 내용 -->
+        <section class="section">
+
+            <label for="content" class="section-title">
+                내용 <span class="required">*</span>
+            </label>
+
+            <textarea
+                id="content"
+                name="content"
+                required>{{ post.content }}</textarea>
+
+            <div class="input-help">
+                수정한 내용은 저장 후 게시글에 반영돼요.
+            </div>
+
+        </section>
+
+        <!-- 안내 -->
+        <div class="notice">
+
+            <span class="notice-icon">✦</span>
+
+            <div>
+                내용을 수정하면 기존 게시글에 변경 사항이
+                반영됩니다. 수정 전 내용을 다시 한번
+                확인해 주세요.
+            </div>
+
+        </div>
+
+        <!-- 수정 완료 -->
         <button
+            type="submit"
             class="save-btn"
-            type="submit">
+            id="saveBtn">
+
             수정 완료
+            <span>→</span>
+
         </button>
+
+        <a href="/community/{{ post.id }}"
+           class="cancel-btn">
+            취소하고 돌아가기
+        </a>
 
     </form>
 
-
-    <a
-        href="/community/{{ post.id }}"
-        class="cancel-btn">
-        취소
-    </a>
-
 </div>
+
+<!-- 공통 하단 내비게이션 -->
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
+
+<script>
+    const editForm =
+        document.getElementById("editForm");
+
+    const saveBtn =
+        document.getElementById("saveBtn");
+
+    editForm.addEventListener("submit", function() {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "수정 내용을 저장하고 있어요...";
+    });
+</script>
 
 </body>
 </html>

@@ -1,183 +1,135 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>여행 메이트</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-        }
-
-        .app {
-            max-width: 600px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding: 25px 20px 40px;
-        }
-
-        .write-btn {
-            display: block;
-            text-align: center;
-            text-decoration: none;
-
-            background: #4caf50;
-            color: white;
-
-            padding: 14px;
-            border-radius: 14px;
-            margin: 20px 0;
-
-            font-weight: bold;
-        }
-
-        .match-card {
-            border: 1px solid #e5e5e5;
-            border-radius: 18px;
-            padding: 18px;
-            margin-bottom: 15px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-
-            background: #e8f5e9;
-            color: #2e7d32;
-
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .title {
-            font-size: 19px;
-            font-weight: bold;
-            margin: 12px 0;
-        }
-
-        .info {
-            margin: 6px 0;
-            font-size: 14px;
-        }
-
-        .content {
-            margin-top: 15px;
-            padding: 13px;
-
-            background: #f7f7f7;
-            border-radius: 12px;
-
-            line-height: 1.6;
-        }
-
-        .author {
-            margin-top: 12px;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .empty {
-            text-align: center;
-            color: #888;
-            padding: 50px 0;
-        }
-
-        .back {
-            display: block;
-            text-align: center;
-            text-decoration: none;
-            color: #666;
-            margin-top: 25px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>여행 메이트 | PINKSOLE</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+  <style>
+    :root { --primary:#49B9BF; --dark:#278D95; --light:#E7F7F7; --ink:#202B33; --muted:#7C8A93; --line:#E8EEF0; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#F3F6F7; color:var(--ink); font-family:'Pretendard','Noto Sans KR',Arial,sans-serif; }
+    .app { width:100%; max-width:460px; min-height:100vh; margin:0 auto; padding:24px 20px 125px; background:white; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:34px; }
+    .back-btn { width:34px; height:34px; display:grid; place-items:center; text-decoration:none; color:var(--ink); }
+    .back-btn svg { width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .top-title { font-weight:800; font-size:16px; }
+    .brand { font-size:11px; font-weight:900; letter-spacing:.04em; color:var(--dark); }
+    .intro { margin-bottom:30px; }
+    .eyebrow { font-size:11px; font-weight:900; letter-spacing:.12em; color:var(--dark); margin-bottom:10px; }
+    h1 { font-size:27px; line-height:1.35; letter-spacing:-.05em; margin:0 0 11px; }
+    .subtitle { color:var(--muted); font-size:13px; line-height:1.7; margin:0; }
+    .section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:17px; }
+    .section-title { font-size:17px; font-weight:800; }
+    .count { color:var(--dark); font-size:13px; }
+    .write-btn { display:inline-flex; align-items:center; justify-content:center; gap:5px; flex-shrink:0; padding:11px 13px; background:var(--primary); border-radius:12px; color:#fff; font-size:12px; font-weight:800; text-decoration:none; }
+    .write-btn:hover { background:var(--dark); }
+    .write-btn svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+    .match-card { margin-bottom:14px; border:1px solid var(--line); border-radius:20px; background:white; box-shadow:0 5px 18px rgba(20,50,60,.04); overflow:hidden; }
+    .match-link { display:block; padding:18px; text-decoration:none; color:inherit; }
+    .match-link:hover { background:#FAFDFD; }
+    .match-link:focus-visible, .write-btn:focus-visible, .back-btn:focus-visible { outline:3px solid var(--primary); outline-offset:2px; }
+    .card-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+    .status { display:inline-flex; border-radius:999px; padding:6px 11px; background:var(--light); color:var(--dark); font-size:11px; font-weight:800; }
+    .status-closed { background:#F2F4F5; color:#748189; }
+    .arrow { font-size:19px; color:#9BADB4; line-height:1; }
+    .match-title { font-size:17px; line-height:1.45; font-weight:800; letter-spacing:-.03em; overflow-wrap:anywhere; margin:0 0 14px; }
+    .summary { display:grid; gap:11px; margin-bottom:15px; }
+    .summary-item { display:flex; align-items:flex-start; gap:9px; font-size:13px; line-height:1.55; color:#52636B; }
+    .summary-item svg { flex:0 0 17px; width:17px; height:17px; fill:none; stroke:var(--dark); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; margin-top:1px; }
+    .summary-item span { min-width:0; overflow-wrap:anywhere; }
+    .dog-info { padding:12px 13px; background:#F4FAFA; border-radius:13px; display:flex; align-items:flex-start; gap:9px; margin-bottom:14px; }
+    .dog-icon { font-size:19px; line-height:1.3; flex:none; }
+    .dog-copy { min-width:0; }
+    .dog-label { color:var(--dark); font-size:10px; font-weight:800; margin-bottom:4px; }
+    .dog-value { font-size:12px; line-height:1.6; color:#52636B; overflow-wrap:anywhere; }
+    .content { color:#62717A; font-size:13px; line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .footer { display:flex; align-items:center; justify-content:space-between; gap:9px; border-top:1px solid var(--line); margin-top:15px; padding-top:13px; font-size:11px; color:#95A1A7; }
+    .footer .author { font-size:12px; color:#596A72; font-weight:700; overflow-wrap:anywhere; }
+    .footer .date { text-align:right; }
+    .empty { text-align:center; background:#FAFCFC; border:1px dashed #D9E6E8; border-radius:20px; padding:48px 15px; }
+    .empty-icon { font-size:30px; background:var(--light); width:60px; height:60px; border-radius:20px; display:grid; place-items:center; margin:0 auto 15px; }
+    .empty-title { font-size:16px; font-weight:800; margin-bottom:8px; }
+    .empty-desc { font-size:12px; line-height:1.7; color:var(--muted); }
+    .empty-link { display:inline-block; margin-top:18px; padding:12px 17px; text-decoration:none; background:var(--primary); color:white; border-radius:12px; font-size:13px; font-weight:800; }
+    @media(max-width:360px) { .app { padding-left:16px; padding-right:16px; } .match-link { padding:15px; } }
+  </style>
 </head>
-
 <body>
-
 <div class="app">
-
-    <h1>🐾 여행 메이트</h1>
-
-    <a href="/matches/write" class="write-btn">
-        메이트 모집하기
+  <header class="topbar">
+    <a class="back-btn" href="/community/home" aria-label="커뮤니티로 돌아가기">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </a>
+    <div class="top-title">여행 메이트</div>
+    <div class="brand">PINKSOLE</div>
+  </header>
 
+  <section class="intro">
+    <div class="eyebrow">FIND YOUR TRAVEL MATE</div>
+    <h1>함께 떠나는<br>제주 여행 메이트</h1>
+    <p class="subtitle">우리 강아지와 잘 맞는 친구를 찾고<br>즐거운 여행을 함께 계획해 보세요.</p>
+  </section>
+
+  <section aria-label="메이트 모집글 목록">
+    <div class="section-head">
+      <div class="section-title">메이트 모집글 <span class="count">{{ matches|length }}</span></div>
+      <a class="write-btn" href="/matches/write">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> 메이트 모집
+      </a>
+    </div>
 
     {% if matches %}
-
-        {% for match in matches %}
-
-            <div
-                class="match-card"
-                onclick="location.href='/matches/{{ match.id }}'"
-                style="cursor: pointer;"
-            >
-
-                <span class="status">
-                    {{ match.status }}
-                </span>
-
-                <div class="title">
-                    {{ match.title }}
-                </div>
-
-                <div class="info">
-                    📅 {{ match.travel_date }}
-                </div>
-
-                <div class="info">
-                    📍 {{ match.region }}
-                </div>
-
-                <div class="info">
-                    🐶 {{ match.dog_name }}
-                    · {{ match.dog_size }}
-                    · {{ match.dog_personality }}
-                </div>
-
-                <div class="info">
-                    👥 총 모집 {{ match.max_people }}명
-                </div>
-
-                <div class="content">
-                    {{ match.content }}
-                </div>
-
-                <div class="author">
-                    작성자 {{ match.author }}
-                    · {{ match.created_at }}
-                </div>
-
+      {% for match in matches %}
+        <article class="match-card">
+          <a class="match-link" href="/matches/{{ match.id }}" aria-label="{{ match.title }} 상세 보기">
+            <div class="card-head">
+              <span class="status {% if match.status in ['마감', '모집마감', '모집 완료', '종료', '완료'] %}status-closed{% endif %}">{{ match.status }}</span>
+              <span class="arrow" aria-hidden="true">›</span>
             </div>
-
-        {% endfor %}
-
+            <h2 class="match-title">{{ match.title }}</h2>
+            <div class="summary">
+              <div class="summary-item">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>
+                <span>{{ match.travel_date }}</span>
+              </div>
+              <div class="summary-item">
+                <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                <span>{{ match.region }}</span>
+              </div>
+              <div class="summary-item">
+                <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 9h4M19 7v4"/></svg>
+                <span>총 모집 {{ match.max_people }}명</span>
+              </div>
+            </div>
+            <div class="dog-info">
+              <div class="dog-icon" aria-hidden="true">🐶</div>
+              <div class="dog-copy">
+                <div class="dog-label">함께할 반려견</div>
+                <div class="dog-value">{{ match.dog_name }}{% if match.dog_size %} · {{ match.dog_size }}{% endif %}{% if match.dog_personality %} · {{ match.dog_personality }}{% endif %}</div>
+              </div>
+            </div>
+            {% if match.content %}
+              <div class="content">{{ match.content }}</div>
+            {% endif %}
+            <div class="footer">
+              <span class="author">{{ match.author }}</span>
+              <span class="date">{{ match.created_at }}</span>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
     {% else %}
-
-        <div class="empty">
-            아직 여행 메이트 모집글이 없습니다.
-        </div>
-
+      <div class="empty">
+        <div class="empty-icon">🐾</div>
+        <div class="empty-title">아직 모집글이 없어요</div>
+        <div class="empty-desc">여행을 함께할 친구를 찾고 있다면<br>첫 번째 메이트 모집글을 작성해 보세요.</div>
+        <a class="empty-link" href="/matches/write">첫 메이트 모집하기</a>
+      </div>
     {% endif %}
-
-
-    <a href="/community" class="back">
-        커뮤니티로 돌아가기
-    </a>
-
+  </section>
 </div>
-
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
 </body>
 </html>

@@ -1,228 +1,86 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>반려견 여행 커뮤니티</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-            color: #222;
-        }
-
-        .app {
-            max-width: 430px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding: 24px 20px 40px;
-        }
-
-        h1 {
-            margin: 0 0 8px;
-            font-size: 26px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
-        .write-btn {
-            display: block;
-            width: 100%;
-            border: none;
-            border-radius: 16px;
-            padding: 14px;
-            background: #4caf50;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        .post-card {
-            border: 1px solid #e5e5e5;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .post-title {
-            font-size: 17px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .post-info {
-            font-size: 13px;
-            color: #777;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 40px 10px;
-            color: #777;
-        }
-
-        .back-btn {
-            display: block;
-            text-align: center;
-            text-decoration: none;
-            margin-top: 24px;
-            color: #555;
-        }
-
-        .community-menu {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin: 20px 0 28px;
-        }
-
-        .community-menu-card {
-            display: block;
-            padding: 18px 12px;
-
-            background: white;
-            border: 1px solid #eeeeee;
-            border-radius: 16px;
-
-            text-decoration: none;
-            color: #222;
-
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-            transition: 0.2s;
-        }
-
-        .community-menu-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
-        }
-
-        .menu-icon {
-            font-size: 26px;
-            margin-bottom: 8px;
-        }
-
-        .menu-title {
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .menu-description {
-            font-size: 12px;
-            color: #777;
-            line-height: 1.5;
-        }
-
-
-        /* 모바일 */
-        @media (max-width: 600px) {
-
-            .community-menu {
-                grid-template-columns: 1fr;
-            }
-
-            .community-menu-card {
-                padding: 15px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>여행 커뮤니티 | PINKSOLE</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+  <style>
+    :root{--primary:#49B9BF;--dark:#ff9808;--soft:#E7F7F7;--ink:#202B33;--muted:#7C8A93;--line:#E8EEF0}
+    *{box-sizing:border-box}
+    body{margin:0;background:#F3F6F7;color:var(--ink);font-family:'Pretendard','Noto Sans KR',Arial,sans-serif}
+    .app{width:100%;max-width:460px;min-height:100vh;margin:0 auto;padding:22px 20px 125px;background:#fff}
+    .topbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:35px}
+    .back{color:var(--ink);text-decoration:none;font-size:23px;width:32px;line-height:32px}
+    .top-title{font-weight:800;font-size:16px}.brand{justify-self:end;color:var(--dark);font-size:11px;font-weight:900;letter-spacing:.04em}
+    .eyebrow{font-size:11px;font-weight:800;color:var(--dark);letter-spacing:.11em;margin:0 0 9px}
+    h1{font-size:26px;line-height:1.35;letter-spacing:-.05em;margin:0 0 9px} .subtitle{font-size:13px;line-height:1.7;color:var(--muted);margin:0}
+    .intro{margin-bottom:30px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 13px}
+    h2{font-size:17px;letter-spacing:-.035em;margin:0;font-weight:800}
+    .menu-list{display:grid;gap:12px;margin-bottom:32px}
+    .menu-card{display:flex;align-items:center;gap:14px;min-width:0;padding:17px 15px;border:1px solid var(--line);border-radius:19px;text-decoration:none;color:var(--ink);background:#fff;transition:border-color .18s,transform .18s}
+    .menu-card:hover{border-color:var(--primary);transform:translateY(-2px)}.menu-card:focus-visible,.more:focus-visible,.post:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+    .menu-icon{width:49px;height:49px;flex:0 0 49px;display:grid;place-items:center;border-radius:15px;background:var(--soft);color:var(--dark)}
+    .menu-icon.orange{background:#FFF2E2;color:#C98945}.menu-icon.pink{background:#F9EDF5;color:#BD78A4}
+    .menu-icon svg,.arrow svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .menu-text{flex:1;min-width:0}.menu-title{font-size:16px;font-weight:800;margin-bottom:5px}.menu-desc{color:var(--muted);font-size:12px;line-height:1.55}
+    .arrow{color:#A0AEB5}.arrow svg{width:19px;height:19px}
+    .more{font-size:12px;color:var(--dark);font-weight:800;text-decoration:none;white-space:nowrap}
+    .post-list{border-top:1px solid var(--line)}.post{display:block;padding:16px 2px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+    .post-title{font-size:14px;font-weight:700;line-height:1.5;overflow-wrap:anywhere;margin-bottom:7px}.post-meta{color:var(--muted);font-size:12px}
+    .empty{padding:29px 14px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+    @media(max-width:360px){.app{padding-left:16px;padding-right:16px}.menu-card{padding:14px 12px;gap:11px}}
+  </style>
 </head>
-
 <body>
-
-<div class="app">
-
-    <h1>🐶 여행 커뮤니티</h1>
-
-    <div class="subtitle">
-        반려견과 함께한 여행 정보와 이야기를 공유해보세요.
-    </div>
-
-    <div class="community-menu">
-
-        <a href="/community" class="community-menu-card">
-            <div class="menu-icon">💬</div>
-            <div class="menu-title">자유게시판</div>
-            <div class="menu-description">
-                여행 정보와 이야기를 자유롭게 공유해보세요.
-            </div>
+  <main class="app">
+    <header class="topbar">
+      <a href="/" class="back" aria-label="홈으로 돌아가기">←</a>
+      <span class="top-title">커뮤니티</span>
+      <span class="brand">PINKSOLE</span>
+    </header>
+    <section class="intro">
+      <p class="eyebrow">PINKSOLE COMMUNITY</p>
+      <h1>함께 나누는<br>제주 여행 이야기</h1>
+      <p class="subtitle">여행 경험을 나누고, 반려견과 함께할 새로운 친구를 만나보세요.</p>
+    </section>
+    <section aria-labelledby="category-heading">
+      <div class="section-head"><h2 id="category-heading">커뮤니티 둘러보기</h2></div>
+      <div class="menu-list">
+        <a class="menu-card" href="/community">
+          <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8.2 8.2 0 0 1-3.1-.6L4 20l1.6-4.5A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 11h8M8 14h5"/></svg></span>
+          <span class="menu-text"><span class="menu-title" style="display:block">자유게시판</span><span class="menu-desc">궁금한 점과 여행 이야기를 자유롭게 나눠요</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
         </a>
-
-        <a href="/reviews" class="community-menu-card">
-            <div class="menu-icon">📍</div>
-            <div class="menu-title">장소 후기</div>
-            <div class="menu-description">
-                반려견과 방문한 장소의 후기를 확인해보세요.
-            </div>
+        <a class="menu-card" href="/reviews">
+          <span class="menu-icon orange" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+          <span class="menu-text"><span class="menu-title" style="display:block">장소 후기</span><span class="menu-desc">반려견과 함께 방문한 장소의 후기를 확인해요</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
         </a>
-
-        <a href="/matches" class="community-menu-card">
-            <div class="menu-icon">🐾</div>
-            <div class="menu-title">여행 메이트</div>
-            <div class="menu-description">
-                반려견 성향에 맞는 여행 친구를 찾아보세요.
-            </div>
+        <a class="menu-card" href="/matches">
+          <span class="menu-icon pink" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="7" r="1.5"/><circle cx="16" cy="7" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><path d="M12 11c-2 0-3 3-5 5-1.4 1.5-.5 4 1.5 4 1.4 0 2.1-.9 3.5-.9s2.1.9 3.5.9c2 0 2.9-2.5 1.5-4-2-2-3-5-5-5Z"/></svg></span>
+          <span class="menu-text"><span class="menu-title" style="display:block">여행 메이트</span><span class="menu-desc">반려견과 함께할 여행 친구를 찾아요</span></span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
         </a>
-
-    </div>
-
-    <button
-        class="write-btn"
-        onclick="location.href='/community/write'">
-        글쓰기
-    </button>
-
-    {% if posts %}
-
-        {% for post in posts %}
-
-            <div
-                class="post-card"
-                onclick="location.href='/community/{{ post.id }}'">
-
-                <div class="post-title">
-                    {{ post.title }}
-                </div>
-
-                <div class="post-info">
-                    {{ post.author }}
-                    ·
-                    {{ post.created_at }}
-                </div>
-
-            </div>
-
-        {% endfor %}
-
-    {% else %}
-
-        <div class="empty">
-            아직 작성된 게시글이 없습니다.<br>
-            첫 번째 글을 작성해보세요!
-        </div>
-
-    {% endif %}
-
-    <a href="/" class="back-btn">
-        메인으로 돌아가기
-    </a>
-
-</div>
-
+      </div>
+    </section>
+    <section aria-labelledby="recent-heading">
+      <div class="section-head"><h2 id="recent-heading">최근 자유게시판 글</h2><a class="more" href="/community">전체 보기 →</a></div>
+      <div class="post-list">
+        {% if posts %}
+          {% for post in posts[:4] %}
+          <a class="post" href="/community/{{ post.id }}">
+            <div class="post-title">{{ post.title }}</div>
+            <div class="post-meta">{{ post.author }} · {{ post.created_at }}</div>
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty">아직 등록된 게시글이 없어요.<br>첫 여행 이야기를 남겨보세요.</div>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+  {% set active_page = 'home' %}
+  {% include 'components/bottomnav.html' %}
 </body>
 </html>

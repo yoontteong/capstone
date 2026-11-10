@@ -11,11 +11,41 @@ from . import community
 from .utils import save_image
 
 
+
 # =========================
-# 게시글 목록
+# 커뮤니티 메인
+# =========================
+@community.route("/community/home")
+def community_home():
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # 최근 게시글 4개 조회
+    cursor.execute("""
+        SELECT id, author, title, created_at
+        FROM posts
+        ORDER BY id DESC
+        LIMIT 4
+    """)
+
+    posts = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "community/community.html",
+        posts=posts
+    )
+
+
+# =========================
+# 자유게시판 목록
 # =========================
 @community.route("/community")
 def community_list():
+
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -31,9 +61,10 @@ def community_list():
     conn.close()
 
     return render_template(
-        "community/community.html",
+        "community/community_board.html",
         posts=posts
     )
+
 
 
 # =========================
