@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>활동 기록</title>
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 460px;
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 24px 18px 40px;
+            background: white;
+        }
+
+        h2 {
+            margin: 0 0 22px;
+            font-size: 24px;
+        }
+
+        .main-distance {
+            margin-bottom: 24px;
+        }
+
+        .distance-number {
+            font-size: 52px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .distance-unit {
+            margin-top: 8px;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .summary-card {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+
+        .summary-value {
+            margin-bottom: 5px;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .summary-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        #status {
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #f7f7f7;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #map {
+            width: 100%;
+            height: 420px;
+            margin-bottom: 18px;
+            border: 1px solid #ddd;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        #startBtn {
+            background: #4caf50;
+        }
+
+        #stopBtn {
+            background: #ef5350;
+        }
+
+        .test-btn {
+            background: #607d8b;
+        }
+
+        button:disabled {
+            background: #ccc !important;
+            cursor: default;
+        }
+
+        .back-btn {
+            display: block;
+            margin-top: 18px;
+            text-align: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+        }
+
+        #secure-check {
+            display: none;
+        }
+
+        .distance-marker {
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 20px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #saveBtn {
+            background: #1976d2;
+        }
+
+        .history-btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 14px;
+
+            border-radius: 14px;
+
+            background: #eeeeee;
+            color: #555;
+
+            text-align: center;
+            text-decoration: none;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
+    
+/* PinkSole UI redesign — presentation-only overrides. Existing JS and Flask hooks preserved. */
+:root{--ps-cyan:#04dbe8;--ps-cyan-soft:#ddfbfc;--ps-orange:#ff9808;--ps-peach:#ffe2ba;--ps-pink:#f67bd3;--ps-ink:#20252d;--ps-muted:#707780;--ps-border:#e6eaec;--ps-radius:22px}
+html{scroll-behavior:smooth}
+body{background:#eaf1f2!important;color:var(--ps-ink)!important;font-family: 'Pretendard','Noto Sans KR',Arial,sans-serif!important}
+.app{background:#fff!important;max-width:460px!important;min-height:100vh!important;padding-bottom:100px!important;box-shadow:0 0 36px rgba(0,36,48,.06)}
+.page{background:#eaf1f2!important}
+.login-container,.register-container{border:1px solid var(--ps-border);box-shadow:0 10px 28px rgba(0,34,42,.07)!important}
+h1,h2,h3{letter-spacing:-.045em;color:var(--ps-ink)}
+button,.button,.back-btn,.submit-btn,.create-btn,.add-btn,.history-btn,.nav-btn,.activity-button,.history-button{transition:transform .18s,filter .18s;touch-action:manipulation}
+button:not(:disabled):active,.button:active,.back-btn:active{transform:scale(.98)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ps-pink)!important;outline-offset:2px}
+input,select,textarea{max-width:100%;accent-color:var(--ps-orange)}
+input:not([type=checkbox]):not([type=radio]),select,textarea{border-radius:14px!important}
+#startBtn,.create-btn,.submit-btn,.add-btn,.activity-button,.history-btn{background:var(--ps-cyan)!important;color:#123136!important}
+#stopBtn{background:var(--ps-orange)!important;color:#272018!important}
+button:disabled{background:#c9cfd1!important;color:#6d7376!important}
+.login-button,.register-button{background:var(--ps-orange)!important;color:#211b12!important}
+.info-card,.score-box,.dog-card{background:var(--ps-peach)!important;border-radius:20px!important}
+.summary-card,.stat,.record-card,.checklist-card,.item,.detail-box{border-color:var(--ps-border)!important;border-radius:18px!important}
+.score,.progress{color:#008b95!important}
+#map{border:3px solid #e1f9fa!important;border-radius:20px!important}
+.ps-topbar{max-width:460px;margin:0 auto;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:16px 20px 5px;gap:12px}
+.ps-brand{font-size:16px;font-weight:900;text-decoration:none;color:#192a32;letter-spacing:-.04em}
+.ps-brand span{color:#00b6c4}
+.ps-topbar-link{font-size:12px;color:#6c7379;text-decoration:none}
+.ps-bottomnav{position:sticky;bottom:0;z-index:500;max-width:460px;margin:-66px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;background:#fff;border-top:1px solid #e7edf0;box-shadow:0 -7px 24px rgba(0,0,0,.035);min-height:66px;padding:8px 4px max(8px,env(safe-area-inset-bottom))}
+.ps-bottomnav a{text-decoration:none;color:#717980;text-align:center;font-size:11px;font-weight:700;display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0}
+.ps-bottomnav a .ps-navicon{font-size:20px;line-height:1.1}
+.ps-bottomnav a[aria-current=page]{color:#00aeb9}
+.ps-chip{background:var(--ps-cyan-soft);color:#006f79;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;display:inline-block}
+.ps-homehero{background:var(--ps-cyan);border-radius:25px;padding:25px 22px;margin:18px 0 20px;position:relative;overflow:hidden}
+.ps-homehero:after{content:none;position:absolute;right:15px;top:-15px;font-size:83px;color:rgba(255,255,255,.4)}
+.ps-homehero h1{font-size:30px;line-height:1.32;margin:17px 0 8px}
+.ps-homehero p{font-size:14px;line-height:1.6;margin:0;color:#24545b}
+.ps-hero-kicker{background:#fff;border-radius:99px;font-size:12px;font-weight:800;padding:7px 12px;display:inline-block}
+.ps-home-title{font-size:18px;font-weight:900;margin:23px 0 12px;letter-spacing:-.05em}
+.ps-homegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ps-homegrid .card{min-height:142px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;border:1.5px solid #e8edef;border-radius:21px;background:#fff;box-shadow:none;padding:17px;cursor:pointer}
+.ps-homegrid .card:first-child{background:var(--ps-orange);border-color:var(--ps-orange);grid-row:span 2;min-height:294px;justify-content:center}
+.ps-homegrid .card:first-child .icon{font-size:46px}
+.ps-homegrid .card:first-child .card-title{font-size:23px}
+.ps-homegrid .card .icon{width:45px;height:45px;background:rgba(255,255,255,.72);border-radius:13px;font-size:24px}
+.ps-homegrid .card-text{text-align:left}
+.ps-homegrid .card-title{font-size:16px;margin-bottom:6px}
+.ps-homegrid .card-description{font-size:12px;line-height:1.45;color:#536068}
+.ps-homegrid .card:hover{transform:translateY(-2px)}
+.ps-homegrid .card:nth-child(4){background:#eafcff}
+.ps-homegrid .card:nth-child(3){background:#fff2df}
+.ps-decoration{color:var(--ps-pink);font-size:15px;font-weight:900;letter-spacing:.04em}
+@media(max-width:480px){.app{padding-left:17px!important;padding-right:17px!important}.ps-homehero h1{font-size:27px}.ps-homegrid{gap:10px}.ps-homegrid .card{padding:14px}.ps-topbar{padding:13px 17px 5px}}
+
+</style>
+<style>
+/* PinkSole: 일관된 앱 로고 및 벡터 아이콘 */
+.ps-brand span{color:#f67bd3!important}
+.ps-brand{display:inline-flex;align-items:center;gap:3px}
+.ps-brand .ps-paw{width:18px;height:18px;fill:#f67bd3;flex:none;margin-left:3px}
+.ps-navicon{display:inline-flex;align-items:center;justify-content:center}
+.ps-navicon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ps-login-paw{display:flex;align-items:center;justify-content:center;gap:3px;margin:0 auto 12px}
+.ps-login-paw .ps-paw{width:31px;height:31px;fill:#f67bd3}
+.ps-login-paw .ps-paw:last-child{transform:translateY(10px) rotate(12deg);width:25px;height:25px}
+</style>
+
+<style>
+/* PinkSole: 3-tab navigation (home / create trip / mypage) */
+.ps-bottomnav{position:fixed!important;bottom:0!important;left:50%!important;transform:translateX(-50%)!important;max-width:460px!important;width:100%!important;height:82px!important;min-height:82px!important;margin:0!important;display:grid!important;grid-template-columns:1fr 1.35fr 1fr!important;align-items:center!important;padding:7px 12px max(8px,env(safe-area-inset-bottom))!important;overflow:visible!important;z-index:1000!important;background:#fff!important;border-top:1px solid #e6ecee!important;box-shadow:0 -5px 15px rgba(0,0,0,.035)!important}
+.ps-bottomnav a{min-width:0;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;text-decoration:none!important;color:#758187!important;font:700 11px/1.2 'Pretendard','Noto Sans KR',Arial,sans-serif!important;white-space:nowrap}
+.ps-bottomnav .ps-navicon{display:grid!important;place-items:center!important;width:23px;height:23px}
+.ps-bottomnav .ps-navicon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ps-bottomnav a[aria-current='page']:not(.ps-nav-create){color:#00aeb9!important}
+.ps-bottomnav a.ps-nav-create{color:#242b30!important;font-size:11px!important;gap:4px!important}
+.ps-bottomnav .ps-create-circle{display:grid;place-items:center;width:57px;height:57px;border-radius:50%;background:#04DBE8;color:#14343A;box-shadow:0 5px 12px rgba(4,219,232,.23);margin-top:-24px;border:4px solid #fff}
+.ps-bottomnav .ps-create-circle svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+.ps-bottomnav a.ps-nav-create[aria-current='page'] .ps-create-circle{box-shadow:0 0 0 2px #04DBE8,0 5px 12px rgba(4,219,232,.2)}
+body{padding-bottom:88px!important}
+</style>
+</head>
+
+<body>
+<div class="ps-topbar"><a href="/" class="ps-brand">pink<span>sole</span> <svg class="ps-paw" viewBox="0 0 48 48" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="16" rx="4.1" ry="6" transform="rotate(-25 10 16)"/><ellipse cx="20" cy="9" rx="4.2" ry="6" transform="rotate(-8 20 9)"/><ellipse cx="30" cy="10" rx="4.2" ry="6" transform="rotate(12 30 10)"/><ellipse cx="39" cy="19" rx="4" ry="5.7" transform="rotate(26 39 19)"/><path d="M24 21c-5.1 0-7.2 5.4-10.2 8.7-2.6 2.7-2.5 7.4.1 9.3 3.4 2.4 6.5-.3 10.1-.3s6.7 2.7 10.1.3c2.6-1.9 2.7-6.6.1-9.3C31.2 26.4 29.1 21 24 21Z"/></svg></a><a href="/" class="ps-topbar-link">홈으로 ↗</a></div>
+
+
+<div class="app">
+
+    <p id="secure-check"></p>
+
+    <h2> 반려견 활동 기록</h2>
+
+    <div>
+        <label for="dog-select">
+            활동할 반려견
+        </label>
+
+        <select id="dog-select">
+            {% for dog in dogs %}
+                <option value="{{ dog.id }}">
+                    {{ dog.name }}
+                    {% if dog.breed %}
+                        - {{ dog.breed }}
+                    {% endif %}
+                </option>
+            {% endfor %}
+        </select>
+    </div>  
+
+    <!-- 총 이동 거리 -->
+    <div class="main-distance">
+
+        <div class="distance-number">
+            <span id="distance">0.00</span>
+        </div>
+
+        <div class="distance-unit">
+            킬로미터
+        </div>
+
+    </div>
+
+
+    <!-- 활동 요약 -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div
+                class="summary-value"
+                id="time">
+                0분 0초
+            </div>
+
+            <div class="summary-label">
+                활동 시간
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div
+                class="summary-value"
+                id="speed">
+                0.0 km/h
+            </div>
+
+            <div class="summary-label">
+                평균 속도
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="status">
+        기록 대기 중
+    </div>
+
+
+    <!-- 지도 -->
+    <div id="map"></div>
+
+
+    <button
+        id="startBtn"
+        onclick="startTracking()">
+        기록 시작
+    </button>
+
+
+    <button
+        id="stopBtn"
+        onclick="stopTracking()"
+        disabled>
+        기록 종료
+    </button>
+
+    <button
+        id="saveBtn"
+        onclick="saveActivity()"
+        disabled>
+        활동 기록 저장
+    </button>
+
+    <a
+        href="/activity/history"
+        class="history-btn"
+    >
+         지난 활동 기록 보기
+    </a>
+
+
+    <button
+        class="test-btn"
+        onclick="testGPS()">
+        GPS 테스트
+    </button>
+
+
+    <a
+        href="/"
+        class="back-btn">
+        메인으로 돌아가기
+    </a>
+
+</div>
+
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
+<script>
+
+/* =========================================
+   보안 환경 확인
+========================================= */
+
+document.getElementById(
+    "secure-check"
+).innerText =
+    "보안 환경 여부: "
+    + window.isSecureContext;
+
+
+/* =========================================
+   활동 기록 변수
+========================================= */
+
+let timerInterval = null;
+let watchId = null;
+
+let isTracking = false;
+
+let positions = [];
+
+let totalDistance = 0;
+
+let startTime = null;
+
+
+/* =========================================
+   지도 변수
+========================================= */
+
+let map = null;
+
+let routeLine = null;
+
+let startMarker = null;
+
+let currentMarker = null;
+
+let endMarker = null;
+
+let distanceMarkers = [];
+
+let nextDistanceMarker = 1;
+
+let finalDurationSeconds = 0;
+
+
+/* =========================================
+   지도 초기화
+========================================= */
+
+function initMap() {
+
+    map = L.map(
+        "map",
+        {
+            zoomControl: true
+        }
+    ).setView(
+        [33.3617, 126.5292],
+        10
+    );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "OpenStreetMap"
+        }
+    ).addTo(map);
+
+}
+
+
+/* =========================================
+   지도 기록 초기화
+========================================= */
+
+function resetMap() {
+
+    if (!map) {
+        return;
+    }
+
+
+    if (routeLine) {
+
+        map.removeLayer(
+            routeLine
+        );
+
+        routeLine = null;
+
+    }
+
+
+    if (startMarker) {
+
+        map.removeLayer(
+            startMarker
+        );
+
+        startMarker = null;
+
+    }
+
+
+    if (currentMarker) {
+
+        map.removeLayer(
+            currentMarker
+        );
+
+        currentMarker = null;
+
+    }
+
+
+    if (endMarker) {
+
+        map.removeLayer(
+            endMarker
+        );
+
+        endMarker = null;
+
+    }
+
+
+    distanceMarkers.forEach(
+        marker => {
+
+            map.removeLayer(
+                marker
+            );
+
+        }
+    );
+
+
+    distanceMarkers = [];
+
+    nextDistanceMarker = 1;
+
+
+    map.setView(
+        [33.3617, 126.5292],
+        10
+    );
+
+}
+
+
+/* =========================================
+   활동 기록 시작
+========================================= */
+
+function startTracking() {
+
+    if (!navigator.geolocation) {
+
+        alert(
+            "GPS를 지원하지 않는 브라우저입니다."
+        );
+
+        return;
+    }
+
+
+    if (isTracking) {
+        return;
+    }
+
+
+    isTracking = true;
+
+    positions = [];
+
+    totalDistance = 0;
+
+    startTime = new Date();
+
+
+    resetMap();
+
+
+    document.getElementById(
+        "distance"
+    ).innerText =
+        "0.00";
+
+
+    document.getElementById(
+        "time"
+    ).innerText =
+        "0분 0초";
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+        "0.0 km/h";
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
+        "🟢 활동 기록 중...";
+
+
+    document.getElementById(
+        "startBtn"
+    ).disabled =
+        true;
+
+
+    document.getElementById(
+        "stopBtn"
+    ).disabled =
+        false;
+
+
+    /* 활동 시간 갱신 */
+
+    timerInterval =
+        setInterval(
+            updateTimer,
+            1000
+        );
+
+
+    /* GPS 위치 추적 */
+
+    watchId =
+        navigator.geolocation
+        .watchPosition(
+
+            updatePosition,
+
+            errorPosition,
+
+            {
+                enableHighAccuracy:
+                    true,
+
+                maximumAge:
+                    0,
+
+                timeout:
+                    15000
+            }
+
+        );
+
+
+    alert(
+        "활동 기록 시작"
+    );
+
+}
+
+
+/* =========================================
+   활동시간 + 평균속도 계산
+========================================= */
+
+function updateTimer() {
+
+    if (!isTracking) {
+        return;
+    }
+
+
+    const now =
+        new Date();
+
+
+    const totalSeconds =
+        Math.floor(
+            (now - startTime)
+            / 1000
+        );
+
+
+    const minutes =
+        Math.floor(
+            totalSeconds / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    document.getElementById(
+        "time"
+    ).innerText =
+        minutes
+        + "분 "
+        + seconds
+        + "초";
+
+
+    const hours =
+        totalSeconds / 3600;
+
+
+    let averageSpeed =
+        0;
+
+
+    if (
+        hours > 0
+    ) {
+
+        averageSpeed =
+            totalDistance
+            / hours;
+
+    }
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+        averageSpeed
+        .toFixed(1)
+        + " km/h";
+
+}
+
+
+/* =========================================
+   GPS 위치 업데이트
+========================================= */
+
+function updatePosition(
+    position
+) {
+
+    if (!isTracking) {
+        return;
+    }
+
+
+    const accuracy =
+        position.coords.accuracy;
+
+
+    const gpsSpeed =
+        position.coords.speed;
+
+
+    /*
+        정확도가 25m보다 나쁘면 무시
+
+        실내나 건물 주변에서
+        크게 튀는 좌표 방지
+    */
+
+    if (
+        accuracy > 25
+    ) {
+
+        console.log(
+            "GPS 정확도 낮음:",
+            accuracy
+        );
+
+        return;
+    }
+
+
+    const lat =
+        position.coords.latitude;
+
+
+    const lng =
+        position.coords.longitude;
+
+
+    const current = {
+
+        lat: lat,
+        lng: lng,
+        time: Date.now()
+
+    };
+
+
+    /* =====================================
+       첫 위치
+    ===================================== */
+
+    if (
+        positions.length === 0
+    ) {
+
+        positions.push(
+            current
+        );
+
+
+        /*
+            첫 GPS 위치로 확대
+        */
+
+        map.setView(
+            [lat, lng],
+            18
+        );
+
+
+        /*
+            출발점
+        */
+
+        startMarker =
+            L.circleMarker(
+                [lat, lng],
+                {
+                    radius: 8,
+
+                    color:
+                        "#2e7d32",
+
+                    fillColor:
+                        "#4caf50",
+
+                    fillOpacity:
+                        1,
+
+                    weight:
+                        3
+                }
+            )
+            .addTo(map)
+            .bindTooltip(
+                "출발"
+            );
+
+
+        /*
+            현재 위치
+        */
+
+        currentMarker =
+            L.circleMarker(
+                [lat, lng],
+                {
+                    radius: 7,
+
+                    color:
+                        "#1565c0",
+
+                    fillColor:
+                        "#2196f3",
+
+                    fillOpacity:
+                        1,
+
+                    weight:
+                        3
+                }
+            )
+            .addTo(map);
+
+
+        return;
+
+    }
+
+
+    /* =====================================
+       이전 위치와 현재 위치 거리 계산
+    ===================================== */
+
+    const prev =
+        positions[
+            positions.length - 1
+        ];
+
+
+    const distance =
+        calculateDistance(
+
+            prev.lat,
+            prev.lng,
+
+            current.lat,
+            current.lng
+
+        );
+
+
+    /*
+        3m 미만 움직임은
+        GPS 흔들림으로 판단
+    */
+
+    if (
+        distance < 0.003
+    ) {
+
+        return;
+    }
+
+
+    /*
+        한번에 30m 이상 이동했다면
+        GPS 순간 튐으로 판단
+
+        걷기 기록에 맞춘 기준
+    */
+
+    if (
+        distance >= 0.03
+    ) {
+
+        console.log(
+            "GPS 순간 튐 제거:",
+            distance,
+            "km"
+        );
+
+        return;
+    }
+
+
+    /*
+        스마트폰 GPS가 속도값을 제공하고
+        시속 15km 이상이라면
+        걷기/산책 기록으로 비정상 판단
+    */
+
+    if (
+        gpsSpeed !== null
+        && gpsSpeed >= 0
+        && gpsSpeed * 3.6 > 15
+    ) {
+
+        console.log(
+            "비정상 GPS 속도 제거:",
+            gpsSpeed * 3.6,
+            "km/h"
+        );
+
+        return;
+    }
+
+
+    /*
+        이전 정상 GPS와 시간 차이 계산
+    */
+
+    const elapsedSeconds =
+        (
+            current.time
+            - prev.time
+        )
+        / 1000;
+
+
+    /*
+        시간 기준으로 계산한 구간 속도
+
+        예:
+        GPS 자체 speed 값이 없더라도
+        실제 좌표 이동속도로 추가 검증
+    */
+
+    if (
+        elapsedSeconds > 0
+    ) {
+
+        const calculatedSpeed =
+            distance
+            /
+            (
+                elapsedSeconds
+                / 3600
+            );
+
+
+        /*
+            좌표상 계산된 속도가
+            15km/h 이상이면 무시
+        */
+
+        if (
+            calculatedSpeed > 15
+        ) {
+
+            console.log(
+                "계산 속도 이상:",
+                calculatedSpeed
+            );
+
+            return;
+        }
+
+    }
+
+
+    /* =====================================
+       정상 GPS 좌표로 인정
+    ===================================== */
+
+    totalDistance +=
+        distance;
+
+
+    positions.push(
+        current
+    );
+
+
+    document.getElementById(
+        "distance"
+    ).innerText =
+        totalDistance
+        .toFixed(2);
+
+
+    updateRoute();
+
+
+    updateCurrentMarker(
+        lat,
+        lng
+    );
+
+
+    addDistanceMarkerIfNeeded(
+        lat,
+        lng
+    );
+
+
+    /*
+        현재 위치를 따라감
+    */
+
+    map.panTo(
+        [lat, lng]
+    );
+
+}
+
+
+/* =========================================
+   이동 경로 그리기
+========================================= */
+
+function updateRoute() {
+
+    if (
+        positions.length < 2
+    ) {
+
+        return;
+    }
+
+
+    const routePoints =
+        positions.map(
+            pos => [
+
+                pos.lat,
+                pos.lng
+
+            ]
+        );
+
+
+    if (
+        routeLine
+    ) {
+
+        map.removeLayer(
+            routeLine
+        );
+
+    }
+
+
+    routeLine =
+        L.polyline(
+            routePoints,
+            {
+                color:
+                    "#4285f4",
+
+                weight:
+                    6,
+
+                opacity:
+                    0.9,
+
+                lineJoin:
+                    "round",
+
+                lineCap:
+                    "round"
+            }
+        )
+        .addTo(map);
+
+}
+
+
+/* =========================================
+   현재 위치 마커 이동
+========================================= */
+
+function updateCurrentMarker(
+    lat,
+    lng
+) {
+
+    if (
+        !currentMarker
+    ) {
+
+        return;
+    }
+
+
+    currentMarker
+        .setLatLng(
+            [lat, lng]
+        );
+
+}
+
+
+/* =========================================
+   거리 마커
+
+   1km마다 생성
+========================================= */
+
+function addDistanceMarkerIfNeeded(
+    lat,
+    lng
+) {
+
+    /*
+        한 번에 여러 km 기준점을
+        넘어갈 가능성까지 처리
+    */
+
+    while (
+        totalDistance
+        >= nextDistanceMarker
+    ) {
+
+        const distanceIcon =
+            L.divIcon({
+
+                className:
+                    "distance-marker",
+
+                html:
+                    nextDistanceMarker
+                    + " km",
+
+                iconSize:
+                    null
+
+            });
+
+
+        const marker =
+            L.marker(
+                [lat, lng],
+                {
+                    icon:
+                        distanceIcon
+                }
+            )
+            .addTo(map);
+
+
+        distanceMarkers.push(
+            marker
+        );
+
+
+        nextDistanceMarker +=
+            1;
+
+    }
+
+}
+
+
+/* =========================================
+   활동 기록 종료
+========================================= */
+
+function stopTracking() {
+
+    if (!isTracking) {
+        return;
+    }
+
+    // 최종 활동 시간 저장
+    finalDurationSeconds =
+        Math.floor(
+            (new Date() - startTime) / 1000
+        );
+
+    isTracking = false;
+
+
+    /*
+        GPS 추적 종료
+    */
+
+    if (
+        watchId !== null
+    ) {
+
+        navigator.geolocation
+            .clearWatch(
+                watchId
+            );
+
+        watchId =
+            null;
+
+    }
+
+
+    /*
+        타이머 종료
+    */
+
+    if (
+        timerInterval !== null
+    ) {
+
+        clearInterval(
+            timerInterval
+        );
+
+        timerInterval =
+            null;
+
+    }
+
+
+    /*
+        현재 위치 파란 점 제거
+    */
+
+    if (
+        currentMarker
+    ) {
+
+        map.removeLayer(
+            currentMarker
+        );
+
+        currentMarker =
+            null;
+
+    }
+
+
+    /*
+        종료점 생성
+    */
+
+    if (
+        positions.length > 0
+    ) {
+
+        const last =
+            positions[
+                positions.length - 1
+            ];
+
+
+        endMarker =
+            L.circleMarker(
+                [
+                    last.lat,
+                    last.lng
+                ],
+                {
+                    radius:
+                        8,
+
+                    color:
+                        "#b71c1c",
+
+                    fillColor:
+                        "#f44336",
+
+                    fillOpacity:
+                        1,
+
+                    weight:
+                        3
+                }
+            )
+            .addTo(map)
+            .bindTooltip(
+                "종료"
+            );
+
+    }
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
+        "🔴 활동 기록 종료";
+
+
+    document.getElementById(
+        "startBtn"
+    ).disabled =
+        false;
+
+
+    document.getElementById(
+        "stopBtn"
+    ).disabled =
+        true;
+    
+    document.getElementById(
+        "saveBtn"
+    ).disabled =
+        positions.length === 0;    
+
+
+    /*
+        마지막 평균 속도도 한 번 계산
+    */
+
+    updateFinalSpeed();
+
+
+    /*
+        전체 경로가 보이도록
+        지도 확대/축소
+    */
+
+    if (
+        routeLine
+        && positions.length > 1
+    ) {
+
+        map.fitBounds(
+            routeLine.getBounds(),
+            {
+                padding:
+                    [30, 30]
+            }
+        );
+
+    }
+
+
+    alert(
+        "활동 기록 종료"
+    );
+
+}
+
+
+/* =========================================
+   활동 종료 시 평균 속도
+========================================= */
+
+function updateFinalSpeed() {
+
+    if (
+        !startTime
+    ) {
+
+        return;
+    }
+
+
+    const now =
+        new Date();
+
+
+    const totalSeconds =
+        Math.floor(
+            (now - startTime)
+            / 1000
+        );
+
+
+    const hours =
+        totalSeconds / 3600;
+
+
+    let averageSpeed =
+        0;
+
+
+    if (
+        hours > 0
+    ) {
+
+        averageSpeed =
+            totalDistance
+            / hours;
+
+    }
+
+
+    document.getElementById(
+        "speed"
+    ).innerText =
+        averageSpeed
+        .toFixed(1)
+        + " km/h";
+
+}
+
+
+/* =========================================
+   GPS 에러
+========================================= */
+
+function errorPosition(
+    error
+) {
+
+    console.log(
+        error
+    );
+
+
+    switch(
+        error.code
+    ) {
+
+        case error.PERMISSION_DENIED:
+
+            alert(
+                "위치 권한이 거부되었습니다."
+            );
+
+            break;
+
+
+        case error.POSITION_UNAVAILABLE:
+
+            alert(
+                "위치 정보를 사용할 수 없습니다."
+            );
+
+            break;
+
+
+        case error.TIMEOUT:
+
+            alert(
+                "위치 요청 시간이 초과되었습니다."
+            );
+
+            break;
+
+
+        default:
+
+            alert(
+                "GPS 오류"
+            );
+
+    }
+
+}
+
+
+/* =========================================
+   두 GPS 좌표 사이 거리 계산
+
+   Haversine 공식
+========================================= */
+
+function calculateDistance(
+    lat1,
+    lon1,
+    lat2,
+    lon2
+) {
+
+    const R =
+        6371;
+
+
+    const dLat =
+        (
+            lat2 - lat1
+        )
+        * Math.PI
+        / 180;
+
+
+    const dLon =
+        (
+            lon2 - lon1
+        )
+        * Math.PI
+        / 180;
+
+
+    const a =
+
+        Math.sin(
+            dLat / 2
+        )
+        *
+        Math.sin(
+            dLat / 2
+        )
+
+        +
+
+        Math.cos(
+            lat1
+            * Math.PI
+            / 180
+        )
+
+        *
+
+        Math.cos(
+            lat2
+            * Math.PI
+            / 180
+        )
+
+        *
+
+        Math.sin(
+            dLon / 2
+        )
+
+        *
+
+        Math.sin(
+            dLon / 2
+        );
+
+
+    const c =
+
+        2
+        *
+        Math.atan2(
+
+            Math.sqrt(a),
+
+            Math.sqrt(
+                1 - a
+            )
+
+        );
+
+
+    return R * c;
+
+}
+
+
+/* =========================================
+   GPS 테스트
+========================================= */
+
+function testGPS() {
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        alert(
+            "GPS를 지원하지 않는 브라우저입니다."
+        );
+
+        return;
+    }
+
+
+    navigator.geolocation
+        .getCurrentPosition(
+
+            function(
+                position
+            ) {
+
+                const lat =
+                    position
+                    .coords
+                    .latitude;
+
+
+                const lng =
+                    position
+                    .coords
+                    .longitude;
+
+
+                const accuracy =
+                    position
+                    .coords
+                    .accuracy;
+
+
+                map.setView(
+                    [lat, lng],
+                    18
+                );
+
+
+                alert(
+                    "GPS 성공"
+                    + "\n위도: "
+                    + lat
+                    + "\n경도: "
+                    + lng
+                    + "\n정확도: 약 "
+                    + Math.round(
+                        accuracy
+                    )
+                    + "m"
+                );
+
+            },
+
+
+            function(
+                error
+            ) {
+
+                console.log(
+                    error
+                );
+
+
+                alert(
+                    "GPS 에러 코드: "
+                    + error.code
+                );
+
+            },
+
+
+            {
+                enableHighAccuracy:
+                    true,
+
+                timeout:
+                    15000,
+
+                maximumAge:
+                    0
+            }
+
+        );
+
+}
+
+
+/* =========================================
+   페이지 로드
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        initMap();
+
+    }
+);
+
+function saveActivity() {
+
+    if (positions.length === 0) {
+
+        alert(
+            "저장할 GPS 기록이 없습니다."
+        );
+
+        return;
+    }
+
+
+    if (!startTime) {
+
+        alert(
+            "활동 기록 정보가 없습니다."
+        );
+
+        return;
+    }
+
+
+    const hours =
+        finalDurationSeconds
+        / 3600;
+
+
+    let averageSpeed = 0;
+
+
+    if (hours > 0) {
+
+        averageSpeed =
+            totalDistance
+            / hours;
+
+    }
+
+    const dogId =
+        document.getElementById(
+            "dog-select"
+        ).value;
+
+
+    const data = {
+
+        // 현재는 테스트용 보리 ID
+        dog_id: dogId,
+
+        distance_km:
+            Number(
+                totalDistance.toFixed(3)
+            ),
+
+        duration_seconds:
+            finalDurationSeconds,
+
+        average_speed:
+            Number(
+                averageSpeed.toFixed(2)
+            ),
+
+        positions:
+            positions
+
+    };
+
+
+    fetch(
+        "/activity/save",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(data)
+        }
+    )
+
+    .then(
+        response =>
+            response.json()
+    )
+
+    .then(
+        data => {
+
+            if (data.success) {
+
+                alert(
+                    "활동 기록이 저장되었습니다!"
+                );
+
+                window.location.href =
+                    "/activity/history";
+
+            } else {
+
+                alert(
+                    data.message
+                    || "저장에 실패했습니다."
+                );
+
+            }
+        }
+    )
+
+    .catch(
+        error => {
+
+            console.error(error);
+
+            alert(
+                "활동 기록 저장 중 오류가 발생했습니다."
+            );
+
+        }
+    );
+}
+
+</script>
+
+<nav class="ps-bottomnav" aria-label="하단 메뉴"><a href="/"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z"/></svg></span><span>홈</span></a><a class="ps-nav-create" href="/trip/create" aria-label="여행 일정 생성"><span class="ps-create-circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span>여행 일정 생성</span></a><a href="/mypage"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-7 8-7s8 2 8 7"/></svg></span><span>마이페이지</span></a></nav>
+</body>
+</html>

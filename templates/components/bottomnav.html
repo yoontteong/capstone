@@ -1,0 +1,52 @@
+
+<!-- PINKSOLE 공통 하단 내비게이션 -->
+<nav class="ps-bottomnav" aria-label="하단 메뉴">
+
+    <!-- 홈 -->
+    <a href="/"
+       {% if active_page == 'home' %}
+       aria-current="page"
+       {% endif %}>
+
+        <span class="ps-navicon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z"/>
+            </svg>
+        </span>
+
+        <span>홈</span>
+    </a>
+
+    <!-- 여행 일정 생성 -->
+    <a href="/trip/create"
+       class="ps-nav-create"
+       {% if active_page == 'create' %}
+       aria-current="page"
+       {% endif %}>
+
+        <span class="ps-create-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+        </span>
+
+        <span>여행 일정 생성</span>
+    </a>
+
+    <!-- 마이페이지 -->
+    <a href="/mypage"
+       {% if active_page == 'mypage' %}
+       aria-current="page"
+       {% endif %}>
+
+        <span class="ps-navicon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-5 3-7 8-7s8 2 8 7"/>
+            </svg>
+        </span>
+
+        <span>마이페이지</span>
+    </a>
+
+</nav>

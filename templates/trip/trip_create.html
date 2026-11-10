@@ -1,129 +1,393 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>새 여행 만들기</title>
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/bottomnav.css') }}">      
+
+    <title>새 여행 만들기 | PINKSOLE</title>
 
     <style>
+        :root {
+            --primary: #49B9BF;
+            --primary-dark: #278D95;
+            --primary-light: #E7F7F7;
+            --ink: #202B33;
+            --muted: #7C8A93;
+            --border: #E8EEF0;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-            color: #222;
+            background: #F3F6F7;
+            color: var(--ink);
+            font-family: 'Pretendard', 'Noto Sans KR',
+                         Arial, sans-serif;
         }
 
         .app {
-            max-width: 500px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 460px;
             min-height: 100vh;
-            background: white;
-            padding: 30px 20px 40px;
+            margin: 0 auto;
+            padding: 24px 20px 120px;
+            background: #FFFFFF;
         }
 
+        /* 상단 */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .back-btn svg {
+            width: 23px;
+            height: 23px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .top-title {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .brand {
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .04em;
+        }
+
+        /* 제목 */
         .header {
-            margin-bottom: 26px;
+            margin-bottom: 30px;
         }
 
-        .header h2 {
-            margin: 0 0 8px;
-            font-size: 24px;
+        .eyebrow {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .header h1 {
+            margin: 0 0 12px;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -.05em;
         }
 
         .description {
-            color: #777;
+            color: var(--muted);
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.7;
         }
 
-        .dog-section {
-            margin-bottom: 24px;
+        /* 단계 표시 */
+        .step-label {
+            margin-bottom: 13px;
+            color: var(--primary-dark);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .08em;
         }
 
         .section-title {
-            margin-bottom: 9px;
-            font-size: 15px;
-            font-weight: bold;
+            margin-bottom: 13px;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.04em;
+        }
+
+        /* 반려견 선택 */
+        .dog-section {
+            margin-bottom: 34px;
+        }
+
+        .dog-select-box {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 15px;
+            background: #F8FBFB;
+            border: 1px solid var(--border);
+            border-radius: 19px;
+        }
+
+        .dog-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: var(--primary-light);
+            font-size: 24px;
+        }
+
+        .dog-select-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dog-select-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
         }
 
         select {
             width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 14px;
-            background: white;
+            padding: 7px 25px 7px 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--ink);
             font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* 일정 생성 방식 */
+        .method-section {
+            margin-bottom: 24px;
         }
 
         .method-card {
-            display: block;
-            padding: 20px;
-            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
 
-            border: 1px solid #e7e7e7;
-            border-radius: 18px;
+            padding: 20px 17px;
+            margin-bottom: 13px;
 
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: #FFFFFF;
+            color: var(--ink);
             text-decoration: none;
-            color: #222;
 
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: 0.2s;
+            box-shadow: 0 5px 18px rgba(20, 50, 60, .045);
+            transition: transform .2s, border-color .2s,
+                        box-shadow .2s;
         }
 
         .method-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
+            box-shadow: 0 8px 22px rgba(20, 50, 60, .09);
+        }
+
+        .method-card:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .method-icon {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 17px;
+        }
+
+        .method-icon svg {
+            width: 27px;
+            height: 27px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .ai-icon {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .manual-icon {
+            background: #FFF2E2;
+            color: #D88D3C;
+        }
+
+        .method-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .method-title {
             margin-bottom: 7px;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -.03em;
         }
 
         .method-description {
-            color: #777;
-            font-size: 13px;
-            line-height: 1.5;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
         }
 
-        .notice {
-            padding: 18px;
+        .method-arrow {
+            flex-shrink: 0;
+            color: #A1AFB5;
+        }
+
+        .method-arrow svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* 안내 */
+        .tip-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 15px;
+            margin-top: 22px;
             border-radius: 16px;
-            background: #f3f8f3;
-            color: #555;
-            font-size: 14px;
-            line-height: 1.6;
+            background: #F2F9F9;
+            color: #60757D;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .tip-icon {
+            flex-shrink: 0;
+            color: var(--primary-dark);
+            font-size: 17px;
+        }
+
+        /* 반려견 미등록 */
+        .notice {
+            padding: 30px 20px;
+            border: 1px dashed #CADFE0;
+            border-radius: 20px;
+            background: #F8FCFC;
+            text-align: center;
+        }
+
+        .notice-icon {
+            margin-bottom: 12px;
+            font-size: 38px;
+        }
+
+        .notice-title {
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .notice-text {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
         }
 
         .register-btn {
             display: block;
             width: 100%;
-            margin-top: 14px;
-            padding: 14px;
-
-            border-radius: 14px;
-            background: #4caf50;
+            margin-top: 17px;
+            padding: 16px;
+            border-radius: 15px;
+            background: var(--primary);
             color: white;
-
             text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back {
-            display: block;
-            margin-top: 24px;
-            text-align: center;
-            color: #666;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 800;
+        }
+
+        .register-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        
+
+        .create-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 59px;
+            height: 59px;
+            margin-top: -28px;
+            border: 4px solid white;
+            border-radius: 50%;
+            background: #11C5D9;
+            color: #14373A;
+            box-shadow: 0 6px 16px
+                        rgba(73, 185, 191, .25);
+        }
+
+        .create-circle svg {
+            width: 27px;
+            height: 27px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        
+
+        @media (max-width: 360px) {
+            .app {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .method-card {
+                padding: 16px 12px;
+                gap: 10px;
+            }
+
+            .method-icon {
+                width: 46px;
+                height: 46px;
+            }
         }
     </style>
 </head>
@@ -132,112 +396,190 @@
 
 <div class="app">
 
-    <div class="header">
-        <h2>✈️ 새 여행 만들기</h2>
+    <!-- 상단 헤더 -->
+    <header class="topbar">
+        <a href="/trips"
+           class="back-btn"
+           aria-label="내 여행으로 돌아가기">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"></path>
+                <path d="M12 19L5 12L12 5"></path>
+            </svg>
+        </a>
 
-        <div class="description">
-            함께 여행할 반려견을 선택하고
-            원하는 일정 생성 방식을 선택해주세요.
-        </div>
-    </div>
+        <div class="top-title">새 여행 만들기</div>
+
+        <div class="brand">PINKSOLE</div>
+    </header>
+
+    <!-- 페이지 소개 -->
+    <section class="header">
+        <div class="eyebrow">CREATE YOUR TRIP</div>
+
+        <h1>반려견과 함께,<br>새로운 제주 여행</h1>
+
+        <p class="description">
+            함께 여행할 반려견을 선택하고<br>
+            원하는 일정 생성 방식을 선택해 주세요.
+        </p>
+    </section>
 
 
     {% if dogs %}
 
-        <div class="dog-section">
+        <!-- 반려견 선택 -->
+        <section class="dog-section">
+
+            <div class="step-label">STEP 01</div>
 
             <div class="section-title">
                 함께 여행할 반려견
             </div>
 
-            <select id="dogSelect">
+            <div class="dog-select-box">
 
-                {% for dog in dogs %}
+                <div class="dog-icon">🐶</div>
 
-                    <option value="{{ dog.id }}">
-                        {{ dog.name }}
+                <div class="dog-select-content">
 
-                        {% if dog.breed %}
-                            · {{ dog.breed }}
-                        {% endif %}
+                    <label for="dogSelect"
+                           class="dog-select-label">
+                        나의 반려견
+                    </label>
 
-                        · {{ dog.size_category }}
+                    <select id="dogSelect">
+                        {% for dog in dogs %}
+                            <option value="{{ dog.id }}">
+                                {{ dog.name }}
 
-                        {% if dog.personality %}
-                            · {{ dog.personality }}
-                        {% endif %}
-                    </option>
+                                {% if dog.breed %}
+                                    · {{ dog.breed }}
+                                {% endif %}
 
-                {% endfor %}
+                                · {{ dog.size_category }}
 
-            </select>
+                                {% if dog.personality %}
+                                    · {{ dog.personality }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
+            </div>
+        </section>
+
+        <!-- 생성 방식 선택 -->
+        <section class="method-section">
+
+            <div class="step-label">STEP 02</div>
+
+            <div class="section-title">
+                어떻게 여행을 만들까요?
+            </div>
+
+            <!-- AI 일정 생성 -->
+            <a href="#"
+               class="method-card"
+               onclick="goToAI(); return false;">
+
+                <div class="method-icon ai-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3L13.8 9.2L20 11L13.8 12.8L12 19L10.2 12.8L4 11L10.2 9.2Z"></path>
+                        <path d="M19 17L19.7 19.3L22 20L19.7 20.7L19 23L18.3 20.7L16 20L18.3 19.3Z"></path>
+                    </svg>
+                </div>
+
+                <div class="method-content">
+                    <div class="method-title">
+                        AI로 일정 만들기
+                    </div>
+
+                    <div class="method-description">
+                        여행 조건과 반려견 정보를 바탕으로<br>
+                        제주 여행 일정과 동선을 자동 추천해요.
+                    </div>
+                </div>
+
+                <div class="method-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 5L16 12L9 19"></path>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- 직접 일정 생성 -->
+            <a href="#"
+               class="method-card"
+               onclick="goToManual(); return false;">
+
+                <div class="method-icon manual-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 20L9 19L20 8L16 4L5 15L4 20Z"></path>
+                        <path d="M14 6L18 10"></path>
+                    </svg>
+                </div>
+
+                <div class="method-content">
+                    <div class="method-title">
+                        직접 일정 만들기
+                    </div>
+
+                    <div class="method-description">
+                        날짜와 장소, 시간을 직접 선택해<br>
+                        나만의 제주 여행 일정을 구성해요.
+                    </div>
+                </div>
+
+                <div class="method-arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 5L16 12L9 19"></path>
+                    </svg>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- 안내 -->
+        <div class="tip-box">
+            <div class="tip-icon">✦</div>
+
+            <div>
+                AI 일정은 여행 조건에 따라 자동 추천되고,
+                직접 일정은 원하는 장소와 시간을 자유롭게
+                선택할 수 있어요.
+            </div>
         </div>
-
-
-        <a
-            href="#"
-            class="method-card"
-            onclick="goToAI(); return false;"
-        >
-            <div class="method-title">
-                ✨ AI로 일정 만들기
-            </div>
-
-            <div class="method-description">
-                여행 조건과 반려견 정보를 바탕으로
-                AI가 제주 여행 일정과 동선을 자동으로 추천합니다.
-            </div>
-        </a>
-
-
-        <a
-            href="#"
-            class="method-card"
-            onclick="goToManual(); return false;"
-        >
-            <div class="method-title">
-                ✏️ 직접 일정 만들기
-            </div>
-
-            <div class="method-description">
-                원하는 날짜와 장소, 시간을 직접 선택하여
-                제주 여행 일정을 구성합니다.
-            </div>
-        </a>
-
 
     {% else %}
 
+        <!-- 반려견 미등록 -->
         <div class="notice">
-            등록된 반려견이 없습니다.<br>
-            여행을 만들기 전에 반려견을 먼저 등록해주세요.
+            <div class="notice-icon">🐾</div>
+
+            <div class="notice-title">
+                등록된 반려견이 없어요
+            </div>
+
+            <div class="notice-text">
+                여행을 만들기 전에<br>
+                함께 여행할 반려견을 먼저 등록해 주세요.
+            </div>
+
+            <a href="/dog/register"
+               class="register-btn">
+                반려견 등록하기
+            </a>
         </div>
 
-        <a
-            href="/dog/register"
-            class="register-btn"
-        >
-            반려견 등록하기
-        </a>
-
     {% endif %}
-
-
-    <a
-        href="/trips"
-        class="back"
-    >
-        내 여행으로 돌아가기
-    </a>
 
 </div>
 
 
+
 {% if dogs %}
-
 <script>
-
     function getDogId() {
         return document.getElementById("dogSelect").value;
     }
@@ -245,20 +587,31 @@
     function goToAI() {
         const dogId = getDogId();
 
+        if (!dogId) {
+            alert("함께 여행할 반려견을 선택해 주세요.");
+            return;
+        }
+
         location.href =
-            "/ai-schedule?dog_id=" + dogId;
+            "/ai-schedule?dog_id=" + encodeURIComponent(dogId);
     }
 
     function goToManual() {
         const dogId = getDogId();
 
+        if (!dogId) {
+            alert("함께 여행할 반려견을 선택해 주세요.");
+            return;
+        }
+
         location.href =
-            "/trip/manual?dog_id=" + dogId;
+            "/trip/manual?dog_id=" + encodeURIComponent(dogId);
     }
-
 </script>
-
 {% endif %}
 
+
+{% set active_page = 'create' %}
+{% include 'components/bottomnav.html' %}
 </body>
 </html>

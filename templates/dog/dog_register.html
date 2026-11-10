@@ -1,527 +1,119 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>반려견 등록</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-        }
-
-        .app {
-            max-width: 500px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding: 30px 20px 40px;
-        }
-
-        h2 {
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-
-        .description {
-            color: #777;
-            font-size: 13px;
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin: 18px 0 8px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 14px;
-        }
-
-        /* ==============================
-           AI 견종 분석 영역
-           ============================== */
-
-        .ai-section {
-            margin-top: 20px;
-            padding: 16px;
-            background: #f8faf8;
-            border: 1px solid #e1e8e1;
-            border-radius: 14px;
-        }
-
-        .ai-section > label {
-            margin-top: 0;
-        }
-
-        .ai-description {
-            margin: 0 0 15px;
-            color: #777;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        /* 실제 파일 입력은 숨김 */
-        .hidden-file-input {
-            display: none;
-        }
-
-        /* 촬영 / 갤러리 버튼 */
-        .image-button-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .image-select-btn {
-            flex: 1;
-            padding: 12px 8px;
-            border: 1px solid #d7ddd7;
-            border-radius: 12px;
-            background: white;
-            color: #333;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .image-select-btn:hover {
-            background: #f0f7f0;
-            border-color: #4caf50;
-        }
-
-        /* ==============================
-           사진 미리보기
-           ============================== */
-
-        .preview-container {
-            display: none;
-            margin-top: 15px;
-        }
-
-        .preview-title {
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .preview-box {
-            width: 100%;
-            overflow: hidden;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            background: #eee;
-        }
-
-        #imagePreview {
-            display: block;
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            background: #f1f1f1;
-        }
-
-        .selected-image-text {
-            margin-top: 7px;
-            color: #777;
-            font-size: 11px;
-            word-break: break-all;
-        }
-
-        /* ==============================
-           AI 분석 버튼
-           ============================== */
-
-        .analyze-btn {
-            width: 100%;
-            margin-top: 14px;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            background: #607d8b;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .analyze-btn:hover {
-            background: #546e7a;
-        }
-
-        .analyze-btn:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-        #analysisStatus {
-            margin: 12px 0 0;
-            color: #666;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        #predictionResults {
-            margin-top: 10px;
-        }
-
-        .prediction-btn {
-            width: 100%;
-            margin-top: 7px;
-            padding: 11px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background: white;
-            color: #333;
-            text-align: left;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .prediction-btn:hover {
-            background: #f0f7f0;
-            border-color: #4caf50;
-        }
-
-        /* 선택된 예측 결과 */
-        .prediction-btn.selected {
-            background: #edf7ed;
-            border-color: #4caf50;
-            font-weight: bold;
-        }
-
-        /* ==============================
-           등록 버튼
-           ============================== */
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 25px;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            background: #4caf50;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background: #43a047;
-        }
-
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 18px;
-            color: #666;
-            text-decoration: none;
-        }
-
-        @media (max-width: 380px) {
-            .image-button-group {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>반려견 등록 | PINKSOLE</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+<style>
+:root{--primary:#49B9BF;--primary-dark:#278D95;--primary-light:#E7F7F7;--ink:#202B33;--muted:#7C8A93;--border:#E8EEF0}
+*{box-sizing:border-box}
+body{margin:0;background:#F3F6F7;color:var(--ink);font-family:Pretendard,'Noto Sans KR',Arial,sans-serif}
+.app{max-width:460px;min-height:100vh;margin:auto;background:white;padding:24px 20px 125px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
+.back-btn{color:var(--ink);text-decoration:none;font-size:25px;width:38px}
+.top-title{font-size:16px;font-weight:800}
+.brand{font-size:11px;font-weight:900;color:var(--primary-dark);letter-spacing:.04em}
+.eyebrow{font-size:11px;font-weight:900;color:var(--primary-dark);letter-spacing:.12em;margin-bottom:10px}
+h1{font-size:27px;letter-spacing:-.05em;margin:0 0 12px;line-height:1.3}
+.description{font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 30px}
+.form-section{margin-bottom:28px}
+.section-title{font-size:17px;font-weight:800;margin:0 0 15px}
+label{display:block;font-size:13px;font-weight:800;margin:16px 0 9px}
+input:not([type=file]),select{width:100%;min-width:0;padding:15px;border:1.5px solid var(--border);border-radius:15px;background:white;color:var(--ink);font:inherit;font-size:14px}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+input:not([type=file]):focus,select:focus{border-color:var(--primary)}
+.ai-section{margin:26px 0;padding:19px 16px;background:#F7FBFB;border:1px solid #DDEBEC;border-radius:21px}
+.ai-header{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.ai-icon{width:41px;height:41px;display:grid;place-items:center;background:var(--primary-light);border-radius:13px;font-size:19px}
+.ai-heading{font-size:16px;font-weight:800}
+.ai-description{margin:0 0 18px;color:var(--muted);font-size:12px;line-height:1.7}
+.hidden-file-input{display:none}
+.image-button-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.image-select-btn{min-height:48px;border:1px solid #D7E6E7;border-radius:13px;background:white;color:#36525C;font-size:12px;font-weight:800;cursor:pointer}
+.image-select-btn:hover{background:var(--primary-light);border-color:var(--primary)}
+.preview-container{display:none;margin-top:17px}
+.preview-title{font-size:12px;font-weight:800;margin-bottom:8px}
+.preview-box{border:1px solid var(--border);border-radius:15px;overflow:hidden;background:#F2F6F7}
+#imagePreview{display:block;width:100%;max-height:290px;object-fit:contain}
+.selected-image-text{margin-top:8px;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.analyze-btn{width:100%;padding:14px;margin-top:14px;background:#E0F3F3;color:var(--primary-dark);border:1px solid #BCE1E3;border-radius:13px;font-size:13px;font-weight:800;cursor:pointer}
+.analyze-btn:hover{background:#CEEAEA}
+.analyze-btn:disabled{opacity:.55;cursor:wait}
+#analysisStatus{font-size:12px;line-height:1.65;color:#60757D;margin:12px 0 0}
+#predictionResults{margin-top:9px}
+.prediction-btn{width:100%;padding:13px;margin-top:8px;border:1px solid var(--border);border-radius:12px;background:white;color:var(--ink);font-size:13px;text-align:left;cursor:pointer}
+.prediction-btn:hover{border-color:var(--primary);background:#F4FAFA}
+.prediction-btn.selected{background:var(--primary-light);border-color:var(--primary);color:var(--primary-dark);font-weight:800}
+.hint{color:var(--muted);font-size:12px;line-height:1.6;margin-top:8px}
+.submit-btn{width:100%;margin-top:9px;padding:18px;border:0;border-radius:17px;background:var(--primary);color:white;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(73,185,191,.16)}
+.submit-btn:hover{background:var(--primary-dark)}
+@media(max-width:360px){.app{padding-left:16px;padding-right:16px}.image-button-group{gap:7px}.image-select-btn{font-size:11px}}
+</style>
 </head>
-
 <body>
-
-<div class="app">
-
-    <h2>🐶 반려견 등록</h2>
-
-    <div class="description">
-        여행과 활동 기록에 사용할
-        반려견 정보를 등록해주세요.
-    </div>
-
-
-    <form
-        method="POST"
-        action="/dog/register"
-    >
-
-        <!-- ==============================
-             반려견 이름
-             ============================== -->
-
-        <label for="name">
-            반려견 이름
-        </label>
-
-        <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="예: 보리"
-            required
-        >
-
-
-        <!-- ==============================
-             AI 견종 분석
-             ============================== -->
-
-        <div class="ai-section">
-
-            <label>
-                📷 반려견 사진으로 견종 찾기
-            </label>
-
-            <p class="ai-description">
-                사진을 직접 촬영하거나 갤러리에서 선택하면
-                AI가 예상 견종을 분석합니다.
-                <br>
-                AI 결과가 정확하지 않을 수 있으므로
-                분석 후 견종을 확인해주세요.
-            </p>
-
-
-            <!-- ==========================
-                 실제 카메라 파일 입력
-                 ========================== -->
-
-            <input
-                type="file"
-                id="cameraInput"
-                class="hidden-file-input"
-                accept="image/*"
-                capture="environment"
-            >
-
-
-            <!-- ==========================
-                 실제 갤러리 파일 입력
-                 ========================== -->
-
-            <input
-                type="file"
-                id="galleryInput"
-                class="hidden-file-input"
-                accept="image/*"
-            >
-
-
-            <!-- ==========================
-                 사용자에게 보이는 버튼
-                 ========================== -->
-
-            <div class="image-button-group">
-
-                <button
-                    type="button"
-                    id="cameraBtn"
-                    class="image-select-btn"
-                >
-                    📷 사진 촬영하기
-                </button>
-
-                <button
-                    type="button"
-                    id="galleryBtn"
-                    class="image-select-btn"
-                >
-                    🖼️ 갤러리에서 선택
-                </button>
-
-            </div>
-
-
-            <!-- ==========================
-                 사진 미리보기
-                 ========================== -->
-
-            <div
-                id="previewContainer"
-                class="preview-container"
-            >
-
-                <div class="preview-title">
-                    선택한 사진
-                </div>
-
-                <div class="preview-box">
-
-                    <img
-                        id="imagePreview"
-                        alt="반려견 사진 미리보기"
-                    >
-
-                </div>
-
-                <div
-                    id="selectedImageText"
-                    class="selected-image-text"
-                ></div>
-
-            </div>
-
-
-            <!-- ==========================
-                 AI 분석 버튼
-                 ========================== -->
-
-            <button
-                type="button"
-                id="analyzeBreedBtn"
-                class="analyze-btn"
-            >
-                🤖 AI로 견종 분석하기
-            </button>
-
-
-            <p id="analysisStatus"></p>
-
-            <div id="predictionResults"></div>
-
-        </div>
-
-
-        <!-- ==============================
-             품종
-             ============================== -->
-
-        <label for="breed">
-            품종
-        </label>
-
-        <input
-            type="text"
-            id="breed"
-            name="breed"
-            placeholder="예: 말티즈"
-        >
-
-
-        <!-- ==============================
-             체급
-             ============================== -->
-
-        <label for="size_category">
-            체급
-        </label>
-
-        <select
-            id="size_category"
-            name="size_category"
-            required
-        >
-
-            <option value="">
-                체급을 선택해주세요
-            </option>
-
-            <option value="소형견">
-                소형견
-            </option>
-
-            <option value="중형견">
-                중형견
-            </option>
-
-            <option value="대형견">
-                대형견
-            </option>
-
-        </select>
-
-
-        <!-- ==============================
-             생년월일
-             ============================== -->
-
-        <label for="birth_date">
-            생년월일
-        </label>
-
-        <input
-            type="date"
-            id="birth_date"
-            name="birth_date"
-        >
-
-
-        <!-- ==============================
-             성향
-             ============================== -->
-
-        <label for="personality">
-            성향
-        </label>
-
-        <select
-            id="personality"
-            name="personality"
-        >
-
-            <option value="">
-                성향을 선택해주세요
-            </option>
-
-            <option value="활발함">
-                활발함
-            </option>
-
-            <option value="조용함">
-                조용함
-            </option>
-
-            <option value="겁많음">
-                겁많음
-            </option>
-
-        </select>
-
-
-        <!-- ==============================
-             등록 버튼
-             ============================== -->
-
-        <button
-            type="submit"
-            class="submit-btn"
-        >
-            반려견 등록
-        </button>
-
-    </form>
-
-
-    <a
-        href="/"
-        class="back"
-    >
-        메인으로 돌아가기
-    </a>
-
-</div>
-
-
+<main class="app">
+<header class="topbar">
+ <a class="back-btn" href="/" aria-label="뒤로가기">←</a>
+ <span class="top-title">반려견 등록</span>
+ <span class="brand">PINKSOLE</span>
+</header>
+<div class="eyebrow">MY PET PROFILE</div>
+<h1>소중한 반려견을<br>소개해 주세요</h1>
+<p class="description">반려견 정보를 등록하면 여행 일정 추천과<br>활동 기록에 활용할 수 있어요.</p>
+<form method="POST" action="/dog/register">
+<section class="form-section">
+ <h2 class="section-title">기본 정보</h2>
+ <label for="name">반려견 이름 <span aria-hidden="true">*</span></label>
+ <input type="text" id="name" name="name" placeholder="예: 보리" required>
+</section>
+<section class="ai-section" aria-label="AI 견종 분석">
+ <div class="ai-header"><div class="ai-icon">🐶</div><div class="ai-heading">사진으로 견종 찾기</div></div>
+ <p class="ai-description">사진을 촬영하거나 갤러리에서 선택하면 AI가 예상 견종을 분석해요. 결과는 참고용이니 직접 확인해 주세요.</p>
+ <input type="file" id="cameraInput" class="hidden-file-input" accept="image/*" capture="environment">
+ <input type="file" id="galleryInput" class="hidden-file-input" accept="image/*">
+ <div class="image-button-group">
+  <button type="button" id="cameraBtn" class="image-select-btn">📷 사진 촬영하기</button>
+  <button type="button" id="galleryBtn" class="image-select-btn">▧ 갤러리에서 선택</button>
+ </div>
+ <div id="previewContainer" class="preview-container">
+  <div class="preview-title">선택한 사진</div>
+  <div class="preview-box"><img id="imagePreview" alt="반려견 사진 미리보기"></div>
+  <div id="selectedImageText" class="selected-image-text"></div>
+ </div>
+ <button type="button" id="analyzeBreedBtn" class="analyze-btn">✦ AI로 견종 분석하기</button>
+ <p id="analysisStatus" role="status" aria-live="polite"></p>
+ <div id="predictionResults"></div>
+</section>
+<section class="form-section">
+ <h2 class="section-title">반려견 상세 정보</h2>
+ <label for="breed">품종</label>
+ <input type="text" id="breed" name="breed" placeholder="예: 말티즈">
+ <label for="size_category">체급 <span aria-hidden="true">*</span></label>
+ <select id="size_category" name="size_category" required>
+  <option value="">체급을 선택해 주세요</option>
+  <option value="소형견">소형견</option>
+  <option value="중형견">중형견</option>
+  <option value="대형견">대형견</option>
+ </select>
+ <label for="birth_date">생년월일</label>
+ <input type="date" id="birth_date" name="birth_date">
+ <label for="personality">성향</label>
+ <select id="personality" name="personality">
+  <option value="">성향을 선택해 주세요</option>
+  <option value="활발함">활발함</option>
+  <option value="조용함">조용함</option>
+  <option value="겁많음">겁많음</option>
+ </select>
+ <p class="hint">체급과 성향은 반려견 맞춤 여행 일정 추천에 사용돼요.</p>
+</section>
+<button type="submit" class="submit-btn">반려견 등록하기 →</button>
+</form>
+</main>
+{% set active_page = 'mypage' %}
+{% include 'components/bottomnav.html' %}
 <script>
-
-    /* =====================================================
+/* =====================================================
        HTML 요소
        ===================================================== */
 
@@ -966,7 +558,7 @@
 
 
                 analyzeButton.textContent =
-                    "🤖 AI로 견종 분석하기";
+                    "✦ AI로 견종 분석하기";
 
 
             }
@@ -993,9 +585,6 @@
 
         }
     );
-
 </script>
-
 </body>
-
 </html>

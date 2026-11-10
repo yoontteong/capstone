@@ -1,1184 +1,136 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>{{ match.title }}</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-
-        body {
-            margin: 0;
-
-            font-family:
-                Arial,
-                sans-serif;
-
-            background: #f6f7f9;
-        }
-
-
-        .app {
-            max-width: 550px;
-
-            margin: 0 auto;
-
-            min-height: 100vh;
-
-            background: white;
-
-            padding: 25px 20px 40px;
-        }
-
-
-        .status {
-            display: inline-block;
-
-            padding: 6px 12px;
-
-            border-radius: 20px;
-
-            background: #e8f5e9;
-            color: #2e7d32;
-
-            font-size: 12px;
-
-            font-weight: bold;
-        }
-
-
-        h1 {
-            font-size: 24px;
-
-            margin: 15px 0;
-        }
-
-
-        .info {
-            margin: 8px 0;
-
-            font-size: 14px;
-        }
-
-
-        .content {
-            margin-top: 20px;
-
-            padding: 16px;
-
-            background: #f7f7f7;
-
-            border-radius: 14px;
-
-            line-height: 1.7;
-
-            white-space: pre-wrap;
-        }
-
-
-        /* =========================
-           작성자 수정 / 삭제
-        ========================= */
-
-        .owner-buttons {
-            display: flex;
-
-            gap: 10px;
-
-            margin-top: 18px;
-        }
-
-
-        .owner-buttons form {
-            flex: 1;
-
-            margin: 0;
-        }
-
-
-        .owner-edit-btn,
-        .owner-delete-btn {
-            display: block;
-
-            width: 100%;
-
-            padding: 11px;
-
-            border-radius: 11px;
-
-            text-align: center;
-
-            font-size: 14px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        .owner-edit-btn {
-            flex: 1;
-
-            background: #e8f5e9;
-
-            color: #2e7d32;
-
-            text-decoration: none;
-        }
-
-
-        .owner-delete-btn {
-            border: none;
-
-            background: #fdeaea;
-
-            color: #c62828;
-        }
-
-
-        .section {
-            margin-top: 35px;
-
-            padding-top: 25px;
-
-            border-top: 1px solid #eee;
-        }
-
-
-        .section h2 {
-            margin-top: 0;
-
-            font-size: 19px;
-        }
-
-
-        label {
-            display: block;
-
-            font-weight: bold;
-
-            margin: 15px 0 7px;
-        }
-
-
-        select,
-        textarea {
-            width: 100%;
-
-            padding: 12px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 11px;
-
-            font-size: 14px;
-
-            background: white;
-        }
-
-
-        textarea {
-            height: 90px;
-
-            resize: vertical;
-        }
-
-
-        /* =========================
-           반려견 선택
-        ========================= */
-
-        .dog-preview {
-            display: none;
-
-            margin-top: 12px;
-
-            padding: 14px;
-
-            border-radius: 13px;
-
-            background: #f3f8f3;
-
-            color: #555;
-
-            font-size: 13px;
-
-            line-height: 1.7;
-        }
-
-
-        .dog-preview-title {
-            margin-bottom: 6px;
-
-            color: #2e7d32;
-
-            font-weight: bold;
-        }
-
-
-        .dog-preview-name {
-            color: #222;
-
-            font-size: 15px;
-
-            font-weight: bold;
-        }
-
-
-        .dog-preview-info {
-            margin-top: 3px;
-
-            color: #666;
-        }
-
-
-        .notice {
-            padding: 16px;
-
-            background: #f7f7f7;
-
-            border-radius: 13px;
-
-            color: #777;
-
-            font-size: 13px;
-
-            line-height: 1.7;
-
-            text-align: center;
-        }
-
-
-        .success-notice {
-            padding: 16px;
-
-            background: #e8f5e9;
-
-            border-radius: 13px;
-
-            color: #2e7d32;
-
-            font-size: 13px;
-
-            line-height: 1.7;
-
-            text-align: center;
-
-            font-weight: bold;
-        }
-
-
-        .cancel-request-btn {
-            width: 100%;
-
-            margin-top: 10px;
-
-            padding: 11px;
-
-            border: none;
-
-            border-radius: 11px;
-
-            background: #fdeaea;
-
-            color: #c62828;
-
-            font-size: 13px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        .register-btn {
-            display: block;
-
-            margin-top: 10px;
-
-            padding: 12px;
-
-            border-radius: 12px;
-
-            background: #4caf50;
-
-            color: white;
-
-            text-align: center;
-
-            text-decoration: none;
-
-            font-weight: bold;
-        }
-
-
-        .apply-btn {
-            width: 100%;
-
-            padding: 13px;
-
-            margin-top: 18px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: #4caf50;
-
-            color: white;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        .apply-btn:hover {
-            background: #43a047;
-        }
-
-
-        /* =========================
-           신청 현황
-        ========================= */
-
-        .request-card {
-            margin-top: 12px;
-
-            padding: 15px;
-
-            border: 1px solid #eee;
-
-            border-radius: 13px;
-        }
-
-
-        .request-dog {
-            margin-top: 5px;
-
-            color: #555;
-
-            font-size: 13px;
-        }
-
-
-        .request-status {
-            display: inline-block;
-
-            margin-top: 10px;
-
-            padding: 5px 9px;
-
-            border-radius: 15px;
-
-            background: #f3f8f3;
-
-            color: #2e7d32;
-
-            font-size: 12px;
-
-            font-weight: bold;
-        }
-
-
-        .request-message {
-            margin-top: 9px;
-
-            padding: 10px;
-
-            background: #fafafa;
-
-            border-radius: 10px;
-
-            color: #555;
-
-            font-size: 13px;
-
-            line-height: 1.5;
-        }
-
-
-        .match-score {
-            display: inline-block;
-
-            margin-top: 9px;
-
-            padding: 6px 10px;
-
-            background: #e8f5e9;
-
-            color: #2e7d32;
-
-            border-radius: 20px;
-
-            font-size: 12px;
-
-            font-weight: bold;
-        }
-
-
-        .match-detail-score {
-            margin-top: 10px;
-
-            padding: 12px;
-
-            background: #f7f7f7;
-
-            border-radius: 12px;
-
-            font-size: 12px;
-
-            line-height: 1.8;
-
-            color: #555;
-        }
-
-
-        /* =========================
-           수락 / 거절
-        ========================= */
-
-        .request-buttons {
-            display: flex;
-
-            gap: 8px;
-
-            margin-top: 12px;
-        }
-
-
-        .request-buttons form {
-            flex: 1;
-        }
-
-
-        .accept-btn,
-        .reject-btn {
-            width: 100%;
-
-            border: none;
-
-            border-radius: 9px;
-
-            padding: 9px;
-
-            cursor: pointer;
-
-            font-weight: bold;
-        }
-
-
-        .accept-btn {
-            background: #4caf50;
-
-            color: white;
-        }
-
-
-        .reject-btn {
-            background: #f8d7da;
-
-            color: #b00020;
-        }
-
-
-        .back {
-            display: block;
-
-            margin-top: 30px;
-
-            text-align: center;
-
-            color: #666;
-
-            text-decoration: none;
-        }
-
-        .review-btn {
-            display: block;
-            width: 100%;
-            margin-top: 12px;
-            padding: 11px;
-            border-radius: 10px;
-            background: #fff3cd;
-            color: #8a6700;
-            text-align: center;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .review-btn:hover {
-            background: #ffe69c;
-        }
-
-        .review-complete {
-            margin-top: 12px;
-            padding: 11px;
-            border-radius: 10px;
-            background: #f3f8f3;
-            color: #2e7d32;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ match.title }} | PINKSOLE</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+<style>
+:root{--primary:#49B9BF;--deep:#278D95;--soft:#E7F7F7;--ink:#202B33;--muted:#7C8A93;--border:#E8EEF0;--bg:#F5F8F9}
+*{box-sizing:border-box}
+body{margin:0;background:#F2F6F7;color:var(--ink);font-family:'Pretendard','Noto Sans KR',Arial,sans-serif}
+.app{max-width:460px;min-height:100vh;margin:auto;background:#fff;padding:20px 20px 125px}
+a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:28px}.back-icon{display:grid;place-items:center;width:36px;height:36px;color:var(--ink)}.back-icon svg,.icon{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.topbar-title{font-size:15px;font-weight:800}.brand{font-size:11px;color:var(--deep);font-weight:900}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.status{display:inline-flex;align-items:center;padding:7px 12px;border-radius:20px;background:var(--soft);color:var(--deep);font-size:12px;font-weight:800}.owner-buttons{display:flex;gap:7px;align-items:center}.owner-buttons form{margin:0}.owner-edit-btn,.owner-delete-btn{border:1px solid var(--border);border-radius:10px;padding:7px 11px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;background:#fff}.owner-delete-btn{color:#AD6767;background:#FFF8F8;border-color:#F5E4E4}
+h1{margin:0 0 20px;font-size:25px;line-height:1.4;letter-spacing:-.05em;overflow-wrap:anywhere}.overview{border:1px solid var(--border);border-radius:20px;background:#FCFDFD;padding:17px;display:grid;gap:13px}.overview-row{display:flex;align-items:flex-start;gap:11px;font-size:13px;line-height:1.55}.overview-row .icon{width:18px;height:18px;flex-shrink:0;color:var(--deep)}.overview-row b{font-weight:800}.overview-row .value{overflow-wrap:anywhere}.content-section{margin-top:24px}.subheading{font-size:16px;font-weight:800;margin:0 0 12px;letter-spacing:-.03em}.content{background:#F7FAFA;padding:18px;border-radius:17px;color:#42545C;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.section{margin-top:30px;padding-top:26px;border-top:1px solid var(--border)}.section-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.section h2{font-size:17px;margin:0;font-weight:800;letter-spacing:-.03em}.section-help{margin:-5px 0 17px;color:var(--muted);font-size:12px;line-height:1.65}
+label.form-label{display:block;font-size:13px;font-weight:800;margin:17px 0 9px}select,textarea{display:block;width:100%;border:1px solid #DBE5E8;border-radius:14px;background:#fff;padding:14px;color:var(--ink);font-size:14px}textarea{resize:vertical;min-height:88px}.dog-preview{display:none;margin-top:12px;border-radius:14px;background:var(--soft);padding:14px;color:var(--ink)}.dog-preview-title{font-size:11px;color:var(--deep);font-weight:800;margin-bottom:6px}.dog-preview-name{font-size:15px;font-weight:800}.dog-preview-info{font-size:12px;color:#64777E;margin-top:4px}
+.notice,.success-notice{border-radius:15px;padding:17px;font-size:13px;line-height:1.7;background:#F6F9F9;color:#687981}.success-notice{background:var(--soft);color:var(--deep);font-weight:700}.primary-btn,.secondary-btn,.subtle-btn,.danger-btn{display:flex;align-items:center;justify-content:center;gap:7px;border-radius:14px;min-height:46px;padding:12px 16px;text-align:center;font-size:13px;font-weight:800}.primary-btn{background:var(--primary);color:#fff;border:1px solid var(--primary)}.secondary-btn{background:var(--soft);color:var(--deep);border:1px solid #CEE8E9}.subtle-btn{background:#F4F7F8;color:#51636B;border:1px solid var(--border)}.danger-btn{background:#FFF6F6;color:#B55B5B;border:1px solid #F1DCDC}.full{width:100%;margin-top:14px}.text-action{display:inline-block;margin-top:13px;font-size:12px;font-weight:800;color:#AD6767;background:none;border:0;padding:5px 0;text-decoration:underline;text-underline-offset:3px}
+.request-list{display:grid;gap:12px}.request-card{border:1px solid var(--border);border-radius:18px;background:#fff;padding:17px}.request-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.applicant{font-size:15px;font-weight:800}.request-status{font-size:11px;border-radius:18px;padding:6px 10px;background:#F2F6F6;color:#64767E;font-weight:800}.request-dog{font-size:12px;color:var(--muted);line-height:1.6;margin-top:9px}.request-score{font-size:13px;color:var(--deep);font-weight:800;margin-top:13px}.request-score strong{font-size:18px}.score-details{margin-top:11px;border-radius:12px;background:#F5F9F9;padding:12px 14px;font-size:12px;line-height:1.9;color:#596F76}.score-details summary{cursor:pointer;font-weight:800;color:#56737A;list-style:none}.score-details summary::-webkit-details-marker{display:none}.score-details summary:after{content:'⌄';float:right}.score-details[open] summary:after{content:'⌃'}.score-lines{margin-top:10px;padding-top:9px;border-top:1px solid #E4EBED}.request-message{margin-top:12px;padding:12px;border-left:3px solid #C5E5E5;background:#F8FBFB;color:#60737B;border-radius:0 10px 10px 0;font-size:12px;line-height:1.6;white-space:pre-wrap}.request-buttons{display:flex;gap:9px;margin-top:14px}.request-buttons form{flex:1;margin:0}.request-buttons button{width:100%}.review-complete{margin-top:12px;padding:13px;border-radius:12px;background:#F4F7F7;color:#67817E;font-size:12px;font-weight:800;text-align:center}.review-link{margin-top:12px}.bottom-back{display:block;text-align:center;font-size:13px;color:var(--muted);margin-top:30px}
+@media(max-width:360px){.app{padding-left:15px;padding-right:15px}h1{font-size:23px}.overview{padding:14px}}
+</style>
 </head>
-
-
 <body>
-
-
-<div class="app">
-
-
-    <!-- =========================
-         모집글
-    ========================== -->
-
-    <span class="status">
-        {{ match.status }}
-    </span>
-
-
-    <h1>
-        {{ match.title }}
-    </h1>
-
-
-    <div class="info">
-        📅 {{ match.travel_date }}
-    </div>
-
-
-    <div class="info">
-        📍 {{ match.region }}
-    </div>
-
-
-    <div class="info">
-
-        🐶 {{ match.dog_name }}
-
-        · {{ match.dog_size }}
-
-        · {{ match.dog_personality }}
-
-    </div>
-
-
-    <div class="info">
-
-        👥 현재
-        {{ current_people }}
-        /
-        {{ match.max_people }}명
-
-    </div>
-
-
-    <div class="info">
-
-        👤 작성자
-        {{ match.author }}
-
-    </div>
-
-
-    <div class="content">
-        {{ match.content }}
-    </div>
-
-
-    <!-- =========================
-         작성자 본인
-         수정 / 삭제
-    ========================== -->
-
-    {% if is_owner %}
-
-        <div class="owner-buttons">
-
-            <a
-                href="/matches/{{ match.id }}/edit"
-                class="owner-edit-btn"
-            >
-                ✏️ 수정
-            </a>
-
-
-            <form
-                method="POST"
-                action="/matches/{{ match.id }}/delete"
-
-                onsubmit="
-                    return confirm(
-                        '이 모집글을 삭제하시겠습니까?\n신청 내역도 함께 삭제됩니다.'
-                    );
-                "
-            >
-
-                <button
-                    type="submit"
-                    class="owner-delete-btn"
-                >
-                    🗑️ 삭제
-                </button>
-
-            </form>
-
-        </div>
-
-    {% endif %}
-
-
-
-    <!-- =========================
-         모집자가 아닌 사용자
-         → 매칭 신청
-    ========================== -->
-
-    {% if
-        match.status == '모집중'
-        and
-        not is_owner
-    %}
-
-        <div class="section">
-
-            <h2>
-                🐾 매칭 신청
-            </h2>
-
-
-            {% if not session.get("user_id") %}
-
-
-                <div class="notice">
-
-                    매칭 신청을 하려면
-                    로그인이 필요합니다.
-
-                </div>
-
-
-                <a
-                    href="/login"
-
-                    class="register-btn"
-                >
-                    로그인하기
-                </a>
-
-
-            {% elif already_applied %}
-
-
-                <div class="success-notice">
-
-                    이미 이 모집글에
-                    매칭 신청을 했습니다.
-
-                    {% if user_request %}
-
-                        <br>
-
-                        현재 상태:
-                        {{ user_request.status }}
-
-                    {% endif %}
-
-                </div>
-
-
-                <!-- 대기중일 때만 신청 취소 -->
-
-                {% if
-                    user_request
-                    and
-                    user_request.status == '대기중'
-                %}
-
-                    <form
-                        method="POST"
-
-                        action="/matches/{{ match.id }}/cancel"
-
-                        onsubmit="
-                            return confirm(
-                                '매칭 신청을 취소하시겠습니까?'
-                            );
-                        "
-                    >
-
-                        <button
-                            type="submit"
-
-                            class="cancel-request-btn"
-                        >
-                            신청 취소
-                        </button>
-
-                    </form>
-
-                {% endif %}
-
-
-            {% elif dogs %}
-
-
-                <form
-                    method="POST"
-
-                    action="/matches/{{ match.id }}/apply"
-                >
-
-
-                    <label>
-                        함께할 반려견
-                    </label>
-
-
-                    <select
-                        name="dog_id"
-
-                        id="dogSelect"
-
-                        required
-                    >
-
-                        <option value="">
-                            반려견을 선택해주세요
-                        </option>
-
-
-                        {% for dog in dogs %}
-
-                            <option
-                                value="{{ dog.id }}"
-
-                                data-name="{{ dog.name }}"
-
-                                data-breed="{{ dog.breed or '' }}"
-
-                                data-size="{{ dog.size_category }}"
-
-                                data-personality="{{ dog.personality or '' }}"
-                            >
-
-                                🐶 {{ dog.name }}
-
-                                {% if dog.breed %}
-                                    · {{ dog.breed }}
-                                {% endif %}
-
-                                · {{ dog.size_category }}
-
-                                {% if dog.personality %}
-                                    · {{ dog.personality }}
-                                {% endif %}
-
-                            </option>
-
-                        {% endfor %}
-
-                    </select>
-
-
-                    <div
-                        class="dog-preview"
-                        id="dogPreview"
-                    >
-
-                        <div class="dog-preview-title">
-                            선택한 반려견
-                        </div>
-
-
-                        <div
-                            class="dog-preview-name"
-                            id="dogPreviewName"
-                        ></div>
-
-
-                        <div
-                            class="dog-preview-info"
-                            id="dogPreviewInfo"
-                        ></div>
-
-                    </div>
-
-
-                    <label>
-                        한마디
-                    </label>
-
-
-                    <textarea
-                        name="message"
-
-                        placeholder="모집자에게 간단한 메시지를 남겨주세요."
-                    ></textarea>
-
-
-                    <button
-                        type="submit"
-
-                        class="apply-btn"
-                    >
-                        매칭 신청하기
-                    </button>
-
-
-                </form>
-
-
-            {% else %}
-
-
-                <div class="notice">
-
-                    등록된 반려견이 없습니다.<br>
-
-                    먼저 반려견을 등록해주세요.
-
-                </div>
-
-
-                <a
-                    href="/dog/register"
-
-                    class="register-btn"
-                >
-                    반려견 등록하기
-                </a>
-
-
-            {% endif %}
-
-        </div>
-
-    {% endif %}
-
-
-
-    <!-- =========================
-         모집자 본인에게만
-         신청 현황 표시
-    ========================== -->
-
-    {% if is_owner %}
-
-        <div class="section">
-
-            <h2>
-                📩 신청 현황
-            </h2>
-
-
-            {% if requests_list %}
-
-                {% for req in requests_list %}
-
-                    <div class="request-card">
-
-                        <strong>
-                            {{ req.applicant }}
-                        </strong>
-
-
-                        <div class="request-dog">
-
-                            🐶 {{ req.dog_name }}
-
-                            · {{ req.dog_size }}
-
-                            · {{ req.dog_personality }}
-
-                        </div>
-
-
-                        <div class="match-score">
-
-                            💚 매칭 적합도
-                            {{ req.match_score }}%
-
-                        </div>
-
-
-                        <div class="match-detail-score">
-
-                            <div>
-
-                                🐶 체급 궁합
-
-                                {{ req.size_score }}
-                                / 30
-
-                            </div>
-
-
-                            <div>
-
-                                💚 성향 궁합
-
-                                {{ req.personality_score }}
-                                / 30
-
-                            </div>
-
-
-                            <div>
-
-                                ⚡ 활동성 궁합
-
-                                {{ req.activity_match_score }}
-                                / 40
-
-                            </div>
-
-
-                            {% if
-                                req.host_activity is not none
-                                and
-                                req.applicant_activity is not none
-                            %}
-
-                                <div>
-
-                                    모집자 활동성:
-                                    {{ req.host_activity }}
-
-                                    ·
-
-                                    신청자 활동성:
-                                    {{ req.applicant_activity }}
-
-                                </div>
-
-                            {% else %}
-
-                                <div>
-
-                                    GPS 활동 기록이 부족하여
-                                    활동성은 중립 점수로
-                                    계산되었습니다.
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        {% if req.message %}
-
-                            <div class="request-message">
-                                "{{ req.message }}"
-                            </div>
-
-                        {% endif %}
-
-
-                        <div class="request-status">
-                            {{ req.status }}
-                        </div>
-
-
-                        {% if req.status == '대기중' %}
-
-                            <div class="request-buttons">
-
-
-                                <form
-                                    method="POST"
-
-                                    action="/matches/{{ match.id }}/requests/{{ req.id }}/accept"
-                                >
-
-                                    <button
-                                        type="submit"
-
-                                        class="accept-btn"
-                                    >
-                                        수락
-                                    </button>
-
-                                </form>
-
-
-                                <form
-                                    method="POST"
-
-                                    action="/matches/{{ match.id }}/requests/{{ req.id }}/reject"
-                                >
-
-                                    <button
-                                        type="submit"
-
-                                        class="reject-btn"
-                                    >
-                                        거절
-                                    </button>
-
-                                </form>
-
-
-                            </div>
-
-                        {% endif %}
-
-                        {% if req.can_review %}
-
-                            <a
-                                href="/matches/reviews/{{ req.id }}"
-                                class="review-btn"
-                            >
-                                ⭐ {{ req.applicant }}님 평가하기
-                            </a>
-
-                        {% elif req.already_reviewed %}
-
-                            <div class="review-complete">
-                                ✓ 메이트 평가 완료
-                            </div>
-
-                        {% endif %}
-
-                    </div>
-
-                {% endfor %}
-
-
-            {% else %}
-
-                <div class="notice">
-
-                    아직 들어온
-                    매칭 신청이 없습니다.
-
-                </div>
-
-            {% endif %}
-
-        </div>
-
-    {% endif %}
-
-    
-    <!-- ========================================
-        신청자 전용 메이트 평가
-    ======================================== -->
-
-    {% if not is_owner and user_request %}
-
-        {% for req in requests_list %}
-
-            {% if req.id == user_request.id %}
-
-                {% if req.can_review %}
-
-                    <div class="section">
-
-                        <h2>⭐ 메이트 평가</h2>
-
-                        <p style="
-                            color: #777;
-                            font-size: 13px;
-                            line-height: 1.6;
-                        ">
-                            함께 여행한 모집자
-                            {{ match.author }}님을
-                            평가해주세요.
-                        </p>
-
-                        <a
-                            href="/matches/reviews/{{ req.id }}"
-                            class="review-btn"
-                        >
-                            ⭐ {{ match.author }}님 평가하기
-                        </a>
-
-                    </div>
-
-                {% elif req.already_reviewed %}
-
-                    <div class="section">
-
-                        <h2>⭐ 메이트 평가</h2>
-
-                        <div class="review-complete">
-                            ✓ 메이트 평가 완료
-                        </div>
-
-                    </div>
-
-                {% endif %}
-
-            {% endif %}
-
-        {% endfor %}
-
-    {% endif %}
-
-    
-    <!-- 메이트 단체 채팅방 입장 -->
-
-    {% if is_owner or (
-        user_request
-        and user_request.status == '수락'
-    ) %}
-
-        <div class="section">
-
-            <h2>💬 메이트 단체 채팅</h2>
-
-            <p style="font-size: 13px; color: #777;">
-                매칭된 메이트들과 여행 일정을 이야기해 보세요.
-            </p>
-
-            <a
-                href="{{ url_for('community.mate_chat', match_id=match.id) }}"
-                class="register-btn"
-            >
-                💬 단체 채팅방 입장하기
-            </a>
-
-        </div>
-
-    {% endif %}
-
-
-
-
-
-    <a
-        href="/matches"
-
-        class="back"
-    >
-        목록으로 돌아가기
-    </a>
-
-
+<main class="app">
+<header class="topbar">
+<a class="back-icon" href="/matches" aria-label="메이트 모집 목록으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></a>
+<div class="topbar-title">메이트 모집</div>
+<div class="brand">PINKSOLE</div>
+</header>
+
+<div class="topline">
+<span class="status">{{ match.status }}</span>
+{% if is_owner %}
+<div class="owner-buttons">
+<a href="/matches/{{ match.id }}/edit" class="owner-edit-btn">수정</a>
+<form method="POST" action="/matches/{{ match.id }}/delete" onsubmit="return confirm('이 모집글을 삭제하시겠습니까?\n신청 내역도 함께 삭제됩니다.');"><button class="owner-delete-btn" type="submit">삭제</button></form>
 </div>
+{% endif %}
+</div>
+<h1>{{ match.title }}</h1>
+<section class="overview" aria-label="모집 정보">
+<div class="overview-row"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg><span class="value"><b>여행 날짜</b> · {{ match.travel_date }}</span></div>
+<div class="overview-row"><svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span class="value"><b>여행 지역</b> · {{ match.region }}</span></div>
+<div class="overview-row"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c1.5 1.4 2.9 2 4 2s2.5-.6 4-2M8.5 9h.01M15.5 9h.01"/></svg><span class="value"><b>반려견</b> · {{ match.dog_name }} · {{ match.dog_size }} · {{ match.dog_personality }}</span></div>
+<div class="overview-row"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 11a3 3 0 1 0-1-6M17 14a5 5 0 0 1 4 5v1"/></svg><span class="value"><b>참여 인원</b> · {{ current_people }} / {{ match.max_people }}명</span></div>
+<div class="overview-row"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/></svg><span class="value"><b>작성자</b> · {{ match.author }}</span></div>
+</section>
+<section class="content-section"><h2 class="subheading">여행 소개</h2><div class="content">{{ match.content }}</div></section>
 
+{% if match.status == '모집중' and not is_owner %}
+<section class="section">
+<h2>메이트 신청</h2>
+<p class="section-help">함께 여행할 반려견을 선택하고 모집자에게 한마디를 남겨주세요.</p>
+{% if not session.get('user_id') %}
+<div class="notice">매칭 신청을 하려면 로그인이 필요합니다.</div>
+<a href="/login" class="primary-btn full">로그인하기</a>
+{% elif already_applied %}
+<div class="success-notice">이미 이 모집글에 신청했어요.{% if user_request %}<br>현재 상태: {{ user_request.status }}{% endif %}</div>
+{% if user_request and user_request.status == '대기중' %}
+<form method="POST" action="/matches/{{ match.id }}/cancel" onsubmit="return confirm('매칭 신청을 취소하시겠습니까?');"><button type="submit" class="text-action">신청 취소하기</button></form>
+{% endif %}
+{% elif dogs %}
+<form method="POST" action="/matches/{{ match.id }}/apply">
+<label for="dogSelect" class="form-label">함께할 반려견</label>
+<select name="dog_id" id="dogSelect" required><option value="">반려견을 선택해주세요</option>
+{% for dog in dogs %}<option value="{{ dog.id }}" data-name="{{ dog.name }}" data-breed="{{ dog.breed or '' }}" data-size="{{ dog.size_category }}" data-personality="{{ dog.personality or '' }}">{{ dog.name }}{% if dog.breed %} · {{ dog.breed }}{% endif %} · {{ dog.size_category }}{% if dog.personality %} · {{ dog.personality }}{% endif %}</option>{% endfor %}
+</select>
+<div class="dog-preview" id="dogPreview"><div class="dog-preview-title">선택한 반려견</div><div class="dog-preview-name" id="dogPreviewName"></div><div class="dog-preview-info" id="dogPreviewInfo"></div></div>
+<label for="message" class="form-label">모집자에게 한마디 <span style="color:var(--muted);font-weight:500">(선택)</span></label>
+<textarea id="message" name="message" placeholder="함께 여행하고 싶어요!"></textarea>
+<button type="submit" class="primary-btn full">매칭 신청하기</button>
+</form>
+{% else %}
+<div class="notice">등록된 반려견이 없습니다. 먼저 반려견을 등록해 주세요.</div><a href="/dog/register" class="primary-btn full">반려견 등록하기</a>
+{% endif %}
+</section>
+{% endif %}
 
+{% if is_owner %}
+<section class="section">
+<div class="section-header"><h2>신청 현황</h2>{% if requests_list %}<span style="font-size:12px;color:var(--muted)">{{ requests_list|length }}건</span>{% endif %}</div>
+{% if requests_list %}
+<div class="request-list">
+{% for req in requests_list %}
+<article class="request-card">
+<div class="request-head"><span class="applicant">{{ req.applicant }}</span><span class="request-status">{{ req.status }}</span></div>
+<div class="request-dog">🐶 {{ req.dog_name }} · {{ req.dog_size }} · {{ req.dog_personality }}</div>
+<div class="request-score">매칭 적합도 <strong>{{ req.match_score }}%</strong></div>
+<details class="score-details"><summary>매칭 점수 상세 보기</summary>
+<div class="score-lines">
+<div>체급 궁합 · {{ req.size_score }} / 30</div>
+<div>성향 궁합 · {{ req.personality_score }} / 30</div>
+<div>활동성 궁합 · {{ req.activity_match_score }} / 40</div>
+{% if req.host_activity is not none and req.applicant_activity is not none %}
+<div>모집자 활동성: {{ req.host_activity }} · 신청자 활동성: {{ req.applicant_activity }}</div>
+{% else %}<div>GPS 활동 기록이 부족하여 활동성은 중립 점수로 계산되었습니다.</div>{% endif %}
+</div></details>
+{% if req.message %}<div class="request-message">{{ req.message }}</div>{% endif %}
+{% if req.status == '대기중' %}
+<div class="request-buttons">
+<form method="POST" action="/matches/{{ match.id }}/requests/{{ req.id }}/accept"><button type="submit" class="primary-btn">수락</button></form>
+<form method="POST" action="/matches/{{ match.id }}/requests/{{ req.id }}/reject"><button type="submit" class="subtle-btn">거절</button></form>
+</div>
+{% endif %}
+{% if req.can_review %}<a href="/matches/reviews/{{ req.id }}" class="secondary-btn review-link">{{ req.applicant }}님 평가하기</a>
+{% elif req.already_reviewed %}<div class="review-complete">✓ 메이트 평가 완료</div>{% endif %}
+</article>
+{% endfor %}
+</div>
+{% else %}<div class="notice">아직 들어온 매칭 신청이 없습니다.</div>{% endif %}
+</section>
+{% endif %}
+
+{% if not is_owner and user_request %}
+{% for req in requests_list %}
+{% if req.id == user_request.id %}
+{% if req.can_review %}
+<section class="section"><h2>메이트 평가</h2><p class="section-help">함께 여행한 모집자 {{ match.author }}님을 평가해 주세요.</p><a href="/matches/reviews/{{ req.id }}" class="secondary-btn full">{{ match.author }}님 평가하기</a></section>
+{% elif req.already_reviewed %}
+<section class="section"><h2>메이트 평가</h2><div class="review-complete">✓ 메이트 평가 완료</div></section>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if is_owner or (user_request and user_request.status == '수락') %}
+<section class="section"><h2>메이트 단체 채팅</h2><p class="section-help">매칭된 메이트들과 여행 일정을 이야기해 보세요.</p><a href="{{ url_for('community.mate_chat', match_id=match.id) }}" class="secondary-btn full">단체 채팅방 입장하기 →</a></section>
+{% endif %}
+<a href="/matches" class="bottom-back">메이트 목록으로 돌아가기</a>
+</main>
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
 <script>
 
     const dogSelect =
@@ -1274,8 +226,5 @@
     }
 
 </script>
-
-
 </body>
-
 </html>
