@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>PinkSole 관리자</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #f3f6f7;
+    color: #263238;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 460px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 30px 20px 90px;
+    background: white;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 15px 0 10px;
+}
+
+.subtitle {
+    color: #849398;
+    font-size: 13px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 28px 0;
+}
+
+.stat {
+    padding: 18px 5px;
+    background: #e7f7f7;
+    border-radius: 13px;
+    text-align: center;
+}
+
+.stat strong {
+    display: block;
+    color: #278d95;
+    font-size: 23px;
+}
+
+.stat span {
+    font-size: 11px;
+}
+
+.tabs {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    border: 0;
+    border-radius: 10px;
+    padding: 13px 5px;
+    background: #f4f6f7;
+    color: #73848b;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tab.active {
+    background: #49b9bf;
+    color: white;
+}
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.item {
+    padding: 17px 0;
+    border-bottom: 1px solid #e8eef0;
+}
+
+.item-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+    overflow-wrap: anywhere;
+}
+
+.meta {
+    color: #89979c;
+    font-size: 12px;
+}
+
+.content {
+    color: #59676c;
+    font-size: 13px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.actions {
+    display: flex;
+    gap: 9px;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.actions form { margin: 0; }
+
+.view, .delete {
+    display: inline-block;
+    padding: 9px 13px;
+    border: 0;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.view {
+    background: #e7f7f7;
+    color: #278d95;
+}
+
+.delete {
+    background: #fff0f0;
+    color: #c45050;
+}
+
+.empty {
+    padding: 35px 0;
+    text-align: center;
+    color: #89979c;
+    font-size: 13px;
+}
+
+.home-link {
+    display: block;
+    margin-top: 35px;
+    text-align: center;
+    color: #278d95;
+    font-size: 13px;
+    text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>관리자 대시보드</h1>
+    <p class="subtitle">
+        PINKSOLE 서비스 운영 관리
+    </p>
+
+    <!-- 통계 -->
+    <div class="stats">
+        <div class="stat">
+            <strong>{{ user_count }}</strong>
+            <span>전체 회원</span>
+        </div>
+
+        <div class="stat">
+            <strong>{{ post_count }}</strong>
+            <span>게시글</span>
+        </div>
+
+        <div class="stat">
+            <strong>{{ comment_count }}</strong>
+            <span>댓글</span>
+        </div>
+    </div>
+
+    <!-- 탭 -->
+    <div class="tabs">
+        <button class="tab active"
+                onclick="showTab('posts', this)">
+            게시글
+        </button>
+
+        <button class="tab"
+                onclick="showTab('comments', this)">
+            댓글
+        </button>
+
+        <button class="tab"
+                onclick="showTab('users', this)">
+            회원
+        </button>
+    </div>
+
+    <!-- 게시글 관리 -->
+    <div id="posts" class="panel active">
+
+        {% for post in posts %}
+
+        <div class="item">
+
+            <div class="item-title">
+                {{ post.title }}
+            </div>
+
+            <div class="meta">
+                {{ post.author }} · {{ post.created_at }}
+            </div>
+
+            <div class="actions">
+
+                <a class="view"
+                   href="{{ url_for('community.community_detail', post_id=post.id) }}">
+                    조회
+                </a>
+
+                <form method="POST"
+                      action="{{ url_for('admin.admin_delete_post', post_id=post.id) }}"
+                      onsubmit="return confirm('게시글과 댓글을 삭제하시겠습니까?');">
+
+                    <button class="delete" type="submit">
+                        삭제
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        {% else %}
+        <div class="empty">
+            등록된 게시글이 없습니다.
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- 댓글 관리 -->
+    <div id="comments" class="panel">
+
+        {% for comment in comments %}
+
+        <div class="item">
+
+            <div class="item-title">
+                {{ comment.post_title }}
+            </div>
+
+            <div class="meta">
+                {{ comment.author }} · {{ comment.created_at }}
+            </div>
+
+            <div class="content">{{ comment.content }}</div>
+
+            <div class="actions">
+
+                <a class="view"
+                   href="{{ url_for('community.community_detail', post_id=comment.post_id) }}">
+                    원문 보기
+                </a>
+
+                <form method="POST"
+                      action="{{ url_for('admin.admin_delete_comment', comment_id=comment.id) }}"
+                      onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+
+                    <button class="delete" type="submit">
+                        삭제
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        {% else %}
+        <div class="empty">
+            등록된 댓글이 없습니다.
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- 회원 관리 -->
+    <div id="users" class="panel">
+
+        {% for user in users %}
+
+        <div class="item">
+
+            <div class="item-title">
+                {{ user.nickname }}
+            </div>
+
+            <div class="meta">
+                아이디: {{ user.username }}
+            </div>
+
+            <div class="meta">
+                권한:
+                {% if user.role == 'admin' %}
+                    관리자
+                {% else %}
+                    일반 회원
+                {% endif %}
+            </div>
+
+        </div>
+
+        {% else %}
+        <div class="empty">
+            등록된 회원이 없습니다.
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <a href="/" class="home-link">
+        ← PinkSole 홈으로
+    </a>
+
+</div>
+
+<script>
+function showTab(tabId, button) {
+
+    document.querySelectorAll(".panel")
+        .forEach(panel => {
+            panel.classList.remove("active");
+        });
+
+    document.querySelectorAll(".tab")
+        .forEach(tab => {
+            tab.classList.remove("active");
+        });
+
+    document.getElementById(tabId)
+        .classList.add("active");
+
+    button.classList.add("active");
+}
+</script>
+
+</body>
+</html>

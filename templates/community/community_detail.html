@@ -70,19 +70,25 @@
         <strong class="top-title">자유게시판</strong>
         <span class="brand">PINKSOLE</span>
     </header>
+    {% set logged_in = session.get('user_id') is not none %}
+    {% set is_admin = logged_in and session.get('role') == 'admin' %}
+    {% set is_post_owner = logged_in and post.user_id is not none and (session.get('user_id')|string == post.user_id|string) %}
     <article>
         <header class="article-head">
             <div class="eyebrow">COMMUNITY STORY</div>
             <div class="title-row">
                 <h1 class="title">{{ post.title }}</h1>
-                <!-- 기존 권한 로직을 변경하지 않고 수정/삭제 동작 유지. 서버측 권한 검사 별도 권장 -->
+                {% if is_post_owner or is_admin %}
                 <div class="actions" id="postActions">
                     <button type="button" class="menu-trigger" id="menuTrigger" aria-label="게시글 관리" aria-haspopup="true" aria-expanded="false">⋯</button>
                     <div class="action-menu" id="actionMenu" hidden>
-                        <a href="/community/{{ post.id }}/edit">수정</a>
+                        {% if is_post_owner %}
+                        <a href="{{ url_for('community.community_edit', post_id=post.id) }}">수정</a>
+                        {% endif %}
                         <button type="button" class="danger" onclick="deletePost()">삭제</button>
                     </div>
                 </div>
+                {% endif %}
             </div>
             <div class="meta">
                 <div class="avatar" aria-hidden="true">✦</div>
@@ -101,13 +107,16 @@
     </article>
     <section class="comment-section">
         <h2 class="comment-title">댓글 <span>{{ comments|length }}</span></h2>
-        <form method="POST" action="/community/{{ post.id }}/comments" class="comment-form">
-            <label for="commentAuthor" class="field-label">닉네임</label>
-            <input type="text" id="commentAuthor" name="author" maxlength="50" placeholder="닉네임을 입력해 주세요" required>
+        {% if logged_in %}
+        <form method="POST" action="{{ url_for('community.comment_create', post_id=post.id) }}" class="comment-form">
+            <div class="field-label">작성자: {{ session.get('nickname', '회원') }}</div>
             <label for="commentText" class="field-label">댓글</label>
             <textarea id="commentText" name="content" placeholder="댓글을 입력해 주세요" required></textarea>
             <div class="comment-form-footer"><button type="submit" class="comment-submit">댓글 등록</button></div>
         </form>
+        {% else %}
+        <div class="comment-form">댓글을 작성하려면 <a href="/login">로그인</a>해 주세요.</div>
+        {% endif %}
         <div class="comment-list">
             {% if comments %}
                 {% for comment in comments %}
@@ -117,19 +126,26 @@
                         <span>{{ comment.created_at }}</span>
                     </div>
                     <div id="comment-view-{{ comment.id }}" class="comment-content">{{ comment.content }}</div>
-                    <form id="comment-edit-{{ comment.id }}" action="/community/{{ post.id }}/comments/{{ comment.id }}/edit" method="POST" class="comment-edit-form" hidden>
+                    {% set is_comment_owner = logged_in and comment.user_id is not none and (session.get('user_id')|string == comment.user_id|string) %}
+                    {% if is_comment_owner %}
+                    <form id="comment-edit-{{ comment.id }}" action="{{ url_for('community.comment_edit', post_id=post.id, comment_id=comment.id) }}" method="POST" class="comment-edit-form" hidden>
                         <textarea name="content" required>{{ comment.content }}</textarea>
                         <div class="comment-edit-buttons">
                             <button type="submit" class="comment-save-btn">저장</button>
                             <button type="button" class="comment-cancel-btn" onclick="cancelCommentEdit({{ comment.id }})">취소</button>
                         </div>
                     </form>
+                    {% endif %}
+                    {% if is_comment_owner or is_admin %}
                     <div id="comment-buttons-{{ comment.id }}" class="comment-buttons">
+                        {% if is_comment_owner %}
                         <button type="button" class="comment-edit-btn" onclick="showCommentEdit({{ comment.id }})">수정</button>
-                        <form action="/community/{{ post.id }}/comments/{{ comment.id }}/delete" method="POST" onsubmit="return confirm('이 댓글을 삭제하시겠습니까?');">
+                        {% endif %}
+                        <form action="{{ url_for('community.comment_delete', post_id=post.id, comment_id=comment.id) }}" method="POST" onsubmit="return confirm('이 댓글을 삭제하시겠습니까?');">
                             <button type="submit" class="comment-delete-btn">삭제</button>
                         </form>
                     </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             {% else %}
@@ -143,19 +159,20 @@
 <script>
     const trigger = document.getElementById('menuTrigger');
     const menu = document.getElementById('actionMenu');
-    trigger.addEventListener('click', function(event) {
+    if (trigger && menu) trigger.addEventListener('click', function(event) {
         event.stopPropagation();
         menu.hidden = !menu.hidden;
         trigger.setAttribute('aria-expanded', String(!menu.hidden));
     });
     document.addEventListener('click', function(event) {
-        if (!document.getElementById('postActions').contains(event.target)) {
+        const postActions = document.getElementById('postActions');
+        if (postActions && menu && trigger && !postActions.contains(event.target)) {
             menu.hidden = true;
             trigger.setAttribute('aria-expanded', 'false');
         }
     });
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && menu && trigger) {
             menu.hidden = true;
             trigger.setAttribute('aria-expanded', 'false');
         }
@@ -163,7 +180,7 @@
     async function deletePost() {
         if (!confirm('정말 이 게시글을 삭제하시겠습니까?')) return;
         try {
-            const response = await fetch('/community/{{ post.id }}/delete', {method:'POST'});
+            const response = await fetch("{{ url_for('community.community_delete', post_id=post.id) }}", {method:'POST'});
             if (response.ok) window.location.href = '/community';
             else alert('게시글 삭제에 실패했습니다.');
         } catch(error) {

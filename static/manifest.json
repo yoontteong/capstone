@@ -1,7 +1,7 @@
 
 {
   "name": "반려견 제주 여행 서비스",
-  "short_name": "댕댕여행",
+  "short_name": "Pinksole",
   "description": "AI 기반 반려견 제주 여행 추천 서비스",
   "start_url": "/",
   "scope": "/",

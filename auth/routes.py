@@ -303,36 +303,46 @@ def login():
     if request.method == "GET":
         return render_template("auth/login.html")
 
-    username = request.form.get("username")
-    password = request.form.get("password")
+    username = request.form.get("username", "").strip()
+    password = request.form.get("password", "")
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT
-            id,
-            username,
-            password,
-            nickname
-        FROM users
-        WHERE username = %s
-    """, (username,))
+    try:
+        cursor.execute("""
+            SELECT
+                id,
+                username,
+                password,
+                nickname,
+                role
+            FROM users
+            WHERE username = %s
+        """, (username,))
 
-    user = cursor.fetchone()
+        user = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+    finally:
+        cursor.close()
+        conn.close()
 
     if not user or not check_password_hash(
         user["password"],
         password
     ):
-        return "아이디 또는 비밀번호가 올바르지 않습니다."
+        return "아이디 또는 비밀번호가 올바르지 않습니다.", 401
 
+    # 기존 세션 정보 초기화
+    session.clear()
+
+    # 로그인 사용자 정보 저장
     session["user_id"] = user["id"]
     session["username"] = user["username"]
     session["nickname"] = user["nickname"]
+
+    # 관리자 권한 저장
+    session["role"] = user["role"]
 
     return redirect("/")
 
@@ -344,8 +354,6 @@ def login():
 @auth_bp.route("/logout")
 def logout():
 
-    session.pop("user_id", None)
-    session.pop("username", None)
-    session.pop("nickname", None)
+    session.clear()
 
     return redirect("/")

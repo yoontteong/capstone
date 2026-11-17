@@ -1,1018 +1,198 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>MY | 반려견 제주 여행</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f7f8fa;
-            color: #333;
-        }
-
-
-        .page {
-            width: 100%;
-            max-width: 620px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding-bottom: 50px;
-        }
-
-
-        /* ==============================
-           상단
-        ============================== */
-
-        .header {
-            position: relative;
-            padding: 28px 24px 15px;
-            text-align: center;
-        }
-
-
-        .header h1 {
-            margin: 0;
-            font-size: 22px;
-        }
-
-
-        .home-button {
-            position: absolute;
-            left: 24px;
-            top: 29px;
-
-            color: #555;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-
-        /* ==============================
-           프로필
-        ============================== */
-
-        .profile-section {
-            text-align: center;
-            padding: 25px 20px 30px;
-        }
-
-
-        .profile-image-wrapper {
-            width: 105px;
-            height: 105px;
-
-            margin: 0 auto 15px;
-
-            border-radius: 50%;
-            background: #fff1ee;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            overflow: hidden;
-        }
-
-
-        .profile-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-
-        .default-profile {
-            font-size: 48px;
-        }
-
-
-        .nickname {
-            margin: 0;
-            font-size: 21px;
-            font-weight: bold;
-        }
-
-
-        .email {
-            margin-top: 6px;
-            color: #999;
-            font-size: 14px;
-        }
-
-
-        .profile-edit-button {
-            margin-top: 17px;
-            padding: 9px 22px;
-
-            display: inline-block;
-
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-
-            font-size: 13px;
-            color: #555;
-
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-
-        .profile-edit-button:hover {
-            background: #f7f7f7;
-        }
-
-
-        /* ==============================
-           구분선
-        ============================== */
-
-        .divider {
-            height: 10px;
-            background: #f7f8fa;
-        }
-
-
-        /* ==============================
-           메이트 신뢰도
-        ============================== */
-
-        .mate-section {
-            padding: 25px 24px;
-        }
-
-
-        .mate-card {
-            padding: 22px 20px;
-
-            border: 1px solid #eee;
-            border-radius: 20px;
-
-            background: #fff;
-        }
-
-
-        .mate-title-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-
-            margin-bottom: 22px;
-        }
-
-
-        .mate-title {
-            margin: 0;
-
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-
-        .mate-info-icon {
-            width: 19px;
-            height: 19px;
-
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            border: 2px solid #aaa;
-            border-radius: 50%;
-
-            color: #999;
-
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-
-        .trust-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 18px;
-        }
-
-
-        .trust-score {
-            font-size: 35px;
-            font-weight: bold;
-            color: #ff7968;
-        }
-
-
-        .trust-score.empty {
-            color: #aaa;
-        }
-
-
-        .trust-face {
-            width: 72px;
-            height: 72px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: #fff1ee;
-
-            font-size: 39px;
-        }
-
-
-        .trust-bar {
-            width: 100%;
-            height: 10px;
-
-            margin-bottom: 28px;
-
-            background: #eee;
-            border-radius: 20px;
-
-            overflow: hidden;
-        }
-
-
-        .trust-bar-fill {
-            height: 100%;
-
-            background: #ff7968;
-
-            border-radius: 20px;
-
-            transition: width 0.3s ease;
-        }
-
-
-        .mate-stat {
-            margin-top: 22px;
-        }
-
-
-        .mate-stat:first-of-type {
-            margin-top: 0;
-        }
-
-
-        .mate-stat-title {
-            margin-bottom: 7px;
-
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-
-        .mate-stat-description {
-            color: #999;
-
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-
-        /* ==============================
-           공통 영역
-        ============================== */
-
-        .section {
-            padding: 25px 24px;
-        }
-
-
-        .section-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 17px;
-        }
-
-
-        .section-title {
-            margin: 0;
-            font-size: 17px;
-        }
-
-
-        .add-dog {
-            color: #ff7968;
-            font-size: 13px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-
-        /* ==============================
-           반려견
-        ============================== */
-
-        .dog-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-
-        .dog-card {
-            display: flex;
-            align-items: center;
-
-            padding: 16px;
-
-            border: 1px solid #eee;
-            border-radius: 15px;
-
-            text-decoration: none;
-            color: inherit;
-
-            transition: 0.2s;
-        }
-
-
-        .dog-card:hover {
-            border-color: #ffb7ad;
-            background: #fffafa;
-        }
-
-
-        .dog-icon {
-            width: 55px;
-            height: 55px;
-
-            flex-shrink: 0;
-
-            border-radius: 50%;
-            background: #fff1ee;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 27px;
-
-            margin-right: 15px;
-        }
-
-
-        .dog-info {
-            flex: 1;
-        }
-
-
-        .dog-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-
-        .dog-detail {
-            color: #888;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-
-        .arrow {
-            color: #bbb;
-            font-size: 20px;
-        }
-
-
-        .empty-dog {
-            text-align: center;
-
-            padding: 30px 20px;
-
-            background: #fafafa;
-            border-radius: 15px;
-
-            color: #999;
-            font-size: 14px;
-        }
-
-
-        .empty-dog a {
-            display: inline-block;
-
-            margin-top: 12px;
-
-            color: #ff7968;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-
-        /* ==============================
-           메뉴
-        ============================== */
-
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        .menu-item {
-            min-height: 58px;
-
-            display: flex;
-            align-items: center;
-
-            border-bottom: 1px solid #eee;
-
-            color: #333;
-            text-decoration: none;
-
-            font-size: 15px;
-        }
-
-
-        .menu-item:last-child {
-            border-bottom: none;
-        }
-
-
-        .menu-icon {
-            width: 38px;
-            font-size: 20px;
-        }
-
-
-        .menu-name {
-            flex: 1;
-        }
-
-
-        .menu-arrow {
-            color: #bbb;
-        }
-
-
-        .logout {
-            color: #888;
-        }
-
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#FFFFFF">
+  <title>마이페이지 | PinkSole</title>
+  <!-- 게시글 작성 페이지와 동일한 공통 내비게이션 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+  <style>
+    :root {
+      --primary:#49B9BF; --primary-dark:#278D95; --primary-light:#E7F7F7;
+      --accent:#FF9808; --accent-dark:#E17B00; --accent-light:#FFF4E4;
+      --ink:#202B33; --muted:#7C8A93; --border:#E8EEF0;
+      --bg:#F3F6F7; --white:#FFFFFF;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}button{font:inherit}
+    .app{width:100%;max-width:460px;min-height:100vh;min-height:100dvh;margin:0 auto;background:#fff;padding:24px 20px 125px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:31px;min-height:34px}
+    .brand{font-size:11px;font-weight:900;letter-spacing:.04em;color:var(--primary-dark)}
+    .top-title{font-size:16px;font-weight:800;color:var(--ink)}
+    .back-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:25px;line-height:1}
+    .intro{padding:0 0 22px}
+    .eyebrow{margin:0 0 10px;color:var(--primary-dark);font-weight:900;letter-spacing:.12em;font-size:11px}
+    .intro h1{margin:0;font-size:27px;font-weight:800;line-height:1.4;letter-spacing:-.055em}
+    .intro h1 em{font-style:normal;color:var(--accent-dark)}
+    .intro-caption{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.7}
+    .profile{border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;align-items:center;gap:14px;background:linear-gradient(115deg,#fff,#F8FCFC)}
+    .avatar{width:66px;height:66px;flex-shrink:0;background:var(--primary-light);border-radius:20px;display:grid;place-items:center;font-size:30px;overflow:hidden}
+    .avatar img{width:100%;height:100%;display:block;object-fit:cover}
+    .profile-copy{flex:1;min-width:0}
+    .profile-name{margin:0 0 5px;font-size:18px;font-weight:800;overflow-wrap:anywhere}
+    .profile-email{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+    .edit-profile{display:inline-flex;align-items:center;gap:4px;margin-top:11px;font-size:12px;font-weight:800;color:var(--accent-dark);padding:8px 12px;border-radius:12px;background:var(--accent-light)}
+    .edit-profile:hover{background:#FFE6BC}
+    .section{padding-top:30px}
+    .section-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+    .section-title{margin:0;font-size:17px;font-weight:800;letter-spacing:-.03em;line-height:1.4}
+    .section-sub{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.55}
+    .section-link{white-space:nowrap;color:var(--accent-dark);font-size:12px;font-weight:800;padding:8px 11px;background:var(--accent-light);border-radius:10px}
+    .trust{border:1px solid var(--border);border-radius:20px;overflow:hidden;background:#fff}
+    .trust-top{padding:20px 19px 18px;background:linear-gradient(120deg,#F1FAFA,#FFFDF9)}
+    .trust-topline{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .trust-label{font-size:12px;font-weight:800;color:var(--primary-dark)}
+    .trust-help{width:23px;height:23px;border:1px solid #CDE5E7;border-radius:50%;background:#fff;color:var(--primary-dark);font-size:12px;font-weight:800;cursor:help}
+    .trust-score-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 17px}
+    .trust-score{font-size:39px;font-weight:900;line-height:1.1;letter-spacing:-1.5px;color:var(--accent-dark)}
+    .trust-score span{font-size:17px;margin-left:3px;letter-spacing:0;font-weight:700}
+    .trust-face{width:60px;height:60px;border-radius:18px;background:var(--accent-light);display:grid;place-items:center;font-size:31px}
+    .trust-track{height:10px;background:#DBECEE;border-radius:99px;overflow:hidden}
+    .trust-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width .45s ease}
+    .trust-scale{margin-top:8px;display:flex;justify-content:space-between;color:#92A5AB;font-size:10px}
+    .trust-stats{display:grid;grid-template-columns:1fr 1fr;padding:18px 9px}
+    .trust-stat{padding:3px 12px;min-width:0}
+    .trust-stat+.trust-stat{border-left:1px solid var(--border)}
+    .stat-title{font-size:12px;font-weight:700;color:var(--muted)}
+    .stat-number{margin:7px 0 4px;font-size:22px;font-weight:800;letter-spacing:-.5px}
+    .stat-number small{font-size:13px;margin-left:2px}
+    .stat-foot{font-size:11px;line-height:1.55;color:#94A0A6}
+    .dogs{display:grid;gap:11px}
+    .dog-card{display:flex;align-items:center;gap:13px;padding:15px;border:1px solid var(--border);border-radius:17px;background:#fff;transition:background .2s,border-color .2s}
+    .dog-card:hover,.menu-item:hover{background:#F8FBFB;border-color:#C7E5E7}
+    .dog-avatar{width:53px;height:53px;flex-shrink:0;display:grid;place-items:center;border-radius:15px;background:var(--primary-light);font-size:26px}
+    .dog-copy{flex:1;min-width:0}
+    .dog-name{margin-bottom:5px;font-size:15px;font-weight:800}
+    .dog-meta{color:var(--muted);font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+    .chevron{color:#A7B4B9;font-size:23px;line-height:1}
+    .empty{padding:26px 18px;text-align:center;border:1px dashed #CDE2E4;border-radius:17px;background:#F8FBFB;color:var(--muted);font-size:13px;line-height:1.8}
+    .empty-emoji{margin-bottom:6px;font-size:27px}
+    .empty a{display:inline-block;margin-top:12px;padding:10px 15px;border-radius:12px;background:var(--accent);color:#252525;font-weight:800}
+    .menu{overflow:hidden;padding:4px 13px;border:1px solid var(--border);border-radius:19px;background:#fff}
+    .menu-item{min-height:61px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding:6px 2px;border-radius:7px;transition:background .2s}
+    .menu-item:last-child{border-bottom:none}
+    .menu-icon{width:37px;height:37px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;background:var(--primary-light);font-size:18px}
+    .menu-item:nth-child(2) .menu-icon,.menu-item:nth-child(4) .menu-icon{background:var(--accent-light)}
+    .menu-copy{flex:1;font-size:14px;font-weight:700}
+    .logout{color:var(--muted)}.logout .menu-icon{background:#F3F6F7}
+    a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+    @media(max-width:360px){.app{padding-left:16px;padding-right:16px}.intro h1{font-size:24px}.profile{padding:15px}.stat-number{font-size:19px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
 </head>
-
-
 <body>
+<div class="app">
+  <header class="topbar">
+    <a href="/" class="back-btn" aria-label="홈으로 돌아가기">←</a>
+    <div class="top-title">마이페이지</div>
+    <div class="brand">PINKSOLE</div>
+  </header>
 
+  <div class="intro">
+    <p class="eyebrow">MY PINKSOLE</p>
+    <h1>우리 강아지와 함께하는<br><em>나의 여행 이야기</em> 🐾</h1>
+    <p class="intro-caption">반려견 정보부터 여행 기록까지, 한눈에 확인해요.</p>
+  </div>
 
-<div class="page">
+  <section class="profile" aria-label="사용자 프로필">
+    <div class="avatar">
+      {% if user.profile_image %}
+        <img src="{{ user.profile_image }}" alt="프로필 사진">
+      {% else %}
+        <span role="img" aria-label="기본 프로필">🐶</span>
+      {% endif %}
+    </div>
+    <div class="profile-copy">
+      <h2 class="profile-name">{{ user.nickname }}</h2>
+      <div class="profile-email">{{ user.email }}</div>
+      <a href="/mypage/edit" class="edit-profile">프로필 수정 <span aria-hidden="true">›</span></a>
+    </div>
+  </section>
 
-
-    <!-- ==============================
-         상단
-    ============================== -->
-
-    <header class="header">
-
-        <a
-            href="/"
-            class="home-button"
-        >
-            ← 홈
-        </a>
-
-        <h1>MY</h1>
-
-    </header>
-
-
-    <!-- ==============================
-         사용자 프로필
-    ============================== -->
-
-    <section class="profile-section">
-
-
-        <div class="profile-image-wrapper">
-
-            {% if user.profile_image %}
-
-                <img
-                    src="{{ user.profile_image }}"
-                    alt="프로필 사진"
-                    class="profile-image"
-                >
-
-            {% else %}
-
-                <div class="default-profile">
-                    🐶
-                </div>
-
-            {% endif %}
-
+  <section class="section" aria-labelledby="trust-title">
+    <div class="section-header">
+      <div><h2 id="trust-title" class="section-title">🤝 메이트 신뢰도</h2><p class="section-sub">함께 여행한 메이트의 평가를 확인해요</p></div>
+    </div>
+    <div class="trust">
+      <div class="trust-top">
+        <div class="trust-topline"><span class="trust-label">나의 신뢰 점수</span><button type="button" class="trust-help" title="함께 여행한 메이트의 평가를 바탕으로 계산됩니다." aria-label="신뢰도 안내: 함께 여행한 메이트의 평가를 바탕으로 계산됩니다.">?</button></div>
+        <div class="trust-score-row">
+          <div class="trust-score">{{ mate_info.trust_score }}<span>점</span></div>
+          <div class="trust-face" aria-hidden="true">
+            {% if mate_info.trust_score >= 90 %}😊
+            {% elif mate_info.trust_score >= 70 %}🙂
+            {% elif mate_info.trust_score >= 50 %}😐
+            {% else %}😕{% endif %}
+          </div>
         </div>
-
-
-        <h2 class="nickname">
-            {{ user.nickname }}
-        </h2>
-
-
-        <div class="email">
-            {{ user.email }}
+        <div class="trust-track" role="progressbar" aria-label="메이트 신뢰도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ mate_info.trust_score }}"><div class="trust-fill" data-score="{{ mate_info.trust_score }}"></div></div>
+        <div class="trust-scale"><span>0점</span><span>100점</span></div>
+      </div>
+      <div class="trust-stats">
+        <div class="trust-stat">
+          <div class="stat-title">함께한 평가</div>
+          <div class="stat-number">{% if mate_info.review_count > 0 %}{{ mate_info.review_count }}<small>개</small>{% else %}–{% endif %}</div>
+          <div class="stat-foot">{% if mate_info.review_count > 0 %}메이트에게 받은 평가{% else %}아직 받은 평가가 없어요{% endif %}</div>
         </div>
-
-
-        <a
-            href="/mypage/edit"
-            class="profile-edit-button"
-        >
-            프로필 수정
-        </a>
-
-
-    </section>
-
-
-    <div class="divider"></div>
-
-
-    <!-- ==============================
-         메이트 신뢰도
-    ============================== -->
-
-    <section class="mate-section">
-
-        <div class="mate-card">
-
-
-            <div class="mate-title-row">
-
-                <h2 class="mate-title">
-                    메이트 신뢰도
-                </h2>
-
-                <span
-                    class="mate-info-icon"
-                    title="함께 여행한 메이트의 평가를 바탕으로 계산됩니다."
-                >
-                    i
-                </span>
-
-            </div>
-
-
-            <!-- 신뢰도 점수 -->
-
-            <div class="trust-main">
-
-                <div class="trust-score">
-                    {{ mate_info.trust_score }}점
-                </div>
-
-                <div class="trust-face">
-
-                    {% if mate_info.trust_score >= 90 %}
-                        😊
-                    {% elif mate_info.trust_score >= 70 %}
-                        🙂
-                    {% elif mate_info.trust_score >= 50 %}
-                        😐
-                    {% else %}
-                        😕
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-
-            <!-- 신뢰도 바 -->
-
-            <div class="trust-bar">
-                <div
-                    class="trust-bar-fill"
-                    data-score="{{ mate_info.trust_score }}"
-                ></div>
-            </div>
-
-
-            <!-- 받은 평가 -->
-
-            <div class="mate-stat">
-
-                {% if mate_info.review_count > 0 %}
-
-                    <div class="mate-stat-title">
-                        함께한 평가
-                        {{ mate_info.review_count }}개
-                    </div>
-
-                    <div class="mate-stat-description">
-                        함께 여행한 메이트에게 받은
-                        평가를 바탕으로 계산했어요.
-                    </div>
-
-                {% else %}
-
-                    <div class="mate-stat-title">
-                        함께한 평가 -개
-                    </div>
-
-                    <div class="mate-stat-description">
-                        표시할 만큼 충분한
-                        메이트 평가가 없어요.
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-
-            <!-- 응답률 -->
-
-            <div class="mate-stat">
-
-                {% if mate_info.response_rate is not none %}
-
-                    <div class="mate-stat-title">
-                        응답률
-                        {{ mate_info.response_rate }}%
-                    </div>
-
-                    <div class="mate-stat-description">
-                        받은 메이트 신청에
-                        응답한 비율이에요.
-                    </div>
-
-                {% else %}
-
-                    <div class="mate-stat-title">
-                        응답률 -%
-                    </div>
-
-                    <div class="mate-stat-description">
-                        표시할 만큼 충분한
-                        메이트 신청 내역이 없어요.
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-
+        <div class="trust-stat">
+          <div class="stat-title">신청 응답률</div>
+          <div class="stat-number">{% if mate_info.response_rate is not none %}{{ mate_info.response_rate }}<small>%</small>{% else %}–{% endif %}</div>
+          <div class="stat-foot">{% if mate_info.response_rate is not none %}메이트 신청에 응답한 비율{% else %}아직 신청 내역이 없어요{% endif %}</div>
         </div>
+      </div>
+    </div>
+  </section>
 
-    </section>
-
-
-    <div class="divider"></div>
-
-
-    <!-- ==============================
-         내 반려견
-    ============================== -->
-
-    <section class="section">
-
-
-        <div class="section-title-row">
-
-            <h2 class="section-title">
-                🐾 내 반려견
-            </h2>
-
-
-            <a
-                href="/dog/register"
-                class="add-dog"
-            >
-                + 반려견 등록
-            </a>
-
-        </div>
-
-
-        {% if dogs %}
-
-            <div class="dog-list">
-
-
-                {% for dog in dogs %}
-
-                    <a
-                        href="/dog/edit/{{ dog.id }}"
-                        class="dog-card"
-                    >
-
-
-                        <div class="dog-icon">
-                            🐶
-                        </div>
-
-
-                        <div class="dog-info">
-
-
-                            <div class="dog-name">
-                                {{ dog.name }}
-                            </div>
-
-
-                            <div class="dog-detail">
-
-                                {% if dog.breed %}
-
-                                    {{ dog.breed }}
-
-                                {% else %}
-
-                                    견종 미등록
-
-                                {% endif %}
-
-
-                                {% if dog.size_category %}
-
-                                    · {{ dog.size_category }}
-
-                                {% endif %}
-
-
-                                <br>
-
-
-                                {% if dog.personality %}
-
-                                    {{ dog.personality }}
-
-                                {% else %}
-
-                                    성향 미등록
-
-                                {% endif %}
-
-                            </div>
-
-
-                        </div>
-
-
-                        <div class="arrow">
-                            ›
-                        </div>
-
-
-                    </a>
-
-                {% endfor %}
-
-
+  <section class="section" aria-labelledby="dog-title">
+    <div class="section-header">
+      <div><h2 id="dog-title" class="section-title">🐾 내 반려견</h2><p class="section-sub">함께 여행할 소중한 친구들</p></div>
+      <a href="/dog/register" class="section-link">+ 반려견 등록</a>
+    </div>
+    {% if dogs %}
+      <div class="dogs">
+        {% for dog in dogs %}
+          <a class="dog-card" href="/dog/edit/{{ dog.id }}">
+            <div class="dog-avatar" aria-hidden="true">🐶</div>
+            <div class="dog-copy">
+              <div class="dog-name">{{ dog.name }}</div>
+              <div class="dog-meta">{{ dog.breed if dog.breed else '견종 미등록' }}{% if dog.size_category %} · {{ dog.size_category }}{% endif %}<br>{{ dog.personality if dog.personality else '성향 미등록' }}</div>
             </div>
-
-
-        {% else %}
-
-
-            <div class="empty-dog">
-
-                아직 등록된 반려견이 없습니다.
-
-                <br>
-
-                <a href="/dog/register">
-                    반려견 등록하기
-                </a>
-
-            </div>
-
-
-        {% endif %}
-
-
-    </section>
-
-
-    <div class="divider"></div>
-
-
-    <!-- ==============================
-         나의 여행
-    ============================== -->
-
-    <section class="section">
-
-
-        <h2
-            class="section-title"
-            style="margin-bottom: 12px;"
-        >
-            나의 여행
-        </h2>
-
-
-        <div class="menu-list">
-
-            
-        <!-- 내 메이트 채팅 -->
-        <a
-            href="{{ url_for('community.mate_chat_list') }}"
-            class="menu-item"
-        >
-            <span class="menu-icon">
-                💬
-            </span>
-
-            <span class="menu-name">
-                내 메이트 채팅
-            </span>
-
-            <span class="menu-arrow">
-                ›
-            </span>
-        </a>
-
-
-
-            <a
-                href="/trips"
-                class="menu-item"
-            >
-
-                <span class="menu-icon">
-                    ✈️
-                </span>
-
-                <span class="menu-name">
-                    저장한 여행 일정
-                </span>
-
-                <span class="menu-arrow">
-                    ›
-                </span>
-
-            </a>
-
-
-            <a
-                href="/activity/history"
-                class="menu-item"
-            >
-
-                <span class="menu-icon">
-                    📍
-                </span>
-
-                <span class="menu-name">
-                    반려견 활동 기록
-                </span>
-
-                <span class="menu-arrow">
-                    ›
-                </span>
-
-            </a>
-
-
-            <a
-                href="/mypage/reviews"
-                class="menu-item"
-            >
-
-                <span class="menu-icon">
-                    💬
-                </span>
-
-                <span class="menu-name">
-                    내가 작성한 후기
-                </span>
-
-                <span class="menu-arrow">
-                    ›
-                </span>
-
-            </a>
-
-
-            <a
-                href="/checklists"
-                class="menu-item"
-            >
-
-                <span class="menu-icon">
-                    🧳
-                </span>
-
-                <span class="menu-name">
-                    여행 체크리스트
-                </span>
-
-                <span class="menu-arrow">
-                    ›
-                </span>
-
-            </a>
-
-
-        </div>
-
-
-    </section>
-
-
-    <div class="divider"></div>
-
-
-    <!-- ==============================
-         계정
-    ============================== -->
-
-    <section class="section">
-
-
-        <div class="menu-list">
-
-
-            <a
-                href="#"
-                class="menu-item"
-            >
-
-                <span class="menu-icon">
-                    ⚙️
-                </span>
-
-                <span class="menu-name">
-                    계정 설정
-                </span>
-
-                <span class="menu-arrow">
-                    ›
-                </span>
-
-            </a>
-
-
-            <a
-                href="/logout"
-                class="menu-item logout"
-            >
-
-                <span class="menu-icon">
-                    🚪
-                </span>
-
-                <span class="menu-name">
-                    로그아웃
-                </span>
-
-            </a>
-
-
-        </div>
-
-
-    </section>
-
-
+            <span class="chevron" aria-hidden="true">›</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty"><div class="empty-emoji">🐕</div>아직 등록된 반려견이 없어요.<br>우리 강아지를 등록하고 여행을 시작해 보세요!<br><a href="/dog/register">반려견 등록하기</a></div>
+    {% endif %}
+  </section>
+
+  <section class="section" aria-labelledby="travel-title">
+    <div class="section-header"><div><h2 id="travel-title" class="section-title">🧳 나의 여행</h2><p class="section-sub">여행의 추억과 준비를 한곳에</p></div></div>
+    <div class="menu">
+      <a href="/trips" class="menu-item"><span class="menu-icon" aria-hidden="true">🗓️</span><span class="menu-copy">저장한 여행 일정</span><span class="chevron" aria-hidden="true">›</span></a>
+      <a href="/checklists" class="menu-item"><span class="menu-icon" aria-hidden="true">✅</span><span class="menu-copy">여행 체크리스트</span><span class="chevron" aria-hidden="true">›</span></a>
+      <a href="/activity/history" class="menu-item"><span class="menu-icon" aria-hidden="true">📍</span><span class="menu-copy">반려견 활동 기록</span><span class="chevron" aria-hidden="true">›</span></a>
+      <a href="{{ url_for('community.mate_chat_list') }}" class="menu-item"><span class="menu-icon" aria-hidden="true">💬</span><span class="menu-copy">내 메이트 채팅</span><span class="chevron" aria-hidden="true">›</span></a>
+      <a href="/mypage/reviews" class="menu-item"><span class="menu-icon" aria-hidden="true">✍️</span><span class="menu-copy">내가 작성한 후기</span><span class="chevron" aria-hidden="true">›</span></a>
+    </div>
+  </section>
+
+  <section class="section" aria-label="계정 메뉴">
+    <div class="menu"><a href="/logout" class="menu-item logout"><span class="menu-icon" aria-hidden="true">🚪</span><span class="menu-copy">로그아웃</span><span class="chevron" aria-hidden="true">›</span></a></div>
+  </section>
 </div>
 
+{% set active_page = 'mypage' %}
+{% include 'components/bottomnav.html' %}
 <script>
-    const trustBar =
-        document.querySelector(".trust-bar-fill");
-
-    if (trustBar) {
-        const score =
-            Number(trustBar.dataset.score) || 0;
-
-        trustBar.style.width =
-            Math.max(0, Math.min(score, 100)) + "%";
-    }
+  const trustBar = document.querySelector('.trust-fill');
+  if (trustBar) {
+    const score = Number(trustBar.dataset.score);
+    trustBar.style.width = `${Number.isFinite(score) ? Math.max(0, Math.min(score, 100)) : 0}%`;
+  }
 </script>
-
-
 </body>
-
-
-
 </html>

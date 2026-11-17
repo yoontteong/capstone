@@ -33,6 +33,7 @@ from mypage.routes import profile_bp
 from db import get_connection
 from activity.service import calculate_activity_summary
 from config import KAKAO_REST_API_KEY
+from admin import admin_bp
 
 
 app = Flask(__name__)
@@ -43,6 +44,7 @@ app.register_blueprint(community)
 app.register_blueprint(dog_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(admin_bp)
 
 
 @app.route("/")

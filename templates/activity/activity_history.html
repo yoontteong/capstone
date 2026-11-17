@@ -1,287 +1,163 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>활동 기록</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>활동 기록 | PINKSOLE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
     <style>
-
-        * {
-            box-sizing: border-box;
+        :root {
+            --primary: #49B9BF;
+            --primary-dark: #FF9808;
+            --primary-light: #E7F7F7;
+            --ink: #202B33;
+            --muted: #7C8A93;
+            --border: #E8EEF0;
+            --background: #F3F6F7;
         }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            background: #f5f5f5;
-            font-family: Arial, sans-serif;
-            color: #222;
+            background: var(--background);
+            color: var(--ink);
+            font-family: 'Pretendard', 'Noto Sans KR', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-
         .app {
-            width: 100%;
-            max-width: 460px;
-            min-height: 100vh;
-            margin: 0 auto;
-            padding: 24px 18px 40px;
-            background: white;
+            width: 100%; max-width: 460px; min-height: 100vh;
+            margin: 0 auto; padding: 24px 20px 125px;
+            background: #fff;
         }
-
-        h2 {
-            margin-top: 0;
-            margin-bottom: 6px;
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-bottom: 35px;
         }
-
-        .subtitle {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 25px;
+        .back-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; color: var(--ink); text-decoration: none;
         }
-
+        .back-btn svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .top-title { font-size: 16px; font-weight: 800; }
+        .brand { color: var(--primary-dark); font-size: 11px; font-weight: 900; letter-spacing: .04em; }
+        .intro { margin-bottom: 28px; }
+        .eyebrow { margin-bottom: 10px; color: var(--primary-dark); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+        .intro h1 { margin: 0 0 12px; font-size: 27px; font-weight: 800; letter-spacing: -.05em; line-height: 1.35; }
+        .description { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+        .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; }
+        .section-title { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -.03em; }
+        .section-count { padding: 6px 10px; border-radius: 999px; background: var(--primary-light); color: var(--primary-dark); font-size: 12px; font-weight: 800; }
+        .record-list { display: grid; gap: 14px; }
         .record-card {
-            display: block;
-
-            padding: 18px;
-            margin-bottom: 14px;
-
-            border: 1px solid #eee;
-            border-radius: 16px;
-
-            text-decoration: none;
-            color: inherit;
-
-            background: #fafafa;
+            display: block; padding: 18px; border: 1px solid var(--border);
+            border-radius: 19px; background: #fff; color: inherit;
+            text-decoration: none; transition: border-color .2s, box-shadow .2s, transform .2s;
         }
-
-        .record-card:hover {
-            background: #f3f3f3;
+        .record-card:hover, .record-card:focus-visible { border-color: var(--primary); box-shadow: 0 6px 20px rgba(39,141,149,.09); }
+        .record-card:focus-visible, .action-primary:focus-visible, .action-secondary:focus-visible, .back-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+        .record-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+        .dog-header { display: flex; align-items: center; min-width: 0; gap: 10px; }
+        .dog-avatar { display: flex; align-items: center; justify-content: center; flex: none; width: 43px; height: 43px; border-radius: 14px; background: var(--primary-light); font-size: 22px; }
+        .dog-name { overflow-wrap: anywhere; font-size: 16px; font-weight: 800; }
+        .date { flex: none; color: var(--muted); font-size: 11px; white-space: nowrap; }
+        .dog-info { margin: 0 0 17px 53px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+        .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .stat { min-width: 0; padding: 13px 5px; background: #F7FAFA; border-radius: 12px; text-align: center; }
+        .stat-value { color: var(--primary-dark); font-size: 13px; font-weight: 800; line-height: 1.5; overflow-wrap: anywhere; }
+        .stat-label { margin-top: 4px; color: var(--muted); font-size: 11px; }
+        .card-footer { display: flex; justify-content: flex-end; align-items: center; margin-top: 15px; color: var(--primary-dark); font-size: 12px; font-weight: 800; }
+        .card-footer span { margin-left: 5px; font-size: 16px; }
+        .empty { padding: 42px 18px; border: 1px dashed #C9DCDD; border-radius: 19px; background: #F8FBFB; text-align: center; }
+        .empty-icon { display: flex; align-items: center; justify-content: center; width: 62px; height: 62px; margin: 0 auto 15px; border-radius: 20px; background: var(--primary-light); font-size: 30px; }
+        .empty-title { margin: 0 0 7px; font-size: 15px; font-weight: 800; }
+        .empty-description { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+        .actions { display: grid; gap: 11px; margin-top: 26px; }
+        .action-primary, .action-secondary {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 52px; padding: 13px 15px; border-radius: 15px;
+            text-decoration: none; text-align: center; font-size: 14px; font-weight: 800;
+            transition: background .2s;
         }
-
-        .record-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 14px;
+        .action-primary { color: white; background: var(--primary); box-shadow: 0 6px 16px rgba(73,185,191,.18); }
+        .action-primary:hover { background: var(--primary-dark); }
+        .action-secondary { color: var(--primary-dark); background: var(--primary-light); }
+        .action-secondary:hover { background: #D8F0F0; }
+        @media (max-width: 360px) {
+            .app { padding-left: 16px; padding-right: 16px; }
+            .record-card { padding: 14px; }
+            .stat-value { font-size: 12px; }
+            .date { font-size: 10px; }
         }
-
-        .dog-name {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .date {
-            color: #888;
-            font-size: 12px;
-        }
-
-        .dog-info {
-            margin-bottom: 14px;
-
-            color: #777;
-            font-size: 13px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .stat {
-            text-align: center;
-
-            padding: 10px 5px;
-
-            background: white;
-            border-radius: 10px;
-        }
-
-        .stat-value {
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            margin-top: 4px;
-
-            color: #999;
-            font-size: 11px;
-        }
-
-        .empty {
-            padding: 50px 0;
-
-            color: #999;
-            text-align: center;
-        }
-
-        .buttons {
-            margin-top: 25px;
-        }
-
-        .button {
-            display: block;
-
-            width: 100%;
-            padding: 14px;
-
-            margin-top: 10px;
-
-            border-radius: 12px;
-
-            text-align: center;
-            text-decoration: none;
-
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .activity-button {
-            background: #4caf50;
-            color: white;
-        }
-
-        .home-button {
-            background: #eee;
-            color: #555;
-        }
-
     </style>
-
 </head>
-
 <body>
-
 <div class="app">
-
-    <h2>🐾 활동 기록</h2>
-
-    <div class="subtitle">
-        반려견과 함께한 활동을 확인해보세요.
-    </div>
-
-
-    {% if records %}
-
-        {% for record in records %}
-
-        <a
-            class="record-card"
-            href="/activity/history/{{ record.id }}"
-        >
-
-            <div class="record-top">
-
-                <div class="dog-name">
-                    🐶 {{ record.dog_name }}
-                </div>
-
-                <div class="date">
-                    {{ record.activity_date.strftime('%Y.%m.%d') }}
-                </div>
-
-            </div>
-
-
-            <div class="dog-info">
-
-                {% if record.breed %}
-                    {{ record.breed }}
-                {% endif %}
-
-                {% if record.size_category %}
-                    · {{ record.size_category }}
-                {% endif %}
-
-            </div>
-
-
-            <div class="stats">
-
-                <div class="stat">
-
-                    <div class="stat-value">
-                        {{ "%.2f"|format(record.distance_km) }} km
-                    </div>
-
-                    <div class="stat-label">
-                        이동거리
-                    </div>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <div class="stat-value">
-
-                        {{ record.duration_seconds // 60 }}분
-                        {{ record.duration_seconds % 60 }}초
-
-                    </div>
-
-                    <div class="stat-label">
-                        활동시간
-                    </div>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <div class="stat-value">
-                        {{ "%.1f"|format(record.average_speed) }}
-                    </div>
-
-                    <div class="stat-label">
-                        평균 km/h
-                    </div>
-
-                </div>
-
-            </div>
-
+    <header class="topbar">
+        <a href="/" class="back-btn" aria-label="홈으로 돌아가기">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"></path><path d="M12 19L5 12L12 5"></path></svg>
         </a>
+        <div class="top-title">활동 기록</div>
+        <div class="brand">PINKSOLE</div>
+    </header>
 
-        {% endfor %}
+    <section class="intro">
+        <div class="eyebrow">OUR WALKING MOMENTS</div>
+        <h1>함께 걸은 소중한<br>발자국을 모아봐요 🐾</h1>
+        <p class="description">반려견과 함께한 산책과 활동을<br>한눈에 확인할 수 있어요.</p>
+    </section>
 
-
-    {% else %}
-
-        <div class="empty">
-
-            아직 저장된 활동 기록이 없습니다.<br><br>
-
-            반려견과 산책을 시작해보세요! 🐶
-
+    <section aria-label="저장된 활동 기록">
+        <div class="section-heading">
+            <h2 class="section-title">나의 활동 기록</h2>
+            <span class="section-count">{{ records|length if records else 0 }}개</span>
         </div>
+        {% if records %}
+        <div class="record-list">
+            {% for record in records %}
+            <a class="record-card" href="/activity/history/{{ record.id }}">
+                <div class="record-top">
+                    <div class="dog-header">
+                        <div class="dog-avatar" aria-hidden="true">🐶</div>
+                        <div class="dog-name">{{ record.dog_name }}</div>
+                    </div>
+                    <time class="date">{{ record.activity_date.strftime('%Y.%m.%d') }}</time>
+                </div>
+                <div class="dog-info">
+                    {% if record.breed %}{{ record.breed }}{% endif %}
+                    {% if record.size_category %}{% if record.breed %} · {% endif %}{{ record.size_category }}{% endif %}
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">{{ "%.2f"|format(record.distance_km) }} km</div>
+                        <div class="stat-label">이동 거리</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ record.duration_seconds // 60 }}분 {{ record.duration_seconds % 60 }}초</div>
+                        <div class="stat-label">활동 시간</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ "%.1f"|format(record.average_speed) }}</div>
+                        <div class="stat-label">평균 속도 (km/h)</div>
+                    </div>
+                </div>
+                <div class="card-footer">자세히 보기 <span aria-hidden="true">›</span></div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">
+            <div class="empty-icon" aria-hidden="true">🐾</div>
+            <p class="empty-title">아직 저장된 활동 기록이 없어요</p>
+            <p class="empty-description">반려견과 첫 산책을 시작하고<br>소중한 순간을 기록해 보세요!</p>
+        </div>
+        {% endif %}
+    </section>
 
-    {% endif %}
-
-
-    <div class="buttons">
-
-        <a
-            href="/activity"
-            class="button activity-button">
-            새로운 활동 기록
-        </a>
-
-        <a
-            href="/"
-            class="button home-button">
-            메인으로 돌아가기
-        </a>
-
-    </div>
-
+    <nav class="actions" aria-label="활동 기록 메뉴">
+        <a href="/activity" class="action-primary"><span aria-hidden="true">＋</span> 새로운 활동 기록</a>
+        <a href="/" class="action-secondary">메인으로 돌아가기</a>
+    </nav>
 </div>
-
+{% set active_page = '' %}
+{% include 'components/bottomnav.html' %}
 </body>
-
 </html>

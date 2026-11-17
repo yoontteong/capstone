@@ -3,7 +3,8 @@ from flask import (
     request,
     redirect,
     url_for,
-    session
+    session,
+    abort
 )
 from db import get_connection
 
@@ -178,6 +179,7 @@ def community_detail(post_id):
     cursor.execute("""
         SELECT
             id,
+            user_id,
             author,
             title,
             content,
@@ -204,18 +206,12 @@ def community_detail(post_id):
     # 댓글 조회
     cursor.execute("""
         SELECT
-            id,
-            post_id,
-            author,
-            content,
-            created_at,
-            updated_at
+            id, post_id, user_id, author,
+            content, created_at, updated_at
         FROM comments
         WHERE post_id = %s
         ORDER BY id ASC
-    """, (
-        post_id,
-    ))
+    """, (post_id,))
 
     comments = cursor.fetchall()
 
@@ -238,89 +234,58 @@ def community_detail(post_id):
 )
 def community_edit(post_id):
 
+    if "user_id" not in session:
+        return redirect("/login")
+
     conn = get_connection()
-    cursor = conn.cursor(
-        dictionary=True
-    )
+    cursor = conn.cursor(dictionary=True)
 
-    # 수정 페이지
-    if request.method == "GET":
-
+    try:
         cursor.execute("""
-            SELECT
-                id,
-                author,
-                title,
-                content
+            SELECT id, user_id, author, title, content
             FROM posts
             WHERE id = %s
-        """, (
-            post_id,
-        ))
+        """, (post_id,))
 
         post = cursor.fetchone()
 
-        cursor.close()
-        conn.close()
-
         if not post:
-            return (
-                "게시글을 찾을 수 없습니다.",
-                404
+            abort(404)
+
+        # 본인 글만 수정 가능
+        if str(post["user_id"]) != str(session["user_id"]):
+            abort(403)
+
+        if request.method == "GET":
+            return render_template(
+                "community/community_edit.html",
+                post=post
             )
 
-        return render_template(
-            "community/community_edit.html",
-            post=post
-        )
+        title = request.form.get("title", "").strip()
+        content = request.form.get("content", "").strip()
 
-    # 수정 저장
-    author = request.form.get(
-        "author",
-        ""
-    ).strip()
+        if not title or not content:
+            return "제목과 내용을 모두 입력해주세요.", 400
 
-    title = request.form.get(
-        "title",
-        ""
-    ).strip()
+        # 작성자명은 수정하지 않음
+        cursor.execute("""
+            UPDATE posts
+            SET title = %s,
+                content = %s
+            WHERE id = %s AND user_id = %s
+        """, (
+            title,
+            content,
+            post_id,
+            post["user_id"]
+        ))
 
-    content = request.form.get(
-        "content",
-        ""
-    ).strip()
+        conn.commit()
 
-    if (
-        not author
-        or not title
-        or not content
-    ):
+    finally:
         cursor.close()
         conn.close()
-
-        return (
-            "작성자, 제목, 내용을 모두 입력해주세요.",
-            400
-        )
-
-    cursor.execute("""
-        UPDATE posts
-        SET
-            author = %s,
-            title = %s,
-            content = %s
-        WHERE id = %s
-    """, (
-        author,
-        title,
-        content,
-        post_id
-    ))
-
-    conn.commit()
-
-    cursor.close()
-    conn.close()
 
     return redirect(
         url_for(
@@ -328,7 +293,6 @@ def community_edit(post_id):
             post_id=post_id
         )
     )
-
 
 # =========================
 # 게시글 삭제
@@ -339,27 +303,49 @@ def community_edit(post_id):
 )
 def community_delete(post_id):
 
+    if "user_id" not in session:
+        return redirect("/login")
+
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        DELETE FROM posts
-        WHERE id = %s
-    """, (
-        post_id,
-    ))
+    try:
+        cursor.execute("""
+            SELECT user_id
+            FROM posts
+            WHERE id = %s
+        """, (post_id,))
 
-    conn.commit()
+        post = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+        if not post:
+            abort(404)
+
+        is_author = (
+            str(post["user_id"]) == str(session["user_id"])
+        )
+
+        is_admin = (
+            session.get("role") == "admin"
+        )
+
+        if not (is_author or is_admin):
+            abort(403)
+
+        cursor.execute("""
+            DELETE FROM posts
+            WHERE id = %s
+        """, (post_id,))
+
+        conn.commit()
+
+    finally:
+        cursor.close()
+        conn.close()
 
     return redirect(
-        url_for(
-            "community.community_list"
-        )
+        url_for("community.community_list")
     )
-
 
 # =========================
 # 댓글 작성
@@ -370,43 +356,44 @@ def community_delete(post_id):
 )
 def comment_create(post_id):
 
-    author = request.form.get(
-        "author",
-        ""
-    ).strip()
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user_id = session["user_id"]
+    author = session["nickname"]
 
     content = request.form.get(
-        "content",
-        ""
+        "content", ""
     ).strip()
 
-    if not author or not content:
-        return (
-            "작성자와 댓글 내용을 입력해주세요.",
-            400
-        )
+    if not content:
+        return "댓글 내용을 입력해주세요.", 400
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO comments
-        (
+    try:
+        cursor.execute("""
+            INSERT INTO comments
+            (
+                post_id,
+                user_id,
+                author,
+                content
+            )
+            VALUES (%s, %s, %s, %s)
+        """, (
             post_id,
+            user_id,
             author,
             content
-        )
-        VALUES (%s, %s, %s)
-    """, (
-        post_id,
-        author,
-        content
-    ))
+        ))
 
-    conn.commit()
+        conn.commit()
 
-    cursor.close()
-    conn.close()
+    finally:
+        cursor.close()
+        conn.close()
 
     return redirect(
         url_for(
@@ -414,7 +401,6 @@ def comment_create(post_id):
             post_id=post_id
         )
     )
-
 
 # =========================
 # 댓글 수정
@@ -423,40 +409,55 @@ def comment_create(post_id):
     "/community/<int:post_id>/comments/<int:comment_id>/edit",
     methods=["POST"]
 )
-def comment_edit(
-    post_id,
-    comment_id
-):
+def comment_edit(post_id, comment_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
 
     content = request.form.get(
-        "content",
-        ""
+        "content", ""
     ).strip()
 
     if not content:
-        return (
-            "댓글 내용을 입력해주세요.",
-            400
-        )
+        return "댓글 내용을 입력해주세요.", 400
 
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        UPDATE comments
-        SET content = %s
-        WHERE id = %s
-          AND post_id = %s
-    """, (
-        content,
-        comment_id,
-        post_id
-    ))
+    try:
+        cursor.execute("""
+            SELECT user_id
+            FROM comments
+            WHERE id = %s
+              AND post_id = %s
+        """, (comment_id, post_id))
 
-    conn.commit()
+        comment = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+        if not comment:
+            abort(404)
+
+        if str(comment["user_id"]) != str(session["user_id"]):
+            abort(403)
+
+        cursor.execute("""
+            UPDATE comments
+            SET content = %s
+            WHERE id = %s
+              AND post_id = %s
+              AND user_id = %s
+        """, (
+            content,
+            comment_id,
+            post_id,
+            comment["user_id"]
+        ))
+
+        conn.commit()
+
+    finally:
+        cursor.close()
+        conn.close()
 
     return redirect(
         url_for(
@@ -464,8 +465,6 @@ def comment_edit(
             post_id=post_id
         )
     )
-
-
 # =========================
 # 댓글 삭제
 # =========================
@@ -473,27 +472,50 @@ def comment_edit(
     "/community/<int:post_id>/comments/<int:comment_id>/delete",
     methods=["POST"]
 )
-def comment_delete(
-    post_id,
-    comment_id
-):
+def comment_delete(post_id, comment_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
 
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        DELETE FROM comments
-        WHERE id = %s
-          AND post_id = %s
-    """, (
-        comment_id,
-        post_id
-    ))
+    try:
+        cursor.execute("""
+            SELECT user_id
+            FROM comments
+            WHERE id = %s
+              AND post_id = %s
+        """, (comment_id, post_id))
 
-    conn.commit()
+        comment = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+        if not comment:
+            abort(404)
+
+        is_author = (
+            comment["user_id"] is not None
+            and str(comment["user_id"]) == str(session["user_id"])
+        )
+
+        is_admin = (
+            session.get("role") == "admin"
+        )
+
+        if not (is_author or is_admin):
+            abort(403)
+
+        cursor.execute("""
+            DELETE FROM comments
+            WHERE id = %s
+              AND post_id = %s
+        """, (comment_id, post_id))
+
+        conn.commit()
+
+    finally:
+        cursor.close()
+        conn.close()
 
     return redirect(
         url_for(
