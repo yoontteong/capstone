@@ -181,7 +181,23 @@
   </section>
 
   <section class="section" aria-label="계정 메뉴">
-    <div class="menu"><a href="/logout" class="menu-item logout"><span class="menu-icon" aria-hidden="true">🚪</span><span class="menu-copy">로그아웃</span><span class="chevron" aria-hidden="true">›</span></a></div>
+      <div class="menu">
+
+          {% if session.get('role') == 'admin' %}
+          <a href="{{ url_for('admin.dashboard') }}" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">🛡️</span>
+              <span class="menu-copy">관리자 페이지</span>
+              <span class="chevron" aria-hidden="true">›</span>
+          </a>
+          {% endif %}
+
+          <a href="/logout" class="menu-item logout">
+              <span class="menu-icon" aria-hidden="true">🚪</span>
+              <span class="menu-copy">로그아웃</span>
+              <span class="chevron" aria-hidden="true">›</span>
+          </a>
+
+      </div>
   </section>
 </div>
 
