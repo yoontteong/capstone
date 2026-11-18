@@ -458,6 +458,65 @@
         #day-add-panel .add-time-row label { font-size:11px; color:#627981; font-weight:700; }
         #day-add-panel .add-time-row input { margin-top:6px; }
         #day-add-panel .add-btn { margin-top:14px; }
+
+        /* PinkSole unified design — matched to the My Travel screen */
+        :root {
+            --primary:#04DBE8;
+            --primary-dark:#FF8800;
+            --primary-soft:#E8F8F9;
+            --ink:#142739;
+            --muted:#7C8A93;
+            --line:#E8EEF0;
+            --border:#E8EEF0;
+        }
+        body { background:#F3F6F7; color:var(--ink); font-family:'Pretendard','Noto Sans KR',Arial,sans-serif; }
+        .app { width:100%; max-width:460px; min-height:100vh; padding:24px 20px 125px; background:white; box-shadow:none; }
+        .page-topbar { height:auto; min-height:34px; padding:0; margin:0 0 42px; border-bottom:0; }
+        .page-topbar a { font-size:27px; color:var(--ink); }
+        .page-topbar strong { font-size:16px; font-weight:800; }
+        .page-topbar span { color:#FF8800; font-size:11px; font-weight:900; }
+        .badge { padding:0; background:transparent; color:#FF8800; border-radius:0; font-size:11px; font-weight:900; letter-spacing:.1em; margin-bottom:10px; }
+        h1 { color:var(--ink); font-size:27px; font-weight:800; line-height:1.35; margin:0 0 12px; }
+        .lead { margin-bottom:30px; color:var(--muted); font-size:13px; line-height:1.7; }
+        .summary { background:#F8FCFC; border:1px solid var(--line); border-radius:19px; padding:18px; color:#647780; line-height:1.9; }
+        .summary strong { color:var(--ink); }
+        .pattern-box, .schedule-card, .route-map-card { background:white; border:1px solid var(--border); border-radius:20px; box-shadow:0 5px 18px rgba(20,50,60,.045); }
+        .pattern-box { padding:18px; }
+        .pattern-title { color:var(--ink); font-size:16px; font-weight:800; }
+        .pattern-item { background:var(--primary-soft); color:#277984; font-size:11px; font-weight:800; border:0; }
+        .section-overline { color:#FF8800; font-size:11px; font-weight:900; letter-spacing:.12em; }
+        .section-heading,.day-title { color:var(--ink); font-weight:800; }
+        .tabs { background:#F3F6F7; border-radius:15px; padding:5px; top:0; z-index:1001; }
+        .tab-btn { color:#71858D; font-weight:800; }
+        .tab-btn.active { background:#04DBE8; color:#142739; border:0; box-shadow:0 3px 10px rgba(4,219,232,.13); }
+        .route-map-card { overflow:hidden; }
+        #map { width:100%; border:0; border-radius:0; }
+        .route-map-foot { color:var(--ink); }
+        .route-map-foot span { color:#FF8800; }
+        .day-content:before { border-left-color:#DCEFF1; }
+        .schedule-card { padding:17px; margin-bottom:15px; }
+        .schedule-card:before { background:#04DBE8; box-shadow:0 0 0 1px #04DBE8; }
+        .verified { background:#E8F8F9; color:#247C86; }
+        .friendly { background:#FFF3E4; color:#B97013; }
+        .custom { background:#E8F2FA; color:#397FA8; }
+        .time { color:#FF8800; font-weight:800; }
+        .place-name { color:var(--ink); font-weight:800; }
+        .info { color:#647780; }
+        .reason { background:#F6FAFB; color:#607178; }
+        .edit-btn { background:#E8F8F9; color:#277984; }
+        .save-btn,.add-btn,.save-trip-btn { background:#04DBE8; color:#142739; border:0; font-weight:800; }
+        .day-add-btn { background:#E8F8F9; color:#247984; font-weight:800; }
+        .day-add-btn:hover { background:#D7F3F5; }
+        .delete-btn { background:#FFF1F1; color:#B66868; }
+        .detail-toggle { color:#278D95; }
+        .back-btn { background:#F3F6F7; color:#647780; }
+        #day-add-panel { background:#FAFDFD; border-color:#DDECEF; }
+        .place-search-button { background:#FF9808; color:#142739; font-weight:800; }
+        .place-search-item:hover { background:#F0FCFD; border-color:#04DBE8; }
+        .selected-place-hint { background:#E8F8F9; color:#247984; }
+        input:focus,textarea:focus { outline:2px solid #B8EDF1; border-color:#04DBE8; }
+        button:focus-visible,a:focus-visible { outline:3px solid #04DBE8; outline-offset:2px; }
+        @media(max-width:370px) { .app { padding-left:16px; padding-right:16px; } .page-topbar { margin-left:0; margin-right:0; } }
     </style>
 </head>
 
@@ -860,7 +919,7 @@
 
             const numberIcon = L.divIcon({
                 className: "marker-number",
-                html: '<div style="background:#49B9BF;color:white;' +
+                html: '<div style="background:#04DBE8;color:#142739;' +
                       'width:28px;height:28px;border-radius:50%;' +
                       'text-align:center;line-height:28px;' +
                       'font-weight:bold;border:2px solid white;">' +
@@ -882,7 +941,7 @@
 
         if (routePoints.length >= 2) {
             routeLine = L.polyline(routePoints, {
-                color: "#49B9BF",
+                color: "#04CBD7",
                 weight: 5,
                 opacity: 0.8
             }).addTo(map);

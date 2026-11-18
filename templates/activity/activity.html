@@ -51,6 +51,72 @@ button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--primary);outline-offset:2px}
 @media(max-width:360px){.app{padding-left:16px;padding-right:16px}.distance-number{font-size:48px}}
 </style>
+
+<style>
+/* PinkSole · 내 여행 화면 기준 UI 통일 (기능/하단 메뉴 변경 없음) */
+:root {
+  --primary: #00CBD7; --primary-dark: #00A8B4; --primary-light: #E8F8F9;
+  --dark: #FF8800; --soft: #E8F8F9; --ink: #142739;
+  --muted: #8290A4; --line: #E5ECF0; --border: #E5ECF0;
+  --background: #FFFFFF; --orange: #FF8800;
+}
+html {scroll-behavior:smooth}
+body {background:#F6F8F9!important;color:#142739!important;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif!important;}
+.app {max-width:530px!important;background:#FFF!important;box-shadow:0 0 20px rgba(19,43,55,.018)!important;padding-left:24px!important;padding-right:24px!important;padding-bottom:125px!important;}
+.topbar {min-height:37px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:42px!important;}
+.topbar a,.back-btn:not(.button) {color:#142739!important;text-decoration:none;}
+.topbar strong,.top-title {font-weight:850!important;font-size:16px!important;letter-spacing:-.035em;}
+.brand,.topbar .brand,.eyebrow,.section-overline {color:#FF8800!important;font-weight:900!important;}
+.eyebrow {font-size:12px!important;letter-spacing:.13em!important;margin-bottom:17px!important;}
+.app h1,.app .header h1,.intro h1 {color:#142739!important;font-size:28px!important;font-weight:850!important;letter-spacing:-.055em!important;line-height:1.3!important;}
+.description,.subtitle,.intro .description,.app .description,.date {color:#8290A4!important;line-height:1.75!important;font-size:13px!important;}
+.app .header,.intro {margin-bottom:30px!important;}
+.section-label,.section-title,.section-heading h2,.map-heading h2,.detail-title {color:#142739!important;font-weight:850!important;}
+/* 여행 카드처럼 흰 바탕, 얇은 테두리, 부드러운 그림자 */
+.app .dog-picker,.app .dog-box,.app .dog-card,.app .checklist-card,
+.app .record-card,.app .detail-box,.app .item,.app .pattern-box {
+  background:#FFF!important;border:1px solid #E5ECF0!important;
+  border-radius:22px!important;box-shadow:0 5px 18px rgba(30,57,72,.045)!important;
+}
+.app .dog-picker,.app .dog-box,.app .dog-card {padding:18px!important;}
+.app .dog-avatar,.app .dog-icon,.app .empty-icon {background:#E8F8F9!important;border-radius:16px!important;}
+/* 데이터 카드: 눈부신 원색 대신 부드러운 민트 */
+.app .distance-panel,.app .score-box,.app .info-card,.app .form-panel {
+  background:#E8F8F9!important;border:1px solid #D7EFF1!important;
+  border-radius:23px!important;color:#142739!important;box-shadow:none!important;
+}
+.app .distance-caption,.app .distance-number,.app .distance-unit,
+.app .score,.app .score-label {color:#163C47!important;}
+.app .summary-card,.app .stat {background:#FFF!important;border:1px solid #E5ECF0!important;border-radius:16px!important;}
+.app .summary-value,.app .stat-value,.app .value {color:#142739!important;}
+.app .summary-label,.app .stat-label,.app .label {color:#8290A4!important;}
+.app #status,.app .notice {background:#EEF9FA!important;color:#4E737B!important;border-radius:14px!important;}
+.app .checklist-card .progress,.app .progress {background:#E8F8F9!important;color:#187D86!important;border-radius:12px!important;}
+.app .item:has(input:checked) {background:#F1FAFA!important;border-color:#CBECEF!important;}
+.app .item input[type=checkbox] {accent-color:#00A8B4!important;}
+.app #map {border:1px solid #DFE9EE!important;border-radius:20px!important;}
+/* 내 여행의 '새 여행 만들기'와 같은 선명한 청록색 CTA */
+.app .main-action:not(.recording),.app .action-primary,.app .submit-btn,
+.app .create-btn,.app .add-btn,.app .history-btn.button,.app .button.history-btn {
+  background:#00CBD7!important;color:#FFF!important;border:0!important;
+  border-radius:17px!important;font-weight:850!important;
+  box-shadow:0 10px 20px rgba(0,166,180,.12)!important;
+}
+.app .main-action.recording {background:#FFF0EE!important;color:#A7423C!important;border:1px solid #F5CFCC!important;box-shadow:none!important;}
+.app #saveBtn,.app .action-secondary,.app .nav-btn,.app .home-btn.button,.app .button.home-btn {
+  background:#E8F8F9!important;color:#157E87!important;border:1px solid #CDEDEF!important;
+  border-radius:16px!important;box-shadow:none!important;
+}
+.app .delete,.app .delete-btn {background:#FFF1F1!important;color:#C25858!important;border:1px solid #F6DDDD!important;box-shadow:none!important;}
+.app .history-btn:not(.button),.app .card-footer,.app .score-row strong {color:#FF8800!important;}
+.app input:not([type=checkbox]):not([type=radio]),.app select,.app textarea {
+  border:1px solid #E2EAF0!important;border-radius:14px!important;
+  background:#FFF!important;color:#142739!important;
+}
+:focus-visible {outline:3px solid #00A8B4!important;outline-offset:3px;}
+@media(max-width:480px){.app{max-width:460px!important;padding-left:20px!important;padding-right:20px!important;}}
+@media(max-width:360px){.app{padding-left:16px!important;padding-right:16px!important;}}
+</style>
 </head>
 <body>
 <div class="app">

@@ -7,230 +7,141 @@
 
     <title>내 체크리스트</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-            color: #222;
-        }
-
-        .app {
-            max-width: 500px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding: 30px 20px 40px;
-        }
-
-        .header {
-            margin-bottom: 24px;
-        }
-
-        .header h2 {
-            margin: 0 0 8px;
-            font-size: 24px;
-        }
-
-        .description {
-            font-size: 13px;
-            color: #777;
-            line-height: 1.5;
-        }
-
-        .create-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 22px;
-
-            background: #4caf50;
-            color: white;
-
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-
-            border-radius: 14px;
-        }
-
-        .create-btn:hover {
-            background: #43a047;
-        }
-
-        .checklist-card {
-            padding: 20px;
-            margin-bottom: 16px;
-
-            border: 1px solid #e7e7e7;
-            border-radius: 18px;
-
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-
-            cursor: pointer;
-        }
-
-        .checklist-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .title {
-            margin: 0 0 10px;
-            font-size: 19px;
-            font-weight: bold;
-        }
-
-        .info {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 7px;
-        }
-
-        .progress {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
-        .empty {
-            padding: 30px 20px;
-            text-align: center;
-            color: #777;
-
-            border: 1px solid #e7e7e7;
-            border-radius: 18px;
-        }
-
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 24px;
-
-            color: #666;
-            text-decoration: none;
-        }
-
-        .card-content {
-            cursor: pointer;
-        }
-
-        .delete-btn {
-            width: 100%;
-            margin-top: 16px;
-            padding: 11px;
-
-            border: none;
-            border-radius: 12px;
-
-            background: #fff0f0;
-            color: #d32f2f;
-
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            background: #ffe0e0;
-        }
     
-/* PinkSole UI redesign — presentation-only overrides. Existing JS and Flask hooks preserved. */
-:root{--ps-cyan:#04dbe8;--ps-cyan-soft:#ddfbfc;--ps-orange:#ff9808;--ps-peach:#ffe2ba;--ps-pink:#f67bd3;--ps-ink:#20252d;--ps-muted:#707780;--ps-border:#e6eaec;--ps-radius:22px}
+
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+<style>
+
+/* Activity 화면의 시각 언어를 체크리스트에 반영한 스타일 */
+:root {--primary:#49B9BF;--dark:#FF9808;--soft:#E7F7F7;--ink:#202B33;--muted:#74858D;--line:#E7EEF0;}
+*{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#eaf1f2!important;color:var(--ps-ink)!important;font-family: 'Pretendard','Noto Sans KR',Arial,sans-serif!important}
-.app{background:#fff!important;max-width:460px!important;min-height:100vh!important;padding-bottom:100px!important;box-shadow:0 0 36px rgba(0,36,48,.06)}
-.page{background:#eaf1f2!important}
-.login-container,.register-container{border:1px solid var(--ps-border);box-shadow:0 10px 28px rgba(0,34,42,.07)!important}
-h1,h2,h3{letter-spacing:-.045em;color:var(--ps-ink)}
-button,.button,.back-btn,.submit-btn,.create-btn,.add-btn,.history-btn,.nav-btn,.activity-button,.history-button{transition:transform .18s,filter .18s;touch-action:manipulation}
-button:not(:disabled):active,.button:active,.back-btn:active{transform:scale(.98)}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ps-pink)!important;outline-offset:2px}
-input,select,textarea{max-width:100%;accent-color:var(--ps-orange)}
-input:not([type=checkbox]):not([type=radio]),select,textarea{border-radius:14px!important}
-#startBtn,.create-btn,.submit-btn,.add-btn,.activity-button,.history-btn{background:var(--ps-cyan)!important;color:#123136!important}
-#stopBtn{background:var(--ps-orange)!important;color:#272018!important}
-button:disabled{background:#c9cfd1!important;color:#6d7376!important}
-.login-button,.register-button{background:var(--ps-orange)!important;color:#211b12!important}
-.info-card,.score-box,.dog-card{background:var(--ps-peach)!important;border-radius:20px!important}
-.summary-card,.stat,.record-card,.checklist-card,.item,.detail-box{border-color:var(--ps-border)!important;border-radius:18px!important}
-.score,.progress{color:#008b95!important}
-#map{border:3px solid #e1f9fa!important;border-radius:20px!important}
-.ps-topbar{max-width:460px;margin:0 auto;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:16px 20px 5px;gap:12px}
-.ps-brand{font-size:16px;font-weight:900;text-decoration:none;color:#192a32;letter-spacing:-.04em}
-.ps-brand span{color:#00b6c4}
-.ps-topbar-link{font-size:12px;color:#6c7379;text-decoration:none}
-.ps-bottomnav{position:sticky;bottom:0;z-index:500;max-width:460px;margin:-66px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;background:#fff;border-top:1px solid #e7edf0;box-shadow:0 -7px 24px rgba(0,0,0,.035);min-height:66px;padding:8px 4px max(8px,env(safe-area-inset-bottom))}
-.ps-bottomnav a{text-decoration:none;color:#717980;text-align:center;font-size:11px;font-weight:700;display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0}
-.ps-bottomnav a .ps-navicon{font-size:20px;line-height:1.1}
-.ps-bottomnav a[aria-current=page]{color:#00aeb9}
-.ps-chip{background:var(--ps-cyan-soft);color:#006f79;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;display:inline-block}
-.ps-homehero{background:var(--ps-cyan);border-radius:25px;padding:25px 22px;margin:18px 0 20px;position:relative;overflow:hidden}
-.ps-homehero:after{content:none;position:absolute;right:15px;top:-15px;font-size:83px;color:rgba(255,255,255,.4)}
-.ps-homehero h1{font-size:30px;line-height:1.32;margin:17px 0 8px}
-.ps-homehero p{font-size:14px;line-height:1.6;margin:0;color:#24545b}
-.ps-hero-kicker{background:#fff;border-radius:99px;font-size:12px;font-weight:800;padding:7px 12px;display:inline-block}
-.ps-home-title{font-size:18px;font-weight:900;margin:23px 0 12px;letter-spacing:-.05em}
-.ps-homegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ps-homegrid .card{min-height:142px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;border:1.5px solid #e8edef;border-radius:21px;background:#fff;box-shadow:none;padding:17px;cursor:pointer}
-.ps-homegrid .card:first-child{background:var(--ps-orange);border-color:var(--ps-orange);grid-row:span 2;min-height:294px;justify-content:center}
-.ps-homegrid .card:first-child .icon{font-size:46px}
-.ps-homegrid .card:first-child .card-title{font-size:23px}
-.ps-homegrid .card .icon{width:45px;height:45px;background:rgba(255,255,255,.72);border-radius:13px;font-size:24px}
-.ps-homegrid .card-text{text-align:left}
-.ps-homegrid .card-title{font-size:16px;margin-bottom:6px}
-.ps-homegrid .card-description{font-size:12px;line-height:1.45;color:#536068}
-.ps-homegrid .card:hover{transform:translateY(-2px)}
-.ps-homegrid .card:nth-child(4){background:#eafcff}
-.ps-homegrid .card:nth-child(3){background:#fff2df}
-.ps-decoration{color:var(--ps-pink);font-size:15px;font-weight:900;letter-spacing:.04em}
-@media(max-width:480px){.app{padding-left:17px!important;padding-right:17px!important}.ps-homehero h1{font-size:27px}.ps-homegrid{gap:10px}.ps-homegrid .card{padding:14px}.ps-topbar{padding:13px 17px 5px}}
+body{margin:0!important;background:#F3F6F7!important;color:var(--ink)!important;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif!important;padding-bottom:0!important}
+.app{max-width:460px!important;min-height:100vh!important;margin:0 auto!important;background:#fff!important;padding:24px 20px 120px!important;box-shadow:none!important}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:10px}
+.topbar a{color:var(--ink);text-decoration:none;font-size:21px;line-height:1}
+.topbar strong{font-size:16px;font-weight:800;letter-spacing:-.03em}
+.topbar .brand{color:var(--dark);font-size:11px;font-weight:900;letter-spacing:.04em}
+.eyebrow{color:var(--dark);font-size:11px;letter-spacing:.11em;font-weight:900;margin-bottom:7px}
+.app .header{margin:0 0 25px!important}
+.app .header h1{font-size:27px;line-height:1.25;letter-spacing:-.05em;margin:0 0 8px;color:var(--ink)}
+.app .description{color:var(--muted)!important;font-size:13px!important;line-height:1.65!important;margin:0!important}
+button,input,select{font-family:inherit}
+button,a{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--primary)!important;outline-offset:2px}
+.app .back{display:block;margin-top:22px;text-align:center;font-size:13px;font-weight:750;color:#597B80;text-decoration:none}
+.app .submit-btn,.app .create-btn,.app .add-btn{background:var(--primary)!important;color:#153A3E!important;border:0!important;border-radius:17px!important;font-weight:850!important;box-shadow:0 5px 14px rgba(73,185,191,.16)!important;cursor:pointer}
+.app .submit-btn,.app .create-btn{display:block;text-align:center;text-decoration:none;width:100%;padding:17px 14px!important;font-size:15px!important}
+.app .submit-btn:hover,.app .create-btn:hover,.app .add-btn:hover{filter:brightness(.97)}
+.app .submit-btn:active,.app .create-btn:active,.app .add-btn:active{transform:scale(.99)}
+.app input:not([type=checkbox]),.app select{display:block;min-width:0;background:#FAFCFC!important;border:1px solid var(--line)!important;border-radius:14px!important;padding:14px 15px!important;color:var(--ink)!important;min-height:49px;font-size:14px}
+.app label{color:var(--ink)}
+.app .form-panel{background:linear-gradient(145deg,#E7F7F7,#F5FBFB);border:1px solid #D7EDED;border-radius:23px;padding:20px;margin-bottom:16px}
+.app .form-panel label{display:block;font-size:13px;font-weight:800;margin:0 0 9px}
+.app .form-panel .field{margin-bottom:18px}
+.app .form-panel .field:last-child{margin-bottom:0}
+.app .help{margin:10px 0 0;color:#577B81;font-size:12px;line-height:1.55}
+.app .checklist-card{border:1px solid var(--line)!important;border-radius:19px!important;background:#fff!important;padding:18px!important;margin:0 0 13px!important;box-shadow:0 4px 15px rgba(32,43,51,.035)!important}
+.app .checklist-card .title{font-weight:850;font-size:17px;color:var(--ink);line-height:1.4}
+.app .checklist-card .info{font-size:12px;color:var(--muted);margin:8px 0}
+.app .checklist-card .progress{background:var(--soft);border-radius:11px;padding:10px 12px;color:#326B70!important;font-size:12px;margin:13px 0 0}
+.app .delete-btn,.app .delete{background:#FFF0EE!important;color:#A7423C!important;border:1px solid #F5CFCC!important;box-shadow:none!important;cursor:pointer}
+.app .delete-btn{margin-top:12px!important;padding:11px!important;border-radius:12px!important;font-size:13px!important}
+.app .empty{border:1px dashed #CBDADD!important;border-radius:20px!important;background:#FAFCFC;padding:34px 20px!important;color:var(--muted);line-height:1.8;font-size:14px}
+.app .info-card{background:linear-gradient(145deg,#E7F7F7,#F5FBFB)!important;border:1px solid #D7EDED!important;border-radius:23px!important;padding:20px!important;margin-bottom:24px!important}
+.app .info-card .info{font-size:13px;color:#52777D;margin:9px 0}
+.app .info-card .info strong{color:#264C52;display:inline-block;min-width:76px}
+.app .item{display:flex;align-items:center;gap:10px;background:#fff!important;border:1px solid var(--line)!important;border-radius:15px!important;padding:14px!important;margin:0 0 10px!important}
+.app .item:has(input:checked){background:#F5FBFB!important;border-color:#D7EDED!important}
+.app .item label{flex:1;min-width:0;display:flex;align-items:center;gap:11px;cursor:pointer}
+.app .item label span{font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.app .item input[type=checkbox]{width:20px;height:20px;flex:none;accent-color:var(--primary)!important}
+.app .item input[type=checkbox]:checked+span{color:#80999B;text-decoration:line-through}
+.app .delete{padding:8px 11px!important;border-radius:10px!important;font-size:12px!important;flex:none}
+.app .add-area{display:flex;gap:9px;margin:21px 0 0;align-items:stretch}
+.app .add-area input{flex:1;width:0;min-width:0}
+.app .add-btn{padding:12px 17px!important;white-space:nowrap}
+.app .nav-area{display:flex;gap:10px;margin-top:22px}
+.app .nav-btn{flex:1;background:#F3FAFA!important;border:1px solid #B7DEDF!important;color:#39787D!important;border-radius:14px!important;padding:13px!important;font-weight:800!important}
+.app .section-label{font-size:16px;font-weight:850;color:var(--ink);margin:23px 0 12px}
+@media(max-width:360px){.app{padding-left:16px!important;padding-right:16px!important}.app .header h1{font-size:24px}}
 
-</style>
-<style>
-/* PinkSole: 일관된 앱 로고 및 벡터 아이콘 */
-.ps-brand span{color:#f67bd3!important}
-.ps-brand{display:inline-flex;align-items:center;gap:3px}
-.ps-brand .ps-paw{width:18px;height:18px;fill:#f67bd3;flex:none;margin-left:3px}
-.ps-navicon{display:inline-flex;align-items:center;justify-content:center}
-.ps-navicon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ps-login-paw{display:flex;align-items:center;justify-content:center;gap:3px;margin:0 auto 12px}
-.ps-login-paw .ps-paw{width:31px;height:31px;fill:#f67bd3}
-.ps-login-paw .ps-paw:last-child{transform:translateY(10px) rotate(12deg);width:25px;height:25px}
 </style>
 
 <style>
-/* PinkSole: 3-tab navigation (home / create trip / mypage) */
-.ps-bottomnav{position:fixed!important;bottom:0!important;left:50%!important;transform:translateX(-50%)!important;max-width:460px!important;width:100%!important;height:82px!important;min-height:82px!important;margin:0!important;display:grid!important;grid-template-columns:1fr 1.35fr 1fr!important;align-items:center!important;padding:7px 12px max(8px,env(safe-area-inset-bottom))!important;overflow:visible!important;z-index:1000!important;background:#fff!important;border-top:1px solid #e6ecee!important;box-shadow:0 -5px 15px rgba(0,0,0,.035)!important}
-.ps-bottomnav a{min-width:0;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;text-decoration:none!important;color:#758187!important;font:700 11px/1.2 'Pretendard','Noto Sans KR',Arial,sans-serif!important;white-space:nowrap}
-.ps-bottomnav .ps-navicon{display:grid!important;place-items:center!important;width:23px;height:23px}
-.ps-bottomnav .ps-navicon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ps-bottomnav a[aria-current='page']:not(.ps-nav-create){color:#00aeb9!important}
-.ps-bottomnav a.ps-nav-create{color:#242b30!important;font-size:11px!important;gap:4px!important}
-.ps-bottomnav .ps-create-circle{display:grid;place-items:center;width:57px;height:57px;border-radius:50%;background:#04DBE8;color:#14343A;box-shadow:0 5px 12px rgba(4,219,232,.23);margin-top:-24px;border:4px solid #fff}
-.ps-bottomnav .ps-create-circle svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
-.ps-bottomnav a.ps-nav-create[aria-current='page'] .ps-create-circle{box-shadow:0 0 0 2px #04DBE8,0 5px 12px rgba(4,219,232,.2)}
-body{padding-bottom:88px!important}
+/* PinkSole · 내 여행 화면 기준 UI 통일 (기능/하단 메뉴 변경 없음) */
+:root {
+  --primary: #00CBD7; --primary-dark: #00A8B4; --primary-light: #E8F8F9;
+  --dark: #FF8800; --soft: #E8F8F9; --ink: #142739;
+  --muted: #8290A4; --line: #E5ECF0; --border: #E5ECF0;
+  --background: #FFFFFF; --orange: #FF8800;
+}
+html {scroll-behavior:smooth}
+body {background:#F6F8F9!important;color:#142739!important;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif!important;}
+.app {max-width:530px!important;background:#FFF!important;box-shadow:0 0 20px rgba(19,43,55,.018)!important;padding-left:24px!important;padding-right:24px!important;padding-bottom:125px!important;}
+.topbar {min-height:37px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:42px!important;}
+.topbar a,.back-btn:not(.button) {color:#142739!important;text-decoration:none;}
+.topbar strong,.top-title {font-weight:850!important;font-size:16px!important;letter-spacing:-.035em;}
+.brand,.topbar .brand,.eyebrow,.section-overline {color:#FF8800!important;font-weight:900!important;}
+.eyebrow {font-size:12px!important;letter-spacing:.13em!important;margin-bottom:17px!important;}
+.app h1,.app .header h1,.intro h1 {color:#142739!important;font-size:28px!important;font-weight:850!important;letter-spacing:-.055em!important;line-height:1.3!important;}
+.description,.subtitle,.intro .description,.app .description,.date {color:#8290A4!important;line-height:1.75!important;font-size:13px!important;}
+.app .header,.intro {margin-bottom:30px!important;}
+.section-label,.section-title,.section-heading h2,.map-heading h2,.detail-title {color:#142739!important;font-weight:850!important;}
+/* 여행 카드처럼 흰 바탕, 얇은 테두리, 부드러운 그림자 */
+.app .dog-picker,.app .dog-box,.app .dog-card,.app .checklist-card,
+.app .record-card,.app .detail-box,.app .item,.app .pattern-box {
+  background:#FFF!important;border:1px solid #E5ECF0!important;
+  border-radius:22px!important;box-shadow:0 5px 18px rgba(30,57,72,.045)!important;
+}
+.app .dog-picker,.app .dog-box,.app .dog-card {padding:18px!important;}
+.app .dog-avatar,.app .dog-icon,.app .empty-icon {background:#E8F8F9!important;border-radius:16px!important;}
+/* 데이터 카드: 눈부신 원색 대신 부드러운 민트 */
+.app .distance-panel,.app .score-box,.app .info-card,.app .form-panel {
+  background:#E8F8F9!important;border:1px solid #D7EFF1!important;
+  border-radius:23px!important;color:#142739!important;box-shadow:none!important;
+}
+.app .distance-caption,.app .distance-number,.app .distance-unit,
+.app .score,.app .score-label {color:#163C47!important;}
+.app .summary-card,.app .stat {background:#FFF!important;border:1px solid #E5ECF0!important;border-radius:16px!important;}
+.app .summary-value,.app .stat-value,.app .value {color:#142739!important;}
+.app .summary-label,.app .stat-label,.app .label {color:#8290A4!important;}
+.app #status,.app .notice {background:#EEF9FA!important;color:#4E737B!important;border-radius:14px!important;}
+.app .checklist-card .progress,.app .progress {background:#E8F8F9!important;color:#187D86!important;border-radius:12px!important;}
+.app .item:has(input:checked) {background:#F1FAFA!important;border-color:#CBECEF!important;}
+.app .item input[type=checkbox] {accent-color:#00A8B4!important;}
+.app #map {border:1px solid #DFE9EE!important;border-radius:20px!important;}
+/* 내 여행의 '새 여행 만들기'와 같은 선명한 청록색 CTA */
+.app .main-action:not(.recording),.app .action-primary,.app .submit-btn,
+.app .create-btn,.app .add-btn,.app .history-btn.button,.app .button.history-btn {
+  background:#00CBD7!important;color:#FFF!important;border:0!important;
+  border-radius:17px!important;font-weight:850!important;
+  box-shadow:0 10px 20px rgba(0,166,180,.12)!important;
+}
+.app .main-action.recording {background:#FFF0EE!important;color:#A7423C!important;border:1px solid #F5CFCC!important;box-shadow:none!important;}
+.app #saveBtn,.app .action-secondary,.app .nav-btn,.app .home-btn.button,.app .button.home-btn {
+  background:#E8F8F9!important;color:#157E87!important;border:1px solid #CDEDEF!important;
+  border-radius:16px!important;box-shadow:none!important;
+}
+.app .delete,.app .delete-btn {background:#FFF1F1!important;color:#C25858!important;border:1px solid #F6DDDD!important;box-shadow:none!important;}
+.app .history-btn:not(.button),.app .card-footer,.app .score-row strong {color:#FF8800!important;}
+.app input:not([type=checkbox]):not([type=radio]),.app select,.app textarea {
+  border:1px solid #E2EAF0!important;border-radius:14px!important;
+  background:#FFF!important;color:#142739!important;
+}
+:focus-visible {outline:3px solid #00A8B4!important;outline-offset:3px;}
+@media(max-width:480px){.app{max-width:460px!important;padding-left:20px!important;padding-right:20px!important;}}
+@media(max-width:360px){.app{padding-left:16px!important;padding-right:16px!important;}}
 </style>
 </head>
 
 <body>
-<div class="ps-topbar"><a href="/" class="ps-brand">pink<span>sole</span> <svg class="ps-paw" viewBox="0 0 48 48" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="16" rx="4.1" ry="6" transform="rotate(-25 10 16)"/><ellipse cx="20" cy="9" rx="4.2" ry="6" transform="rotate(-8 20 9)"/><ellipse cx="30" cy="10" rx="4.2" ry="6" transform="rotate(12 30 10)"/><ellipse cx="39" cy="19" rx="4" ry="5.7" transform="rotate(26 39 19)"/><path d="M24 21c-5.1 0-7.2 5.4-10.2 8.7-2.6 2.7-2.5 7.4.1 9.3 3.4 2.4 6.5-.3 10.1-.3s6.7 2.7 10.1.3c2.6-1.9 2.7-6.6.1-9.3C31.2 26.4 29.1 21 24 21Z"/></svg></a><a href="/" class="ps-topbar-link">홈으로 ↗</a></div>
-
-
 <div class="app">
 
-    <div class="header">
-        <h2> 내 체크리스트</h2>
-
-        <div class="description">
-            여행별 준비물 체크리스트를 저장하고 관리할 수 있습니다.
-        </div>
-    </div>
+    <header class="topbar"><a href="/" aria-label="뒤로가기">←</a><strong>내 체크리스트</strong><span class="brand">PINKSOLE</span></header>
+<div class="header"><div class="eyebrow">MY CHECKLIST</div><h1>여행 준비 한눈에</h1><p class="description">여행별 준비물을 확인하고 차근차근 준비해 보세요.</p></div>
 
 
     <a href="/checklist"
@@ -307,6 +218,8 @@ body{padding-bottom:88px!important}
 
 </div>
 
-<nav class="ps-bottomnav" aria-label="하단 메뉴"><a href="/"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z"/></svg></span><span>홈</span></a><a class="ps-nav-create" href="/trip/create" aria-label="여행 일정 생성"><span class="ps-create-circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span>여행 일정 생성</span></a><a href="/mypage"><span class="ps-navicon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-7 8-7s8 2 8 7"/></svg></span><span>마이페이지</span></a></nav>
+
+{% set active_page = 'mypage' %}
+{% include 'components/bottomnav.html' %}
 </body>
 </html>

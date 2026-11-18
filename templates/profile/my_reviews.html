@@ -357,6 +357,39 @@
 
     </style>
 
+<style>
+
+/* PinkSole - My Trips visual system; existing Flask bindings and behaviors unchanged */
+:root{--ps-primary:#00CBD7;--ps-orange:#FF8800;--ps-mint:#E8F8F9;--ps-ink:#142739;--ps-muted:#82909D;--ps-line:#E4EBEE;--ps-shadow:0 5px 18px rgba(31,67,82,.045)}
+body{background:#F5F7F8!important;color:var(--ps-ink)!important;font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo',Arial,sans-serif!important}
+a,button,input{ -webkit-tap-highlight-color:transparent }
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--ps-primary)!important;outline-offset:3px}
+
+.container{max-width:460px!important;min-height:100vh!important;background:#fff!important;padding:24px 24px 110px!important}
+.header{display:flex!important;align-items:center!important;justify-content:space-between!important;position:relative!important;margin-bottom:45px!important;min-height:34px!important}
+.back-button{position:static!important;font-size:26px!important;color:var(--ps-ink)!important;text-decoration:none!important;width:30px!important;line-height:1!important}
+.header-title{flex:1!important;width:auto!important;margin:0!important;text-align:center!important;color:var(--ps-ink)!important;font-size:16px!important;font-weight:800!important}
+.ps-brand{font-size:11px;min-width:70px;text-align:right;color:var(--ps-orange);font-weight:900;letter-spacing:.045em}
+.section-info{margin-bottom:27px!important}
+.ps-eyebrow{color:var(--ps-orange);font-weight:900;font-size:11px;letter-spacing:.12em;margin:0 0 10px}
+.section-title{font-size:27px!important;letter-spacing:-.05em!important;line-height:1.35!important;margin:0 0 10px!important;color:var(--ps-ink)!important}
+.section-description{font-size:13px!important;color:var(--ps-muted)!important;line-height:1.7!important}
+.review-list{gap:15px!important}
+.review-card,.empty-box{border:1px solid var(--ps-line)!important;border-radius:23px!important;box-shadow:var(--ps-shadow)!important;background:#fff!important}
+.review-card{padding:20px!important}
+.place-name{font-size:17px!important;color:var(--ps-ink)!important}
+.place-meta,.author,.date{color:var(--ps-muted)!important}
+.rating{display:inline-flex!important;padding:7px 10px!important;border-radius:12px!important;background:#FFF5E8!important}
+.star{color:var(--ps-orange)!important}
+.rating-number{color:#A5630F!important}
+.review-content{color:#576877!important;font-size:13px!important;line-height:1.75!important}
+.review-bottom{border-top-color:var(--ps-line)!important}
+.review-image-wrapper{border-radius:16px!important;background:#F3F8F9!important}
+.empty-box{padding:42px 17px!important;background:#F8FCFC!important}
+.home-button{background:var(--ps-primary)!important;color:#fff!important;padding:14px 20px!important;border-radius:15px!important}
+@media(max-width:480px){.container{padding:24px 20px 110px!important}.review-card{padding:18px!important}}
+
+</style>
 </head>
 
 
@@ -382,6 +415,7 @@
             <h1 class="header-title">
                 내가 작성한 후기
             </h1>
+            <span class="ps-brand">PINKSOLE</span>
 
         </div>
 
@@ -391,6 +425,7 @@
         ========================= -->
 
         <div class="section-info">
+            <div class="ps-eyebrow">MY REVIEWS</div>
 
             <h2 class="section-title">
                 장소 후기

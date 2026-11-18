@@ -245,6 +245,41 @@
             color: #666;
         }
     </style>
+<style>
+
+/* PinkSole - My Trips visual system; existing Flask bindings and behaviors unchanged */
+:root{--ps-primary:#00CBD7;--ps-orange:#FF8800;--ps-mint:#E8F8F9;--ps-ink:#142739;--ps-muted:#82909D;--ps-line:#E4EBEE;--ps-shadow:0 5px 18px rgba(31,67,82,.045)}
+body{background:#F5F7F8!important;color:var(--ps-ink)!important;font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo',Arial,sans-serif!important}
+a,button,input{ -webkit-tap-highlight-color:transparent }
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--ps-primary)!important;outline-offset:3px}
+
+.page{display:block!important;min-height:100vh!important;max-width:460px!important;margin:0 auto!important;padding:24px 24px 110px!important;background:#fff!important}
+.edit-container{width:100%!important;max-width:none!important;border-radius:0!important;padding:0!important;box-shadow:none!important;background:transparent!important}
+.top{display:flex!important;align-items:center!important;justify-content:space-between!important;text-align:center!important;position:relative!important;margin-bottom:35px!important;min-height:34px!important}
+.back-button{position:static!important;flex:none!important;font-size:22px!important;color:var(--ps-ink)!important;text-decoration:none!important;width:32px!important;overflow:hidden!important;white-space:nowrap!important}
+.top h1{margin:0!important;font-size:16px!important;font-weight:800!important;color:var(--ps-ink)!important}
+.top .description{display:none!important}
+.ps-brand{font-size:11px;font-weight:900;color:var(--ps-orange);letter-spacing:.04em}
+.ps-intro{margin:0 0 27px}
+.ps-eyebrow{font-size:11px;color:var(--ps-orange);font-weight:900;letter-spacing:.12em;margin:0 0 10px}
+.ps-intro h2{font-size:27px;line-height:1.35;letter-spacing:-.05em;font-weight:800;margin:0 0 10px;color:var(--ps-ink)}
+.ps-intro p{font-size:13px;line-height:1.7;color:var(--ps-muted);margin:0}
+.profile-area{padding:22px 15px 19px!important;border:1px solid var(--ps-line)!important;border-radius:23px!important;margin-bottom:27px!important;background:#fff!important;box-shadow:var(--ps-shadow)!important}
+.profile-image-wrapper{background:var(--ps-mint)!important;border:2px solid #D2EEF0!important;width:102px!important;height:102px!important}
+.profile-image-wrapper:hover{border-color:var(--ps-primary)!important}
+.photo-change-button{border:1px solid #A5E7EB!important;border-radius:13px!important;background:var(--ps-mint)!important;color:#23727B!important;font-weight:800!important;padding:10px 19px!important}
+.form-group{margin-bottom:21px!important}
+.form-label{font-size:13px!important;font-weight:800!important;color:var(--ps-ink)!important}
+.text-input{height:51px!important;border:1px solid var(--ps-line)!important;border-radius:14px!important;background:#fff!important;color:var(--ps-ink)!important;font-family:inherit!important}
+.text-input:focus{border-color:var(--ps-primary)!important;box-shadow:0 0 0 3px rgba(0,203,215,.13)!important}
+.text-input.readonly{background:#F5F8F9!important;color:#82909D!important}
+.help-text,.photo-help{color:var(--ps-muted)!important}
+.save-button{height:56px!important;margin-top:17px!important;background:var(--ps-primary)!important;color:white!important;border-radius:17px!important;font-size:16px!important;box-shadow:0 7px 17px rgba(0,203,215,.13)!important}
+.save-button:hover{background:#00B9C5!important}
+.cancel-button{padding:11px!important;font-size:13px!important;color:#728591!important}
+@media(max-width:360px){.page{padding-left:17px!important;padding-right:17px!important}}
+
+</style>
 </head>
 
 
@@ -270,6 +305,7 @@
             <h1>
                 프로필 수정
             </h1>
+            <span class="ps-brand">PINKSOLE</span>
 
             <p class="description">
                 내 정보를 수정할 수 있습니다.
@@ -277,6 +313,8 @@
 
         </div>
 
+
+        <section class="ps-intro"><div class="ps-eyebrow">EDIT PROFILE</div><h2>내 정보 수정하기</h2><p>프로필 사진과 닉네임, 이메일을 관리해 보세요.</p></section>
 
         <!-- ==============================
              수정 폼

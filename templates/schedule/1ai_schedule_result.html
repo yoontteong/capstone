@@ -8,6 +8,8 @@
 
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/bottomnav.css') }}">
 
     <style>
         * { box-sizing: border-box; }
@@ -413,14 +415,26 @@
         .selected-place-hint { background:var(--primary-soft); color:var(--primary-dark); }
         .address-notice { font-size:11px; line-height:1.7; }
         .empty { background:#F5FAFA; border-radius:18px; padding:35px 15px; font-size:13px; }
-        .bottom-nav { position:fixed; z-index:1200; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:460px; height:86px; padding:8px 14px max(9px,env(safe-area-inset-bottom)); background:#fff; border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(3,1fr); align-items:end; }
-        .nav-link { color:#84969E; text-decoration:none; font-size:11px; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:5px; }
-        .nav-link svg { width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
-        .nav-link.active { color:var(--primary-dark); }
-        .nav-create { color:var(--ink); gap:5px; }
-        .nav-create .plus { display:grid; place-items:center; width:60px; height:60px; border-radius:50%; background:var(--primary); border:4px solid #fff; color:#15373A; margin-top:-28px; box-shadow:0 4px 13px rgba(73,185,191,.25); }
-        .nav-create .plus svg { width:27px; height:27px; stroke-width:2.6; }
         @media(max-width:370px){ .app { padding-left:14px;padding-right:14px; } .page-topbar{margin-left:-14px;margin-right:-14px;} .schedule-card{padding:13px;} }
+
+        /* 카드 우측 상단 수정 / 삭제 버튼 */
+        .schedule-card .card-top-row {
+            display:flex; align-items:flex-start; justify-content:space-between;
+            gap:8px; margin-bottom:12px;
+        }
+        .schedule-card .card-top-row .type-badge { margin-bottom:0; }
+        .schedule-card .button-box {
+            display:flex; flex-shrink:0; gap:5px; margin:0;
+        }
+        .schedule-card .button-box button {
+            padding:7px 10px; border-radius:9px;
+            font-size:11px; white-space:nowrap;
+        }
+        @media(max-width:370px) {
+            .schedule-card .card-top-row { gap:5px; }
+            .schedule-card .button-box { gap:4px; }
+            .schedule-card .button-box button { padding:7px 8px; font-size:10px; }
+        }
 
         /* PINKSOLE: 상세 정보 접기 / 펼치기 */
         .day-heading-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:10px 0 18px; }
@@ -429,8 +443,7 @@
         .day-add-btn:hover { background:#D4F0F1; }
         .schedule-card .info > div:first-child { display:block; margin:2px 0 8px; color:#7B8A93; }
         .schedule-card:not(.expanded) .info > div:not(:first-child),
-        .schedule-card:not(.expanded) .reason,
-        .schedule-card:not(.expanded) .button-box { display:none !important; }
+        .schedule-card:not(.expanded) .reason { display:none !important; }
         .detail-toggle { display:flex; align-items:center; justify-content:center; gap:7px; width:100%; border:0; border-top:1px solid #EEF2F3; padding:12px 0 0; margin-top:12px; background:transparent; color:#278D95; font-size:12px; font-weight:800; cursor:pointer; }
         .detail-toggle .chevron { display:inline-block; transition:transform .2s; font-size:16px; line-height:1; }
         .schedule-card.expanded .detail-toggle .chevron { transform:rotate(180deg); }
@@ -539,7 +552,8 @@
         <div class="schedule-card"
              data-uid="{{ item.uid }}">
 
-            <!-- 추천 유형 -->
+            <div class="card-top-row">
+                <div>
             {% if item.place.recommendation_type == 'verified' %}
             <div class="type-badge verified">
                 🐶 검증된 반려견 가능 장소
@@ -555,6 +569,16 @@
                 🌿 반려견 친화 추천 장소
             </div>
             {% endif %}
+                </div>
+
+                <!-- 항상 보이는 우측 상단 수정 / 삭제 -->
+                <div class="button-box">
+                    <button type="button" class="edit-btn" onclick="editCard(this)">수정</button>
+                    <button type="button" class="save-btn" style="display:none" onclick="saveCard(this)">저장</button>
+                    <button type="button" class="delete-btn"
+                            onclick='deleteCard({{ item.uid | tojson }})'>삭제</button>
+                </div>
+            </div>
 
             <!-- 시간 -->
             <div class="time">
@@ -623,26 +647,6 @@
                 {{ item.reason }}
             </div>
 
-            <!-- 수정 / 삭제 -->
-            <div class="button-box">
-
-                <button class="edit-btn"
-                        onclick="editCard(this)">
-                    수정
-                </button>
-
-                <button class="save-btn"
-                        style="display:none"
-                        onclick="saveCard(this)">
-                    저장
-                </button>
-
-                <button class="delete-btn"
-                        onclick='deleteCard({{ item.uid | tojson }})'>
-                    삭제
-                </button>
-
-            </div>
         </div>
 
         {% endif %}
@@ -763,19 +767,7 @@
 </div>
 
 
-<!-- PINKSOLE 하단 네비게이션 -->
-<nav class="bottom-nav" aria-label="주요 메뉴">
-    <a class="nav-link" href="/">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3z"/></svg><span>홈</span>
-    </a>
-    <a class="nav-link nav-create" href="/trip/create">
-      <span class="plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></span>
-      <span>여행 일정 생성</span>
-    </a>
-    <a class="nav-link" href="/mypage">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-7 8-7s8 2 8 7"/></svg><span>마이페이지</span>
-    </a>
-</nav>
+
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -1328,6 +1320,9 @@
         initMap();
     });
 </script>
+
+{% set active_page = 'create' %}
+{% include 'components/bottomnav.html' %}
 
 </body>
 </html>

@@ -6,55 +6,49 @@
 <title>반려견 등록 | PINKSOLE</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
 <style>
-:root{--primary:#49B9BF;--primary-dark:#278D95;--primary-light:#E7F7F7;--ink:#202B33;--muted:#7C8A93;--border:#E8EEF0}
+
+:root{--primary:#00CBD7;--primary-dark:#079AA5;--primary-light:#E8F8F9;--accent:#FF8800;--ink:#142739;--muted:#7C8A93;--border:#E5ECEF;--bg:#F3F6F7}
 *{box-sizing:border-box}
-body{margin:0;background:#F3F6F7;color:var(--ink);font-family:Pretendard,'Noto Sans KR',Arial,sans-serif}
-.app{max-width:460px;min-height:100vh;margin:auto;background:white;padding:24px 20px 125px}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
-.back-btn{color:var(--ink);text-decoration:none;font-size:25px;width:38px}
-.top-title{font-size:16px;font-weight:800}
-.brand{font-size:11px;font-weight:900;color:var(--primary-dark);letter-spacing:.04em}
-.eyebrow{font-size:11px;font-weight:900;color:var(--primary-dark);letter-spacing:.12em;margin-bottom:10px}
-h1{font-size:27px;letter-spacing:-.05em;margin:0 0 12px;line-height:1.3}
-.description{font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 30px}
-.form-section{margin-bottom:28px}
-.section-title{font-size:17px;font-weight:800;margin:0 0 15px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard','Noto Sans KR',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:460px;min-height:100vh;margin:0 auto;background:#fff;padding:24px 20px 125px}
+a{text-decoration:none;color:inherit}button,input,select{font-family:inherit}
+.topbar{min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:32px}
+.topbar .back-btn{width:34px;color:var(--ink);font-size:26px;line-height:1}
+.top-title{font-size:16px;font-weight:850}
+.brand{color:var(--accent);font-size:11px;font-weight:900;letter-spacing:.055em}
+.eyebrow{color:var(--accent);font-weight:900;font-size:11px;letter-spacing:.12em;margin:0 0 12px}
+.page-title{font-size:27px;letter-spacing:-.055em;line-height:1.35;margin:0 0 12px;font-weight:850}
+.description{font-size:13px;line-height:1.75;color:var(--muted);margin:0 0 29px}
+.register-btn,.submit-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:15px 18px;background:var(--primary);color:#fff;border:0;border-radius:18px;font-size:15px;font-weight:850;text-align:center;cursor:pointer;box-shadow:0 8px 18px rgba(0,160,175,.1)}
+.register-btn:hover,.submit-btn:hover{background:#00BBC7}
+.back{display:block;margin:23px auto 0;text-align:center;font-size:13px;color:var(--muted);font-weight:700}
+input:not([type=file]),select{width:100%;min-width:0;border:1.5px solid var(--border);border-radius:15px;background:#fff;padding:14px 15px;font-size:14px;color:var(--ink)}
+input:focus,select:focus{outline:none;border-color:var(--primary)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+@media(max-width:360px){.app{padding-left:16px;padding-right:16px}.page-title{font-size:24px}}
+
+.form-section{margin-bottom:28px}.section-title{font-size:17px;font-weight:850;margin:0 0 15px}
 label{display:block;font-size:13px;font-weight:800;margin:16px 0 9px}
-input:not([type=file]),select{width:100%;min-width:0;padding:15px;border:1.5px solid var(--border);border-radius:15px;background:white;color:var(--ink);font:inherit;font-size:14px}
-input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-input:not([type=file]):focus,select:focus{border-color:var(--primary)}
-.ai-section{margin:26px 0;padding:19px 16px;background:#F7FBFB;border:1px solid #DDEBEC;border-radius:21px}
-.ai-header{display:flex;align-items:center;gap:11px;margin-bottom:9px}
-.ai-icon{width:41px;height:41px;display:grid;place-items:center;background:var(--primary-light);border-radius:13px;font-size:19px}
-.ai-heading{font-size:16px;font-weight:800}
-.ai-description{margin:0 0 18px;color:var(--muted);font-size:12px;line-height:1.7}
-.hidden-file-input{display:none}
-.image-button-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.image-select-btn{min-height:48px;border:1px solid #D7E6E7;border-radius:13px;background:white;color:#36525C;font-size:12px;font-weight:800;cursor:pointer}
-.image-select-btn:hover{background:var(--primary-light);border-color:var(--primary)}
-.preview-container{display:none;margin-top:17px}
-.preview-title{font-size:12px;font-weight:800;margin-bottom:8px}
-.preview-box{border:1px solid var(--border);border-radius:15px;overflow:hidden;background:#F2F6F7}
-#imagePreview{display:block;width:100%;max-height:290px;object-fit:contain}
-.selected-image-text{margin-top:8px;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
-.analyze-btn{width:100%;padding:14px;margin-top:14px;background:#E0F3F3;color:var(--primary-dark);border:1px solid #BCE1E3;border-radius:13px;font-size:13px;font-weight:800;cursor:pointer}
-.analyze-btn:hover{background:#CEEAEA}
-.analyze-btn:disabled{opacity:.55;cursor:wait}
-#analysisStatus{font-size:12px;line-height:1.65;color:#60757D;margin:12px 0 0}
-#predictionResults{margin-top:9px}
-.prediction-btn{width:100%;padding:13px;margin-top:8px;border:1px solid var(--border);border-radius:12px;background:white;color:var(--ink);font-size:13px;text-align:left;cursor:pointer}
-.prediction-btn:hover{border-color:var(--primary);background:#F4FAFA}
-.prediction-btn.selected{background:var(--primary-light);border-color:var(--primary);color:var(--primary-dark);font-weight:800}
-.hint{color:var(--muted);font-size:12px;line-height:1.6;margin-top:8px}
-.submit-btn{width:100%;margin-top:9px;padding:18px;border:0;border-radius:17px;background:var(--primary);color:white;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(73,185,191,.16)}
-.submit-btn:hover{background:var(--primary-dark)}
-@media(max-width:360px){.app{padding-left:16px;padding-right:16px}.image-button-group{gap:7px}.image-select-btn{font-size:11px}}
+.ai-section{margin:27px 0;padding:19px 17px;background:#F8FCFC;border:1px solid var(--border);border-radius:21px}
+.ai-header{display:flex;align-items:center;gap:11px;margin-bottom:9px}.ai-icon{display:grid;place-items:center;width:43px;height:43px;background:var(--primary-light);border-radius:14px;font-size:20px}
+.ai-heading{font-size:16px;font-weight:850}.ai-description{font-size:12px;color:var(--muted);line-height:1.7;margin:0 0 18px}
+.hidden-file-input{display:none}.image-button-group{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.image-select-btn{min-height:49px;border:1px solid #D7E9EA;background:#fff;border-radius:13px;color:var(--ink);font-weight:800;font-size:12px;cursor:pointer}
+.image-select-btn:hover{background:var(--primary-light)}.preview-container{display:none;margin-top:17px}
+.preview-title{font-size:12px;font-weight:800;margin-bottom:8px}.preview-box{border:1px solid var(--border);border-radius:15px;overflow:hidden;background:#F2F6F7}
+#imagePreview{display:block;width:100%;max-height:290px;object-fit:contain}.selected-image-text{font-size:11px;color:var(--muted);margin-top:8px;overflow-wrap:anywhere}
+.analyze-btn{width:100%;padding:14px;margin-top:14px;background:var(--primary-light);border:1px solid #BDE8EB;border-radius:13px;color:#097B85;font-weight:850;font-size:13px;cursor:pointer}
+.analyze-btn:disabled{opacity:.55;cursor:wait}#analysisStatus{font-size:12px;line-height:1.65;color:var(--muted);margin:12px 0 0}#predictionResults{margin-top:9px}
+.prediction-btn{width:100%;padding:13px;margin-top:8px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--ink);font-size:13px;text-align:left;cursor:pointer}
+.prediction-btn:hover,.prediction-btn.selected{background:var(--primary-light);border-color:var(--primary)}.prediction-btn.selected{font-weight:850}
+.hint{color:var(--muted);font-size:12px;line-height:1.65;margin-top:8px}.submit-btn{margin-top:9px}
+
 </style>
 </head>
 <body>
 <main class="app">
 <header class="topbar">
- <a class="back-btn" href="/" aria-label="뒤로가기">←</a>
+ <a class="back-btn" href="/mypage" aria-label="뒤로가기">←</a>
  <span class="top-title">반려견 등록</span>
  <span class="brand">PINKSOLE</span>
 </header>

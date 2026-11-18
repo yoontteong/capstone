@@ -351,11 +351,49 @@
             color: #555;
         }
     </style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bottomnav.css') }}">
+<style>
+
+/* PinkSole unified trip design — based on My Travel (trip_list) */
+:root{--primary:#04DBE8;--primary-dark:#FF8800;--primary-light:#E8F8F9;--ink:#142739;--muted:#7C8A93;--border:#E8EEF0;--accent:#FF8800}
+html{scroll-behavior:smooth}
+body{background:#F3F6F7;color:var(--ink);font-family:'Pretendard','Noto Sans KR',Arial,sans-serif}
+.app{max-width:460px;min-height:100vh;background:#fff;padding:24px 20px 125px;margin:0 auto}
+.topbar,.ps-trip-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:42px;min-height:34px}
+.topbar .brand,.ps-trip-topbar .brand,.brand{color:#FF8800;font-size:11px;font-weight:900;letter-spacing:.04em}
+.topbar .top-title,.ps-trip-topbar .top-title{font-size:16px;font-weight:800;color:#142739}
+.ps-trip-back{color:#142739;text-decoration:none;font-size:27px;line-height:1;display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px}
+.eyebrow,.step-label,.section-overline{color:#FF8800;font-size:11px;font-weight:900;letter-spacing:.12em}
+h1,.header h1{color:#142739;font-size:27px;font-weight:800;letter-spacing:-.05em;line-height:1.35}
+.description,.subtitle,.lead{color:#7C8A93;font-size:13px;line-height:1.7}
+.create-btn,.register-btn,.next-btn,.save-trip-btn,.confirm-add-btn,.edit-save-btn{background:#04DBE8!important;color:#fff!important;border:0!important;border-radius:17px!important;font-weight:800!important;box-shadow:0 7px 16px rgba(4,174,191,.12)!important}
+.create-btn:hover,.register-btn:hover,.next-btn:hover,.save-trip-btn:hover,.confirm-add-btn:hover,.edit-save-btn:hover{background:#00C4D1!important}
+.method-card,.trip-card,.schedule-card,.day-card,.dog-select-box,.dog-card,.edit-modal-content{background:#fff;border:1px solid #E8EEF0;border-radius:20px;box-shadow:0 5px 18px rgba(20,50,60,.045)}
+.trip-icon,.dog-icon,.ai-icon{background:#E8F8F9;color:#FF8800}
+.tip-box,.notice,.trip-info,.summary,.selected-place{background:#F1FAFA;border:1px solid #E1F0F1;border-radius:18px;color:#536C76}
+.badge,.type-badge.custom{background:#E8F8F9;color:#278D95;border-radius:999px}
+.section-title,.list-title,.day-title,.place-name{color:#142739;font-weight:800}
+.schedule-time,.time,.step-label,.trip-icon strong,.trip-icon span,.schedule-count{color:#FF8800}
+.period-card,.tab-btn,.place-result{border:1px solid #E8EEF0;background:#fff;border-radius:15px}
+.period-card:has(input:checked),.place-result.selected{background:#E8F8F9;border:2px solid #04C4D1;color:#176F79;font-weight:800}
+.tab-btn.active{background:#04DBE8;color:#fff;border-color:#04DBE8}
+.add-btn,.edit-btn{background:#E8F8F9;color:#207883;border:1px solid #D3EDF0;border-radius:13px}
+.search-btn{background:#FF9808;color:#142739;border:0;border-radius:12px}
+.delete-btn{background:#FFF0F0;color:#C84848;border:0}
+.add-form,.reason,.empty{background:#F8FCFC;border-radius:16px}
+input:not([type=radio]),select,textarea{font-family:inherit;border-color:#E0E9EC;border-radius:14px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #04DBE8;outline-offset:2px}
+#map{border:1px solid #DDEDEF;border-radius:19px}
+.marker-number{background:#04C4D1}
+@media(max-width:360px){.app{padding-left:16px;padding-right:16px}}
+</style>
 </head>
 
 <body>
 
 <div class="app">
+<header class="ps-trip-topbar"><a class="ps-trip-back" href="/trips" aria-label="뒤로가기">‹</a><strong class="top-title">내 여행 일정</strong><span class="brand">PINKSOLE</span></header>
+
 
     <!-- =========================
          상단
@@ -1469,5 +1507,7 @@
 </script>
 
 
+{% set active_page = 'create' %}
+{% include 'components/bottomnav.html' %}
 </body>
 </html>

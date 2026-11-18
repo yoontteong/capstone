@@ -8,93 +8,40 @@
     <title>반려견 정보 수정</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f6f7f9;
-        }
+:root{--primary:#00CBD7;--primary-dark:#079AA5;--primary-light:#E8F8F9;--accent:#FF8800;--ink:#142739;--muted:#7C8A93;--border:#E5ECEF;--bg:#F3F6F7}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard','Noto Sans KR',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:460px;min-height:100vh;margin:0 auto;background:#fff;padding:24px 20px 125px}
+a{text-decoration:none;color:inherit}button,input,select{font-family:inherit}
+.topbar{min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:32px}
+.topbar .back-btn{width:34px;color:var(--ink);font-size:26px;line-height:1}
+.top-title{font-size:16px;font-weight:850}
+.brand{color:var(--accent);font-size:11px;font-weight:900;letter-spacing:.055em}
+.eyebrow{color:var(--accent);font-weight:900;font-size:11px;letter-spacing:.12em;margin:0 0 12px}
+.page-title{font-size:27px;letter-spacing:-.055em;line-height:1.35;margin:0 0 12px;font-weight:850}
+.description{font-size:13px;line-height:1.75;color:var(--muted);margin:0 0 29px}
+.register-btn,.submit-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:15px 18px;background:var(--primary);color:#fff;border:0;border-radius:18px;font-size:15px;font-weight:850;text-align:center;cursor:pointer;box-shadow:0 8px 18px rgba(0,160,175,.1)}
+.register-btn:hover,.submit-btn:hover{background:#00BBC7}
+.back{display:block;margin:23px auto 0;text-align:center;font-size:13px;color:var(--muted);font-weight:700}
+input:not([type=file]),select{width:100%;min-width:0;border:1.5px solid var(--border);border-radius:15px;background:#fff;padding:14px 15px;font-size:14px;color:var(--ink)}
+input:focus,select:focus{outline:none;border-color:var(--primary)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--primary);outline-offset:3px}
+@media(max-width:360px){.app{padding-left:16px;padding-right:16px}.page-title{font-size:24px}}
 
-        .app {
-            max-width: 500px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            padding: 30px 20px 40px;
-        }
+form label{display:block;margin:19px 0 9px;font-weight:800;font-size:13px}
+form input,form select{min-height:51px}.submit-btn{margin-top:28px}
+.form-intro{background:#F8FCFC;border:1px solid var(--border);border-radius:19px;padding:17px 18px;margin:0 0 26px;font-size:12px;color:var(--muted);line-height:1.65}
 
-        h2 {
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-
-        .description {
-            color: #777;
-            font-size: 13px;
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin: 18px 0 8px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 14px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 25px;
-            padding: 14px;
-
-            border: none;
-            border-radius: 14px;
-
-            background: #4caf50;
-            color: white;
-
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background: #43a047;
-        }
-
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 18px;
-            color: #666;
-            text-decoration: none;
-        }
-
-        .back:hover {
-            text-decoration: underline;
-        }
-    </style>
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <h2>🐶 반려견 정보 수정</h2>
-
-    <div class="description">
-        등록된 반려견 정보를 수정해주세요.
-    </div>
+    <header class="topbar"><a class="back-btn" href="/dogs" aria-label="뒤로가기">‹</a><strong class="top-title">반려견 정보 수정</strong><span class="brand">PINKSOLE</span></header>
+<div class="eyebrow">EDIT PET PROFILE</div><h1 class="page-title">반려견 정보 수정</h1><p class="description">등록된 반려견 정보를 수정해 주세요.</p>
 
     <form method="POST"
           action="/dog/edit/{{ dog.id }}">
