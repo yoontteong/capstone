@@ -280,6 +280,84 @@
             }
         }
     </style>
+<style>
+
+/* ========================================================
+   PinkSole · 내 여행(trip_list) 디자인 기준 공통 테마
+   페이지 본문에만 적용: 공통 하단 메뉴는 bottomnav.css에서 관리
+   ======================================================== */
+:root {
+  --primary:#04DBE8;
+  --primary-dark:#00A7B5;
+  --primary-light:#E8F8F9;
+  --dark:#FF8800;
+  --deep:#00A7B5;
+  --light:#E8F8F9;
+  --soft:#E8F8F9;
+  --pale:#E8F8F9;
+  --ink:#142739;
+  --muted:#8290A4;
+  --line:#E5ECF0;
+  --border:#E5ECF0;
+  --bg:#F6F8F9;
+}
+html { scroll-behavior:smooth; }
+body { background:#F6F8F9; color:#142739; font-family:'Pretendard','Noto Sans KR',Arial,sans-serif; }
+.app { width:100%; max-width:460px; margin-left:auto; margin-right:auto; background:#fff; }
+/* 헤더와 소제목 */
+.app .brand,.app .eyebrow,.app .section-overline,.app .room-label {
+  color:#FF8800;
+  font-weight:900;
+}
+.app .topbar .brand { color:#FF8800; }
+.app .top-title,.app .topbar-title,.app .page-name { color:#142739; font-weight:800; }
+.app h1 { color:#142739; letter-spacing:-.05em; }
+.app .subtitle,.app .description,.app .desc { color:#8290A4; line-height:1.7; }
+/* 카드: 흰색 + 얇은 테두리 + 은은한 그림자 */
+.app .menu-card,.app .review-card,.app .post-card-box,.app .match-card,
+.app .room,.app .mate-card,.app .overview,.app .author-card,.app .dog-card,
+.app .rating-card,.app .comment-card,.app .upload-box {
+  border:1px solid #E5ECF0;
+  border-radius:19px;
+  box-shadow:0 4px 15px rgba(20,50,60,.035);
+}
+.app .menu-card,.app .review-card,.app .match-card,.app .room { background:#fff; }
+/* 정보 카드와 상태 표시 */
+.app .menu-icon,.app .room-icon,.app .dog-avatar,.app .icon-box,.app .avatar,
+.app .empty-icon,.app .author-icon,.app .place-icon { background:#E8F8F9; }
+.app .status:not(.status-closed),.app .count,.app .type-badge,
+.app .selected-place,.app .dog-preview,.app .participant.me {
+  background:#E8F8F9; color:#147984;
+}
+.app .note,.app .notice,.app .tip { background:#F2FAFA; color:#60757D; }
+/* 메인 CTA: '새 여행 만들기' 버튼과 같은 색 */
+.app .write-btn,.app .submit-btn,.app .save-btn,.app .primary-btn,
+.app .register-btn,.app .send-btn,.app .comment-submit,.app .comment-save-btn,
+.app .empty-link,.app .empty-write,.app button.submit {
+  background:#04DBE8; color:#fff; border-color:#04DBE8;
+  box-shadow:0 5px 14px rgba(0,166,180,.12);
+}
+.app .write-btn:hover,.app .submit-btn:hover,.app .save-btn:hover,
+.app .primary-btn:hover,.app .send-btn:hover,.app .comment-submit:hover,
+.app .comment-save-btn:hover,.app button.submit:hover { background:#00B9C8; border-color:#00B9C8; }
+/* 보조 동작 및 위험 동작 */
+.app .secondary-btn,.app .subtle-btn,.app .cancel-btn,.app .comment-cancel-btn {
+  background:#E8F8F9; color:#157E87; border-color:#CDEDEF;
+}
+.app .delete-btn,.app .danger-btn,.app .owner-delete-btn,
+.app .comment-delete-btn { background:#FFF1F1; color:#B65B5B; border-color:#F6DDDD; }
+/* 입력 요소 */
+.app input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),
+.app select,.app textarea {
+  border-color:#E2EAF0; border-radius:14px; color:#142739; font-family:inherit;
+}
+.app input:focus-visible,.app select:focus-visible,.app textarea:focus-visible,
+.app a:focus-visible,.app button:focus-visible { outline:2px solid #00A7B5; outline-offset:2px; }
+/* 기존 내용 간격을 유지하면서 하단 고정 내비에 가리지 않도록 */
+.app:not(.ps-chat-app) { padding-bottom:max(125px, env(safe-area-inset-bottom)); }
+@media(max-width:360px){ .app:not(.ps-chat-app){padding-left:16px;padding-right:16px;} }
+
+</style>
 </head>
 
 <body>

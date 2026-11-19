@@ -16,7 +16,7 @@
 :root {--primary:#49B9BF;--dark:#FF9808;--soft:#E7F7F7;--ink:#202B33;--muted:#74858D;--line:#E7EEF0;}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0!important;background:#F3F6F7!important;color:var(--ink)!important;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif!important;padding-bottom:0!important}
+body{margin:0!important;background:#F3F6F7!important;color:var(--ink)!important;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif!important;padding-bottom:100px!important}
 .app{max-width:460px!important;min-height:100vh!important;margin:0 auto!important;background:#fff!important;padding:24px 20px 120px!important;box-shadow:none!important}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:10px}
 .topbar a{color:var(--ink);text-decoration:none;font-size:21px;line-height:1}
@@ -78,8 +78,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 }
 html {scroll-behavior:smooth}
 body {background:#F6F8F9!important;color:#142739!important;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif!important;}
-.app {max-width:530px!important;background:#FFF!important;box-shadow:0 0 20px rgba(19,43,55,.018)!important;padding-left:24px!important;padding-right:24px!important;padding-bottom:125px!important;}
-.topbar {min-height:37px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:42px!important;}
+.app {
+    max-width: 460px !important;
+    background: #FFF !important;
+    box-shadow: none !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 125px !important;
+}.topbar {min-height:37px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:42px!important;}
 .topbar a,.back-btn:not(.button) {color:#142739!important;text-decoration:none;}
 .topbar strong,.top-title {font-weight:850!important;font-size:16px!important;letter-spacing:-.035em;}
 .brand,.topbar .brand,.eyebrow,.section-overline {color:#FF8800!important;font-weight:900!important;}
